@@ -69,7 +69,7 @@ public class Main extends javax.swing.JFrame implements MouseListener {
     }
 
     public void mouseExited(MouseEvent e) {
-        System.out.println(e.getX());
+//        System.out.println(e.getX());
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

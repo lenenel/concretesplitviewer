@@ -170,7 +170,7 @@ public class Tools {
         for(int i=0; i < numberOfLaps; i++){
             int speedS = speedSimple.getTimeInSeconds();
             int speed = getMeanSpeedOnLap(d, a, (allLaps ? i+1: laps[i]) ).getTimeInSeconds();
-            System.out.println(speed+"  "+speedS);
+//            System.out.println(speed+"  "+speedS);
             if(Math.abs(speed-speedS)/(double)speedS >= k){
                 if(max < Math.abs(speed-speedS)){
                     max = Math.abs(speed-speedS);
@@ -229,7 +229,7 @@ public class Tools {
             int speed = getMeanSpeedOnLap(d, a, laps[i]).getTimeInSeconds();
             if(Math.abs(speed-speedS)/(double)speedS < k){
                 j++;
-                System.out.println(speed+"  "+speedS);
+//                System.out.println(speed+"  "+speedS);
             }
             else;
         }

@@ -35,7 +35,7 @@ public class TipPanel extends JPanel implements MouseListener {
     }
 
     public void mouseExited(MouseEvent e) {
-        System.out.println(e.getX());
+//        System.out.println(e.getX());
     }
     
 }

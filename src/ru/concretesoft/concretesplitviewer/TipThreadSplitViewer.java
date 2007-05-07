@@ -39,7 +39,7 @@ public class TipThreadSplitViewer extends Thread {
 //            if (! tipWindow.isVisible()) continue;
             Point[] ps = MouseMoveQueue.getInstance().getXY();
             if (ps == null) continue;
-            System.out.println(ps[1].getX());
+//            System.out.println(ps[1].getX());
             int i = splitViewer.getSplit(ps[1]);
             if(i>0){
                 
