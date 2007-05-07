@@ -345,7 +345,12 @@ public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitVi
         if(aModel.getDistance()==null){
             secondBest = null;
         }else{
-            secondBest = Tools.getAnyBest(aModel.getDistance().getGroups(),2);
+            Object[] allSelected = aModel.getGroupsList().getSelectedValues();
+            Vector<Group> groups = new Vector<Group>();
+            for(Object g : allSelected)
+                groups.add((Group)g);
+            
+            secondBest = Tools.getAnyBest(groups,2);
         }
         setDraw();
         repaint();
