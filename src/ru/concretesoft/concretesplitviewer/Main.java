@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.TreeSet;
 import java.util.Vector;
 import javax.swing.DefaultListSelectionModel;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.ListModel;
@@ -88,9 +89,6 @@ public class Main extends javax.swing.JFrame {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        jButton1 = new javax.swing.JButton();
-        jComboBox1 = new javax.swing.JComboBox();
-        jButton2 = new javax.swing.JButton();
         jSplitPane1 = new javax.swing.JSplitPane();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -98,48 +96,26 @@ public class Main extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         jList2 = new javax.swing.JList();
         jPanel1 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        jToolBar1 = new javax.swing.JToolBar();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jToolBar2 = new javax.swing.JToolBar();
+        jComboBox1 = new javax.swing.JComboBox();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JSeparator();
+        jMenuItem3 = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
+        jMenuItem4 = new javax.swing.JMenuItem();
 
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("ConcreteSplitViewer");
-        jButton1.setText(java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("Open_OSV_file"));
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        getContentPane().add(jButton1, gridBagConstraints);
-
-        jComboBox1.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                jComboBox1ItemStateChanged(evt);
-            }
-        });
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 0;
-        getContentPane().add(jComboBox1, gridBagConstraints);
-
-        jButton2.setText(java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("Open_SFR_file"));
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        getContentPane().add(jButton2, gridBagConstraints);
-
+        setTitle(java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("ConcreteSplitViewer"));
+        jSplitPane1.setResizeWeight(0.9);
         jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.Y_AXIS));
 
         jScrollPane1.setPreferredSize(new java.awt.Dimension(200, 200));
@@ -197,8 +173,135 @@ public class Main extends javax.swing.JFrame {
         gridBagConstraints.weighty = 1.0;
         getContentPane().add(jSplitPane1, gridBagConstraints);
 
+        jPanel3.setLayout(new java.awt.GridLayout());
+
+        jButton1.setText(java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("OSV"));
+        jButton1.setToolTipText(java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("Open_OSV_file"));
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jToolBar1.add(jButton1);
+
+        jButton2.setText(java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("SFR"));
+        jButton2.setToolTipText(java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("Open_SFR_file"));
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jToolBar1.add(jButton2);
+
+        jPanel3.add(jToolBar1);
+
+        jComboBox1.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBox1ItemStateChanged(evt);
+            }
+        });
+
+        jToolBar2.add(jComboBox1);
+
+        jPanel3.add(jToolBar2);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        getContentPane().add(jPanel3, gridBagConstraints);
+
+        jMenu1.setText(java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("File"));
+        jMenuItem1.setText(java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("Open_OSV"));
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+
+        jMenu1.add(jMenuItem1);
+
+        jMenuItem2.setText(java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("Open_SFR"));
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+
+        jMenu1.add(jMenuItem2);
+
+        jMenu1.add(jSeparator1);
+
+        jMenuItem3.setText(java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("Exit"));
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
+
+        jMenu1.add(jMenuItem3);
+
+        jMenuBar1.add(jMenu1);
+
+        jMenu2.setText(java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("Help"));
+        jMenuItem4.setText(java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("About"));
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
+
+        jMenu2.add(jMenuItem4);
+
+        jMenuBar1.add(jMenu2);
+
+        setJMenuBar(jMenuBar1);
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        JDialog aboutDialog = new AboutDialog(this);
+        
+        aboutDialog.setLocationRelativeTo(jPanel1);
+        aboutDialog.setVisible(true);
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
+    /**
+     * Exit from program by choosing menu item File->Exit
+     * 
+     * @param  evt  <code>ActionEvent</code>
+     */
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
+    /**
+     * Method calls when chose menu item File->"Open SFR"
+     * Метод, вызываемый по выбору пункта меню (File)Файл->(Open SFR)Открыть SFR
+     * 
+     * Call method jButton2ActionPerformed
+     * Показывает диалоговое окно выбора файла, и если файл выбран, то читает этот файл
+     *
+     * @param  evt <code>ActionEvent</code>
+     * @see jButton2ActionPerformed(java.awt.event.ActionEvent evt)
+     */
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        jButton2ActionPerformed(evt);
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+    /**
+     * Method calls when chose menu item File->"Open OSV"
+     * Метод, вызываемый по выбору пункта меню (File)Файл->(Open OSV)Открыть OSV
+     * 
+     * Call method jButton1ActionPerformed
+     * Показывает диалоговое окно выбора файла, и если файл выбран, то читает этот файл
+     *
+     * @param  evt <code>ActionEvent</code>
+     * @see jButton1ActionPerformed(java.awt.event.ActionEvent evt)
+     */
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        jButton1ActionPerformed(evt);
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
     /**
      * Метод, вызываемый по нажатию на кнопку, для открытия SFR сплитов
      * 
@@ -346,11 +449,22 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JList jList1;
     private javax.swing.JList jList2;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JToolBar jToolBar2;
     // End of variables declaration//GEN-END:variables
    
    
