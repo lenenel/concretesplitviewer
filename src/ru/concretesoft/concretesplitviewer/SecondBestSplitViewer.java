@@ -45,11 +45,13 @@ public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitVi
     private int[] prom;
     private int yMax;
 
-//    private TipWindow tipWindow;
+    private TipWindow tipWindow;
+    private TipThreadSplitViewer tipThread;
 
     private int yMin;
     /** Creates new form SecondBestSplitViewer */
     public SecondBestSplitViewer() {
+        tipWindow = new TipWindow();
         initComponents();
 
         groups = new HashSet<Group>();
@@ -390,10 +392,13 @@ public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitVi
 
     public void mouseReleased(MouseEvent e) {
     }
-
+    
     public void mouseEntered(MouseEvent e) {
+        tipThread = new TipThreadSplitViewer(tipWindow, this);
+        tipThread.start();
     }
 
     public void mouseExited(MouseEvent e) {
+        tipThread.finish();
     }
 }

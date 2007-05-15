@@ -43,11 +43,11 @@ public class Main extends javax.swing.JFrame {
         new StandardSplitViewer(),
         new SecondBestSplitViewer()
     }; // массив возможных вариантов просмотра
-    private TipThreadSplitViewer tipThread;
-    private TipWindow tipWindow;
+//    private TipThreadSplitViewer tipThread;
+//    private TipWindow tipWindow;
     /** Creates new form Main */
     public Main() {
-        tipWindow = new TipWindow();
+//        tipWindow = new TipWindow();
         initComponents();
         
         
@@ -341,15 +341,15 @@ public class Main extends javax.swing.JFrame {
     // Обработчик выбора режима просмотра
     private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
         jPanel1.removeAll();
-        if(tipThread!=null)
-            tipThread.finish();
-        else;
+//        if(tipThread!=null)
+//            tipThread.finish();
+//        else;
         
         if(evt.getStateChange()==evt.SELECTED){
             SplitViewer sV = (SplitViewer)evt.getItem();
             jPanel1.add((javax.swing.JPanel)jComboBox1.getSelectedItem());
-            tipThread = new TipThreadSplitViewer(tipWindow, (SplitViewer)jComboBox1.getSelectedItem());
-            tipThread.start();
+//            tipThread = new TipThreadSplitViewer(tipWindow, (SplitViewer)jComboBox1.getSelectedItem());
+//            tipThread.start();
             this.validate();
             repaint();
         }else;

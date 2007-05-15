@@ -97,6 +97,7 @@ public class TipThreadSplitViewer extends Thread {
             }
             
         }
+        tipWindow.setVisible(false);
     }
     public void finish(){
         finish = true;

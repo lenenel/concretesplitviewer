@@ -22,6 +22,7 @@ import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import ru.spb.ConcreteSoft.tipWindow.MouseMoveQueue;
+import ru.spb.ConcreteSoft.tipWindow.TipWindow;
 
 
 /**
@@ -35,12 +36,15 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
     private int[] xCoord;
     private int otst=5;
     private int heightStr=5;
-//    private TipWindow tipWindow;
+    private TipWindow tipWindow;
+    private TipThreadSplitViewer tipThread;
+
    
     /**
      * Creates new form StandardSplitViewer
      */
     public StandardSplitViewer() {
+        tipWindow = new TipWindow();
         initComponents();
         addMouseMotionListener(MouseMoveQueue.getInstance());
         addMouseListener(this);
@@ -277,9 +281,12 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
     }
 
     public void mouseEntered(MouseEvent e) {
+        tipThread = new TipThreadSplitViewer(tipWindow, this);
+        tipThread.start();
     }
 
     public void mouseExited(MouseEvent e) {
+        tipThread.finish();
     }
     
 }
