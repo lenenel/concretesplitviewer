@@ -66,15 +66,21 @@ public class Distance {
         return numberOfCP;
     }
      /*
-     * ћетод возвращает длину перегона на пункт n
-     */
+      * ћетод возвращает длину перегона на пункт n
+      * Method return lenght of laps with number <code>n</code>. n=1 means distance from start to first control point
+      * 
+      * @return  lenght of distance from <code>n-1</code>th to <code>n</code>th control point. If distance has no lenghts of laps returned -1.
+      *
+      * @param  n  lenght of what lap should be returned (n=1 means distance from start to first control point)
+      *
+      */
     public int getLengthOfDist(int n){
         if(lengths==null) return -1;
         return lengths[n-1];
     }
      /*
-     * ћетод устанавливает длину перегона на пункт n равной l.
-     */
+      * ћетод устанавливает длину перегона на пункт n равной l.
+      */
     public void setLengthOfDist(int n, int l){
         if(lengths==null) lengths = new int[getNumberOfCP()+1];
         lengths[n-1] = l;

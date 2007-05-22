@@ -7,6 +7,7 @@
 package ru.concretesoft.concretesplitviewer;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
@@ -34,7 +35,7 @@ import ru.spb.ConcreteSoft.tipWindow.TipWindow;
  */
 public class Main extends javax.swing.JFrame {
     private JFileChooser jFC; // Объект для выбора файлов
- 
+    private LapsTopPanel lTP;
     private GroupListModel groupListModel; // модель списка для выбора групп
     private AthleteListModel lM2; // модель списка для выбора спортсменов
     private GroupSelectionModel gSM; // модель выбора для групп
@@ -62,10 +63,12 @@ public class Main extends javax.swing.JFrame {
             jComboBox1.addItem(viewers[i]);
             viewers[i].setModel(lM2);
         }
-
         
-        jPanel1.add((javax.swing.JPanel)jComboBox1.getSelectedItem());
-        
+        lTP = new LapsTopPanel(lM2);
+        lTP.setPreferredSize(new Dimension(100,20));
+        lTP.setAlignmentX(1.0f);
+        jPanel1.add((javax.swing.JPanel)jComboBox1.getSelectedItem(),java.awt.BorderLayout.CENTER);
+        jPanel1.add(lTP,java.awt.BorderLayout.NORTH);
 //        tipThread = new TipThreadSplitViewer(tipWindow, (SplitViewer)jComboBox1.getSelectedItem());
 //        tipThread.start();
         // Задание моделей для списков
@@ -173,7 +176,7 @@ public class Main extends javax.swing.JFrame {
         gridBagConstraints.weighty = 1.0;
         getContentPane().add(jSplitPane1, gridBagConstraints);
 
-        jPanel3.setLayout(new java.awt.GridLayout());
+        jPanel3.setLayout(new java.awt.GridLayout(1, 0));
 
         jButton1.setText(java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("OSV"));
         jButton1.setToolTipText(java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("Open_OSV_file"));
@@ -347,7 +350,7 @@ public class Main extends javax.swing.JFrame {
         
         if(evt.getStateChange()==evt.SELECTED){
             SplitViewer sV = (SplitViewer)evt.getItem();
-            jPanel1.add((javax.swing.JPanel)jComboBox1.getSelectedItem());
+            jPanel1.add((javax.swing.JPanel)jComboBox1.getSelectedItem(),java.awt.BorderLayout.CENTER);
 //            tipThread = new TipThreadSplitViewer(tipWindow, (SplitViewer)jComboBox1.getSelectedItem());
 //            tipThread.start();
             this.validate();

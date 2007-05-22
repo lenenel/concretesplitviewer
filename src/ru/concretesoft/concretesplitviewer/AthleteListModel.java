@@ -148,10 +148,11 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
 //            while(it.hasNext())
 //                it.next().contentsChanged(new ListDataEvent(this,ListDataEvent.CONTENTS_CHANGED,0,athletes.size()));
         }
-         /** Restores all splits from distance
-         *
-         *
-         */
+         /** 
+          * Restores all splits from distance
+          *
+          * @return  <code>true</code> if restoring succesfull else <code>false</code>. Not succesfull restoring if distance not set.
+          */
         public boolean restoreAllSplits(){
             if(d==null)
                 return false;
@@ -165,9 +166,11 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
             }
         }
          /** Gets array of viewing laps
-         *
-         *  @return  array of viewing laps
-         */
+          *
+          *  @return  array of viewing laps or <code>null</code> if all splits not restored
+          *
+          *  @see  restoreAllSplits();
+          */
         public int[] getViewingSplits(){
             boolean ok = true;
             if(viewLaps==null)
