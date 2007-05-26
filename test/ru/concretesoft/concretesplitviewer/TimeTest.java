@@ -54,7 +54,7 @@ public class TimeTest extends TestCase {
     public void testAddTime() {
         System.out.println("addTime");
         
-        Time t = new Time("12:34:56",3);
+        Time t = new Time(" 12:34:56",3);
         Time instance =new Time(123456,3);
         
         instance.addTime(t);
