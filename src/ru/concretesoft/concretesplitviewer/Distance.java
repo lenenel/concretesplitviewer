@@ -93,7 +93,7 @@ public class Distance {
      *  @return  <code>true</code> if set lengths. <code>false</code> if length of array not equals with number of control points in distance
      */
     public boolean setLengthsOfDists(int[] ls){
-        if(ls.length != getNumberOfCP()) 
+        if((ls==null)||(ls.length != getNumberOfCP()))
             return false;
         else{
             for(int i=0; i < ls.length; i++)

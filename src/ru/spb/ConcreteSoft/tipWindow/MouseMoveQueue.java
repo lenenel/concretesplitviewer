@@ -12,7 +12,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import sun.security.x509.X400Address;
+
 
 /**
  * A singleton queue that holds and return last position

@@ -32,11 +32,12 @@ public class Time implements Comparable{
     }
     
      /** Creates a new instance of Time 
-     * s - время в формате ЧЧ:ММ:СС либо ММ:СС, в зависимости от количества полей
-     * fields - количество полей
+     * @param  s  время в формате ЧЧ:ММ:СС либо ММ:СС, в зависимости от количества полей
+     * @param  fields  количество полей
      */
     public Time(String s,int f){
 //        this.timeS = s;
+        s = s.replaceAll("\\s+","");
         setFields(f);
 //        timeS="";
         String[] tmpS = s.split(":");

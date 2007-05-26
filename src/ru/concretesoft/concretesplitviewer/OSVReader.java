@@ -33,7 +33,12 @@ public class OSVReader extends SplitReader{
     private Vector<String> groupsNames;
     private Vector<Group> allGroups;
     private String encoding = "CP1251";
-    /** Creates a new instance of OSVReader */
+    /** Creates a new instance of OSVReader
+     *
+     * @param  file  file in format "OSV"
+     *
+     *
+     */
     public OSVReader(File file)  throws IOException {
         this.file=file;
         fIS = new FileInputStream(file);
@@ -56,16 +61,26 @@ public class OSVReader extends SplitReader{
         String[] groups = all.split("#");
         groupsNames = new Vector<String>();
         allGroups = new Vector<Group>();
+        //From 1 because the first item is begin of file
         for(int i=1;i<groups.length;i++){
             allGroups.add(new Group());
+            
+            //Find name of group
             String[] tmp = groups[i].split(" ",2);
+            //Set name for group
             groupsNames.add(tmp[0]);
             allGroups.lastElement().setName(tmp[0]);
+            
+            
             tmp = groups[i].split("\n");
+            
+            //Find parameters of distance
             String[] tmp1 = tmp[0].split("\\s*,\\s*");
-            int l = (int)((new Double(tmp1[2].split("\\s+")[0])).doubleValue()*1000);
-            int nCP = (new Integer(tmp1[1].split("\\s+")[0])).intValue()+1;
+            int l = (int)((new Double(tmp1[2].split("\\s+")[0])).doubleValue()*1000); //Length of distance
+            int nCP = (new Integer(tmp1[1].split("\\s+")[0])).intValue()+1; //Number of control points (+1 because finish lap)
             Distance d = new Distance(tmp1[0],l,nCP);
+            
+            //Find same distance (comparing parameters) in other groups
             Iterator<Group> it = allGroups.iterator();
             while(it.hasNext()){
                 Distance dTmp = it.next().getDistance();
@@ -77,22 +92,35 @@ public class OSVReader extends SplitReader{
                 }
             }
             allGroups.lastElement().setDistance(d);
+            
+            //Parsing of one group
             for(int j=1;j<tmp.length;j++){
-                String[] tmp2 = tmp[j].split("\\s+");
+                String[] tmp2 = tmp[j].split("\\s+",3); //Name of athlete
+                String[] tmp3 = tmp[j].split("\\d\\d:\\d\\d:\\d\\d");
+                
 //                Time totTime = new Time(tmp2[2],3);
                 Time[] splits = new Time[nCP];
                 for(int k = 0; k<nCP;k++){
                     try{
-                        splits[k]=new Time(tmp2[k+3],2);
+                        splits[k]=new Time(tmp3[1].substring(k*6,(k+1)*6),2);
                     }
                     catch(java.lang.NumberFormatException e){
-                        splits[k]=new Time(0,2);
+                        splits=null;
+                        break;
                     }
                     catch(java.lang.ArrayIndexOutOfBoundsException e){
-                        splits[k]=new Time(0,2);
+                        splits=null;
+                        break;
+                    }
+                    catch(java.lang.IndexOutOfBoundsException e){
+                        splits=null;
+                        break;
                     }
                 }
-                Athlete a = new Athlete(tmp2[0],tmp2[1],splits,allGroups.lastElement());
+
+                if(splits!=null)
+                    new Athlete(tmp2[0],tmp2[1],splits,allGroups.lastElement());
+                else;
 
             }
         }

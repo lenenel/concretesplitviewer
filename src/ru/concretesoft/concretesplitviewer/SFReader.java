@@ -1,7 +1,7 @@
 /*
  * SFReader.java
  *
- * Created on 3 Èþëü 2006 ã., 19:41
+ * Created on 3 ï¿½ï¿½ï¿½ï¿½ 2006 ï¿½., 19:41
  *
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.
@@ -52,6 +52,7 @@ public class SFReader extends SplitReader{
         catch(UnsupportedEncodingException e){
             all = "";
         }
+        
         groupsNames = new Vector<String>();
         allGroups = new Vector<Group>();
 //        int beginLine = 0;
@@ -62,7 +63,10 @@ public class SFReader extends SplitReader{
         Time[] splits = null;
         int[] lengths = null;
         boolean dSQ=false;
+        
+        //for each line
          for(int i=0;i<allLines.length;i++){
+            //If line have the first not blank symbol "H"(Ðœ) or "D"(Ð–) then parse one group
             if(allLines[i].matches("\\s+["+java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("H")+java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("D")+"].*\r")){
                  if((athleteAtr!=null)&&(!dSQ)){
                     new Athlete(athleteAtr[3],athleteAtr[4],splits,g);
