@@ -58,15 +58,16 @@ public class Main extends javax.swing.JFrame {
         groupListModel = new GroupListModel();
         lM2 = new AthleteListModel(getGraphics().getFontMetrics());
         lM2.setGroupsList(jList1);
+        lTP = new LapsTopPanel(lM2);
+        lTP.setPreferredSize(new Dimension(100,20));
+        lTP.setAlignmentX(1.0f);
         // Добавление возможных вариантов просмотра в выпадающий список
         for(int i=0;i<viewers.length;i++){
             jComboBox1.addItem(viewers[i]);
             viewers[i].setModel(lM2);
         }
         
-        lTP = new LapsTopPanel(lM2);
-        lTP.setPreferredSize(new Dimension(100,20));
-        lTP.setAlignmentX(1.0f);
+
         jPanel1.add((javax.swing.JPanel)jComboBox1.getSelectedItem(),java.awt.BorderLayout.CENTER);
         jPanel1.add(lTP,java.awt.BorderLayout.NORTH);
 //        tipThread = new TipThreadSplitViewer(tipWindow, (SplitViewer)jComboBox1.getSelectedItem());
@@ -351,6 +352,7 @@ public class Main extends javax.swing.JFrame {
         if(evt.getStateChange()==evt.SELECTED){
             SplitViewer sV = (SplitViewer)evt.getItem();
             jPanel1.add((javax.swing.JPanel)jComboBox1.getSelectedItem(),java.awt.BorderLayout.CENTER);
+            jPanel1.add(lTP,java.awt.BorderLayout.NORTH);
 //            tipThread = new TipThreadSplitViewer(tipWindow, (SplitViewer)jComboBox1.getSelectedItem());
 //            tipThread.start();
             this.validate();
