@@ -200,6 +200,7 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
          *  @param  n  contol point's number
          */
         public void addSplitsForN(int n){
+            if(n>d.getNumberOfCP()) return;//If CP's number greter than number of control points
             for(int i=0;i<viewLaps.length;i++){
                 if(n<viewLaps[i]){
                     int[] splOld = viewLaps;
@@ -211,9 +212,15 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
 //                    Iterator<ListDataListener> it = list.iterator();
 //                    while(it.hasNext())
 //                        it.next().contentsChanged(new ListDataEvent(this,ListDataEvent.CONTENTS_CHANGED,0,athletes.size()));
-                    break;
-                }
+                    return;
+                }else;
             }
+            //If we not add lap yet than CP's number greter then the last selected CP's number
+            int[] splOld = viewLaps;
+            viewLaps = new int[splOld.length+1];
+            for(int j=0;j<splOld.length;j++) viewLaps[j] = splOld[j];
+            viewLaps[splOld.length] = n;
+            setViewSplits(viewLaps);
         }
          /**
          * Метод устанавливает выбранные перегоны, и вызывает изменение отображаемой информации
