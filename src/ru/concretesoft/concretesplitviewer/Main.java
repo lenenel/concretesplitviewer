@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Properties;
 import java.util.TreeSet;
 import java.util.Vector;
 import javax.swing.DefaultListSelectionModel;
@@ -44,16 +45,23 @@ public class Main extends javax.swing.JFrame {
         new StandardSplitViewer(),
         new SecondBestSplitViewer()
     }; // массив возможных вариантов просмотра
+    private File propertiesFile;
+    private Properties properties;
+    
+    private static final String PROPERTIES_FILE_NAME = "properies.xml";
+    private static final String DIRECTORY_NAME = ".ConcreteSplitViewer";
 //    private TipThreadSplitViewer tipThread;
 //    private TipWindow tipWindow;
     /** Creates new form Main */
     public Main() {
 //        tipWindow = new TipWindow();
+        loadProperties();
         initComponents();
         
         
         // Инициализация переменных объекта
         jFC = new JFileChooser();
+        jFC.setCurrentDirectory(new File(properties.getProperty("Directory")));
         
         groupListModel = new GroupListModel();
         lM2 = new AthleteListModel(getGraphics().getFontMetrics());
@@ -81,6 +89,28 @@ public class Main extends javax.swing.JFrame {
         jList2.setModel(lM2);
         jList2.setSelectionModel(lM2);
         
+        //load last file from previous session
+        String typeOfLastFile = properties.getProperty("Type_of_last_file");
+        File lastFile = new File(properties.getProperty("The_Last_File"));
+        if((typeOfLastFile!=null)&&(lastFile!=null)){
+            try{
+                
+                SplitReader splitReader = null;
+                
+                if(typeOfLastFile.equals("OSV")){
+                    splitReader = new OSVReader(lastFile);
+                }else if (typeOfLastFile.equals("SFR")){
+                    splitReader = new SFReader(lastFile);
+                }else;
+                
+                if(splitReader != null)
+                    readSplits(splitReader);
+                else;
+                
+            }catch(IOException e){
+                System.out.println(e.getMessage());
+            }
+        }else;
 
     }
     
@@ -291,7 +321,7 @@ public class Main extends javax.swing.JFrame {
      * @see jButton2ActionPerformed(java.awt.event.ActionEvent evt)
      */
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        jButton2ActionPerformed(evt);
+        openSFRFileWithDialog();
     }//GEN-LAST:event_jMenuItem2ActionPerformed
     /**
      * Method calls when chose menu item File->"Open OSV"
@@ -304,7 +334,7 @@ public class Main extends javax.swing.JFrame {
      * @see jButton1ActionPerformed(java.awt.event.ActionEvent evt)
      */
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        jButton1ActionPerformed(evt);
+        openOSVFileWithDialog();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
     /**
      * Метод, вызываемый по нажатию на кнопку, для открытия SFR сплитов
@@ -313,19 +343,7 @@ public class Main extends javax.swing.JFrame {
      *
      */
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        Vector<String> exts = new Vector<String>();
-        exts.add("txt");
-        File f = showFileChooser(exts);
-        if(f != null){
-            try{
-                SplitReader oR = new SFReader(f);
-                readSplits(oR);
-            }
-            catch(IOException e){
-                System.out.println(e);
-            }
-        }
-        else;
+        openSFRFileWithDialog();
     }//GEN-LAST:event_jButton2ActionPerformed
     
     // Обработчик щелчка мышки на панели просмотра сплитов
@@ -387,22 +405,43 @@ public class Main extends javax.swing.JFrame {
      *
      */
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        Vector<String> exts = new Vector<String>();
-        exts.add("osv");
-        File f = showFileChooser(exts);
-        if(f != null){
+        openOSVFileWithDialog();
+        
+    }//GEN-LAST:event_jButton1ActionPerformed
+    private void openOSVFileWithDialog(){
+        Vector<String> extensions = new Vector<String>();
+        extensions.add("osv");
+        File file = showFileChooser(extensions);
+        if(file != null){
             try{
-                SplitReader oR = new OSVReader(f);
-                readSplits(oR);
+                properties.setProperty("Type_of_last_file","OSV");
+                saveProperties();
+                SplitReader osvReader = new OSVReader(file);
+                readSplits(osvReader);
             }
             catch(IOException e){
                 System.out.println(e);
             }
-        }
-        else;
-        
-    }//GEN-LAST:event_jButton1ActionPerformed
-
+        } else;
+    }
+    
+    
+    private void openSFRFileWithDialog() {
+        Vector<String> extensions = new Vector<String>();
+        extensions.add("txt");
+        File file = showFileChooser(extensions);
+        if(file != null){
+            try{
+                properties.setProperty("Type_of_last_file","SFR");
+                saveProperties();
+                SplitReader sfReader = new SFReader(file);
+                readSplits(sfReader);
+            }
+            catch(IOException e){
+                System.out.println(e);
+            }
+        } else;
+    }
     /** 
      * Чтение сплитов с помощью ридера
      *
@@ -419,13 +458,75 @@ public class Main extends javax.swing.JFrame {
         
         jFC.setFileFilter(filter);
         int val = jFC.showOpenDialog(this);
-        File f = null;
+        File selectedFile = null;
         // Если нажата кнопка OK, то прочитать файл и заполнить список групп
         if(val == jFC.APPROVE_OPTION){
-            f = jFC.getSelectedFile();
-        }
+            selectedFile = jFC.getSelectedFile();
+            properties.setProperty("Directory", jFC.getCurrentDirectory().getPath());
+            properties.setProperty("The_Last_File", selectedFile.getPath());
+            try{
+                saveProperties();
+            }catch(IOException e){
+                System.out.println(e.getMessage());
+            }
+        }else;
         jFC.removeChoosableFileFilter(filter);
-        return f;
+        return selectedFile;
+    }
+    /**
+     *
+     * Method for loading properties from home directory
+     *
+     */
+    private void loadProperties(){
+        String path = System.getProperty("user.home");
+        String separator = System.getProperty("file.separator");
+        File parent = new File(path+separator+DIRECTORY_NAME);
+        propertiesFile = new File(parent, PROPERTIES_FILE_NAME);
+        try{
+            if(parent.exists()){
+                if(propertiesFile.createNewFile()){
+                    fillDefaultProperties(propertiesFile,path,separator);
+                }
+                else{
+                    properties = new Properties();
+                    java.io.FileInputStream fIS = new java.io.FileInputStream(propertiesFile);
+                    properties.loadFromXML(fIS);
+                }
+            }
+            else{
+                parent.mkdir();
+                propertiesFile.createNewFile();
+                fillDefaultProperties(propertiesFile,path,separator);
+            }
+        }
+        catch(java.io.IOException e){
+            
+        }
+    }
+    /**
+     * Methof for generating default properties
+     *
+     *
+     */
+    private void fillDefaultProperties(File prop, String path, String separator) throws java.io.IOException{
+        properties = new Properties();
+
+        properties.setProperty("Directory",path);
+
+        java.io.FileOutputStream fOS = new java.io.FileOutputStream(prop);
+        properties.storeToXML(fOS,"Properties");
+    }
+    /**
+     * Method save properties
+     *
+     *
+     */
+    public void saveProperties() throws java.io.IOException{
+
+        java.io.FileOutputStream fOS = new java.io.FileOutputStream(propertiesFile);
+        properties.storeToXML(fOS,"Properties");
+        
     }
     /** "Обнуление" всех параметров оставшихся от предыдущего файла
      *
@@ -447,6 +548,8 @@ public class Main extends javax.swing.JFrame {
             }
         });
     }
+
+
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
