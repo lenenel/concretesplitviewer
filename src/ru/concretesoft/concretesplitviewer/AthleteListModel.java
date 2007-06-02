@@ -311,15 +311,10 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
             lead = index1;
             for(int i=0;i<selected.length;i++){
               if((i>=index0)&&(i<=index1)){
-                    selected[i] = true; 
-                    athletes.get(i).setSelected(true);
-              }
-              else{
-                  selected[i] = false;
-                  athletes.get(i).setSelected(false);
-              }
+                    selected[i] = !selected[i];//invert status
+                    athletes.get(i).setSelected(selected[i]);//set new status
+              } else;
                    
-               
             }
             Iterator<ListSelectionListener> it = listenerSelection.iterator();
             while(it.hasNext()){
@@ -328,30 +323,12 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
         }
 
         public void addSelectionInterval(int index0, int index1) {
-            anchor = index0;
-            lead = index1;
-            for(int i=index0;i<=index1;i++){
-                selected[i] = true; 
-                athletes.get(i).setSelected(true);
-            }
-            Iterator<ListSelectionListener> it = listenerSelection.iterator();
-            while(it.hasNext()){
-                it.next().valueChanged(new ListSelectionEvent(this,0,selected.length-1,false));
-            }
+            setSelectionInterval(index0, index1);
             
         }
 
         public void removeSelectionInterval(int index0, int index1) {
-             anchor = index0;
-             lead = index1;
-            for(int i=index0;i<=index1;i++){
-                selected[i] = false; 
-                athletes.get(i).setSelected(false);
-            }
-            Iterator<ListSelectionListener> it = listenerSelection.iterator();
-            while(it.hasNext()){
-                it.next().valueChanged(new ListSelectionEvent(this,0,selected.length-1,false));
-            }
+            setSelectionInterval(index0, index1);
         }
 
         public int getMinSelectionIndex() {
