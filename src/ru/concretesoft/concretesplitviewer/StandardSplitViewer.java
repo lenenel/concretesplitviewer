@@ -48,22 +48,10 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
         initComponents();
         addMouseMotionListener(MouseMoveQueue.getInstance());
         addMouseListener(this);
-//        tipWindow = new TipWindow();
-//        tipWindow.setVisible(true);
+
         
     }
-//    public boolean setColorSheme(Color[] c){
-//        if((c==null)||(c.length!=aModel.getAthletes().size())){
-//            int size = aModel.getAthletes().size();
-//            colorSheme = new Color[size];
-//            for(int i=0;i<size;i++){
-//                colorSheme[i]=convertToColor( i*( 1024 / size ));
-//            }
-//            return false;
-//        }
-//        colorSheme = c;
-//        return true;
-//    }
+
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -91,7 +79,7 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
         Distance dist = aModel.getDistance();
         int size = athletes.length;
         
-//        if(colorSheme==null) setColorSheme(null);
+
         
         if((spl!=null)&&(size>0)){
             
@@ -126,8 +114,7 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
             }
             g2.setPaint(Color.RED);
             int yMax = athletes[size-1].getTotalTime().getTimeInSeconds();
-//            int nT = 10;
-//            double stepTime = yMax / (double)nT;
+
             
             int hTime = fM.getHeight();
             double stepTime = 30.0;
@@ -137,7 +124,7 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
                 nT = (int) (yMax/stepTime);
             }
             Time tmp = new Time(0,2);
-//            tmp.setTimeInSeconds(Math.abs(yMin));
+
             String s = tmp.getTimeString();
             g2.setPaint(Color.BLACK);
             g2.drawString(s,otst-fM.stringWidth(s),height+1);
@@ -177,7 +164,7 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
                 g2.setPaint(athletes[j].getColor());
                 
                 Athlete tmpA = athletes[j].getAthlete();
-    //            g2.setPaint(new Color());
+
                 int x = xCoord[0];
                 int y = height - (int)((tmpA.getLap(spl[0]).getTimeInSeconds() / (double)yMax)*height);
                 int totTime = tmpA.getLap(spl[0]).getTimeInSeconds();

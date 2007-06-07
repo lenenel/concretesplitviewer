@@ -178,22 +178,29 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
             else;
             return ok ? (int[])viewLaps.clone() : null ;
         }
-        /** Removes splits for control point
+        /** Removes splits for control point. If only one lap in model, then do nothing
          *
          *  @param  n  determin control point's number for lap that should be removed
          */
         public void removeSplitsForN(int n){
             int i = 0;
+            
+            if(viewLaps.length<=1)//If only one lap in view than exit
+                return;
+            else;
+            
+            //Find position of lap that should be removed
+            //Найти положение перегона, который нужно удалить. Ну и конструкция =) 
             try{
                 while(viewLaps[i] != n)i++;
             } catch(java.lang.ArrayIndexOutOfBoundsException e){ return ;}
+            
+            
             int[] splits = new int[viewLaps.length-1];
             for(int j=0;j<i;j++) splits[j] = viewLaps[j];
             for(int j=i;j<splits.length;j++) splits[j]=viewLaps[j+1];
             setViewSplits(splits);
-//            Iterator<ListDataListener> it = list.iterator();
-//            while(it.hasNext())
-//                it.next().contentsChanged(new ListDataEvent(this,ListDataEvent.CONTENTS_CHANGED,0,athletes.size()));
+
         }
         /** Added viewing lap for control point
          *
