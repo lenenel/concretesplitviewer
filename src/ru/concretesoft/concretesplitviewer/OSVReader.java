@@ -101,7 +101,7 @@ public class OSVReader extends SplitReader{
         while(it.hasNext()){
             Distance d = it.next().getDistance();
             if(d.getLengthOfDist(1) < 0){
-                d.setLengthsOfDists(Tools.calculatLengthsOfLap(d.getGroups()));
+                d.setLengthsOfDists(Tools.calculatLengthsOfLaps(d.getGroups()));
             }
         }
     }

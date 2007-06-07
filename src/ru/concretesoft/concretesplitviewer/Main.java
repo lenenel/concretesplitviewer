@@ -38,9 +38,8 @@ public class Main extends javax.swing.JFrame {
     private JFileChooser jFC; // ќбъект дл€ выбора файлов
     private LapsTopPanel lTP;
     private GroupListModel groupListModel; // модель списка дл€ выбора групп
-    private AthleteListModel lM2; // модель списка дл€ выбора спортсменов
-    private GroupSelectionModel gSM; // модель выбора дл€ групп
-//    private int[] viewSplits; // массив содержащий номера пунктов участвующих в просмотре
+    private AthleteListModel athletesModel; // модель списка дл€ выбора спортсменов
+    private GroupSelectionModel groupSelectionModel; // модель выбора дл€ групп
     private SplitViewer[] viewers = new SplitViewer[]{
         new StandardSplitViewer(),
         new SecondBestSplitViewer()
@@ -50,11 +49,10 @@ public class Main extends javax.swing.JFrame {
     
     private static final String PROPERTIES_FILE_NAME = "properies.xml";
     private static final String DIRECTORY_NAME = ".ConcreteSplitViewer";
-//    private TipThreadSplitViewer tipThread;
-//    private TipWindow tipWindow;
+
     /** Creates new form Main */
     public Main() {
-//        tipWindow = new TipWindow();
+
         loadProperties();
         initComponents();
         
@@ -64,30 +62,29 @@ public class Main extends javax.swing.JFrame {
         jFC.setCurrentDirectory(new File(properties.getProperty("Directory")));
         
         groupListModel = new GroupListModel();
-        lM2 = new AthleteListModel(getGraphics().getFontMetrics());
-        lM2.setGroupsList(jList1);
-        lTP = new LapsTopPanel(lM2);
+        athletesModel = new AthleteListModel(getGraphics().getFontMetrics());
+        athletesModel.setGroupsList(jList1);
+        lTP = new LapsTopPanel(athletesModel);
         lTP.setPreferredSize(new Dimension(100,20));
         lTP.setAlignmentX(1.0f);
         // ƒобавление возможных вариантов просмотра в выпадающий список
         for(int i=0;i<viewers.length;i++){
             jComboBox1.addItem(viewers[i]);
-            viewers[i].setModel(lM2);
+            viewers[i].setModel(athletesModel);
         }
         
 
         jPanel1.add((javax.swing.JPanel)jComboBox1.getSelectedItem(),java.awt.BorderLayout.CENTER);
         jPanel1.add(lTP,java.awt.BorderLayout.NORTH);
-//        tipThread = new TipThreadSplitViewer(tipWindow, (SplitViewer)jComboBox1.getSelectedItem());
-//        tipThread.start();
+
         // «адание моделей дл€ списков
         jList1.setModel(groupListModel);
-        gSM = new GroupSelectionModel(groupListModel);
-        gSM.addListSelectionListener(lM2);
-        groupListModel.addListDataListener(gSM);
-        jList1.setSelectionModel(gSM);
-        jList2.setModel(lM2);
-        jList2.setSelectionModel(lM2);
+        groupSelectionModel = new GroupSelectionModel(groupListModel);
+        groupSelectionModel.addListSelectionListener(athletesModel);
+        groupListModel.addListDataListener(groupSelectionModel);
+        jList1.setSelectionModel(groupSelectionModel);
+        jList2.setModel(athletesModel);
+        jList2.setSelectionModel(athletesModel);
         
         //load last file from previous session
         String typeOfLastFile = properties.getProperty("Type_of_last_file");
@@ -129,6 +126,7 @@ public class Main extends javax.swing.JFrame {
         jList1 = new javax.swing.JList();
         jScrollPane2 = new javax.swing.JScrollPane();
         jList2 = new javax.swing.JList();
+        jButton3 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jToolBar1 = new javax.swing.JToolBar();
@@ -184,6 +182,15 @@ public class Main extends javax.swing.JFrame {
         jScrollPane2.setViewportView(jList2);
 
         jPanel2.add(jScrollPane2);
+
+        jButton3.setText(java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("set_different_colors"));
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        jPanel2.add(jButton3);
 
         jSplitPane1.setRightComponent(jPanel2);
 
@@ -296,6 +303,16 @@ public class Main extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        AthleteIcon[] icons = (AthleteIcon[])athletesModel.getSelectedValues();
+        Vector<AthleteIcon> athletes = new Vector<AthleteIcon>();
+        for(int i = 0 ; i < icons.length ; i++){
+            athletes.add(icons[i]);
+        }
+        athletesModel.setDifferntColorsForAthletes(athletes);
+        repaint();
+    }//GEN-LAST:event_jButton3ActionPerformed
+
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
         JDialog aboutDialog = new AboutDialog(this);
         
@@ -351,7 +368,7 @@ public class Main extends javax.swing.JFrame {
         SplitViewer sV = (SplitViewer)jComboBox1.getSelectedItem();
         
         if((evt.getButton()==evt.BUTTON2)||(evt.getMouseModifiersText(evt.getModifiers()).equals("Shift+Button1"))){
-            lM2.restoreAllSplits();
+            athletesModel.restoreAllSplits();
         }
         else if(evt.getButton()==evt.BUTTON1){
             
@@ -532,8 +549,8 @@ public class Main extends javax.swing.JFrame {
      *
      */
     private void clear(){
-        lM2.setAthletes(null);
-        lM2.setViewSplits(null);
+        athletesModel.setAthletes(null);
+        athletesModel.setViewSplits(null);
         jList1.clearSelection();
         jList1.ensureIndexIsVisible(0);
     }
@@ -554,6 +571,7 @@ public class Main extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JList jList1;
     private javax.swing.JList jList2;

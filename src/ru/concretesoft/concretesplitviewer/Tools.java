@@ -252,7 +252,7 @@ public class Tools {
      * 
      * @return  array of length of each lap in meters or <code>null</code> if <code>grV</code> presents groups for different distances
      */
-    public static int[] calculatLengthsOfLap(Vector<Group> grV){
+    public static int[] calculatLengthsOfLaps(Vector<Group> grV){
         Time[] secBest = getAnyBest(grV,2);
         if(secBest!=null){
             Distance d = grV.firstElement().getDistance();

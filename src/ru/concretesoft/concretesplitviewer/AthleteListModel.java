@@ -31,17 +31,17 @@ import javax.swing.event.ListSelectionListener;
  * Модель содержит объекты типа AthleteIcon.
  */
 public class AthleteListModel implements ListModel,ListSelectionModel,ListSelectionListener{
-        private Vector<ListDataListener> list;
+        private Vector<ListDataListener> listeners;
         private Vector<AthleteIcon> athletes;
-        private Vector<ListSelectionListener> listenerSelection;
-        private Distance d;
+        private Vector<ListSelectionListener> selectionListeners;
+        private Distance distance;
         private int[] viewLaps;
         private JList groupsList;
         private int anchor;
         private int lead;
         private boolean[] selected;
         private FontMetrics fontMetrics;
-        private Color[] colors = new Color[]{
+        private static final Color[] colors = new Color[]{
             Color.RED,
             Color.BLUE,
             Color.GREEN,
@@ -53,9 +53,9 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
         
         public AthleteListModel(FontMetrics fM){
             fontMetrics = fM;
-            list = new Vector<ListDataListener>();
-            listenerSelection = new Vector<ListSelectionListener>();
-            d=null;
+            listeners = new Vector<ListDataListener>();
+            selectionListeners = new Vector<ListSelectionListener>();
+            distance=null;
             selected = new boolean[0];
             
         }
@@ -75,35 +75,23 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
                 athletes = new Vector<AthleteIcon>();
                 selected = new boolean[as.size()];
                 int i=0;
-                d = as.get(0).getGroup().getDistance();
+                distance = as.get(0).getGroup().getDistance();
                 Iterator<Athlete> itA = as.iterator();
                 while(itA.hasNext()){
                     athletes.add(new AthleteIcon(itA.next(),fontMetrics));
-                    Color col;
-                    if(i<colors.length){
-                        col = colors[i];
-                    }
-                    else{
-                        Color tmp = colors[i % colors.length];
-                        int red = tmp.getRed()-(int)(tmp.getRed()/3*Math.random());
-                        int green = tmp.getGreen()-(int)(tmp.getGreen()/3*Math.random());
-                        int blue = tmp.getBlue()-(int)(tmp.getBlue()/3*Math.random());
-                        col = new Color(red,green,blue);
-                    }
-                    athletes.lastElement().setColor(col);
-                    i++;
                 }
+                setDifferntColorsForAthletes(athletes);
                 allLaps();
                 
             }
             else{
                 athletes = new Vector<AthleteIcon>();
-                d = null;
+                distance = null;
                 selected = null;
                 viewLaps=null;
             }
             
-            Iterator<ListDataListener> it = list.iterator();
+            Iterator<ListDataListener> it = listeners.iterator();
             while(it.hasNext()){
                 it.next().contentsChanged(new ListDataEvent(this,ListDataEvent.CONTENTS_CHANGED,0,athletes.size()));
             }
@@ -114,14 +102,16 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
         }
 
         public void addListDataListener(ListDataListener l) {
-            list.add(l);
+            listeners.add(l);
         }
 
         public void removeListDataListener(ListDataListener l) {
-            list.remove(l);
+            listeners.remove(l);
         }
         /**
          * Метод возвращает всех спортсменов которые содержаться в моделе.
+         *
+         * @return  all athletes from this models
          */
         public Vector<Athlete> getAthletes(){
             if(athletes==null) return null;
@@ -135,18 +125,14 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
         
         }
         private void allLaps(){
-            if(d==null){
+            if(distance==null){
                 viewLaps = null;
             } else{
-                viewLaps = new int[d.getNumberOfCP()];
-                for(int i=0;i<d.getNumberOfCP();i++){
+                viewLaps = new int[distance.getNumberOfCP()];
+                for(int i=0;i<distance.getNumberOfCP();i++){
                     viewLaps[i] = i+1;
                 }
             }
-//            setViewSplits(viewLaps);
-//            Iterator<ListDataListener> it = list.iterator();
-//            while(it.hasNext())
-//                it.next().contentsChanged(new ListDataEvent(this,ListDataEvent.CONTENTS_CHANGED,0,athletes.size()));
         }
          /** 
           * Restores all splits from distance
@@ -154,14 +140,10 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
           * @return  <code>true</code> if restoring succesfull else <code>false</code>. Not succesfull restoring if distance not set.
           */
         public boolean restoreAllSplits(){
-            if(d==null)
+            if(distance==null)
                 return false;
             else{
                 setViewSplits(null);
-                
-//                Iterator<ListDataListener> it = list.iterator();
-//                while(it.hasNext())
-//                    it.next().contentsChanged(new ListDataEvent(this,ListDataEvent.CONTENTS_CHANGED,0,athletes.size()));
                 return true;
             }
         }
@@ -207,7 +189,7 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
          *  @param  n  contol point's number
          */
         public void addSplitsForN(int n){
-            if(n>d.getNumberOfCP()) return;//If CP's number greter than number of control points
+            if(n>distance.getNumberOfCP()) return;//If CP's number greter than number of control points
             for(int i=0;i<viewLaps.length;i++){
                 if(n<viewLaps[i]){
                     int[] splOld = viewLaps;
@@ -230,8 +212,10 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
             setViewSplits(viewLaps);
         }
          /**
-         * Метод устанавливает выбранные перегоны, и вызывает изменение отображаемой информации
-         */
+          * Метод устанавливает выбранные перегоны, и вызывает изменение отображаемой информации
+          *
+          * @param  spl  splits that should be viewed
+          */
         public void setViewSplits(int[] spl){
             if(spl == null){
                 allLaps();
@@ -282,23 +266,31 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
                         athletes.get(j).setPosition(position);
                     }
                 }
-                Iterator<ListDataListener> it2 = list.iterator();
+                Iterator<ListDataListener> it2 = listeners.iterator();
                 while(it2.hasNext()){
                     it2.next().contentsChanged(new ListDataEvent(this,ListDataEvent.CONTENTS_CHANGED,0,athletes.size()));
                 }
             }
         }
-        public Distance getDistance(){
-            return d;
-        }
         /**
+         *
+         * @return  distance that using in that model
+         */
+        public Distance getDistance(){
+            return distance;
+        }
+        /** Method returns all athletes from this model
          * Метод возвращает весь нобор данных модели
+         *
+         * @return  all icons of athletes from this model
          */
         public Vector<AthleteIcon> getValues(){
             return athletes;
         }
         /**
          * Метод возвращает выбранные данные
+         *
+         * @return  all selected icons of athletes
          */
         public Object[] getSelectedValues(){
              Vector<AthleteIcon> value = new Vector<AthleteIcon>();
@@ -323,7 +315,7 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
               } else;
                    
             }
-            Iterator<ListSelectionListener> it = listenerSelection.iterator();
+            Iterator<ListSelectionListener> it = selectionListeners.iterator();
             while(it.hasNext()){
                 it.next().valueChanged(new ListSelectionEvent(this,0,selected.length-1,false));
             }
@@ -380,7 +372,7 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
                     selected[i]=false;
                     athletes.get(i).setSelected(false);
                 }
-                Iterator<ListSelectionListener> it = listenerSelection.iterator();
+                Iterator<ListSelectionListener> it = selectionListeners.iterator();
                 while(it.hasNext()){
                     it.next().valueChanged(new ListSelectionEvent(this,0,selected.length-1,false));
                 }
@@ -415,11 +407,11 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
         }
 
         public void addListSelectionListener(ListSelectionListener x) {
-            listenerSelection.add(x);
+            selectionListeners.add(x);
         }
 
         public void removeListSelectionListener(ListSelectionListener x) {
-            listenerSelection.remove(x);
+            selectionListeners.remove(x);
         }
 
     public void valueChanged(ListSelectionEvent e) {
@@ -515,6 +507,31 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
              } else{
                  return min+d;
              }
+         }
+     }
+     /** Method sets for icons of athletes differnt colors
+      *
+      *
+      * @param  athletes  athletes whose icons should get new color
+      * 
+      */
+     public static void setDifferntColorsForAthletes(Vector<AthleteIcon> athletes){
+         int i=0;
+         Iterator<AthleteIcon> iterator = athletes.iterator();
+         while(iterator.hasNext()){
+            Color col;
+            if(i<colors.length){
+                col = colors[i];
+            }
+            else{
+                Color tmp = colors[i % colors.length];
+                int red = tmp.getRed()-(int)(tmp.getRed()/3*Math.random());
+                int green = tmp.getGreen()-(int)(tmp.getGreen()/3*Math.random());
+                int blue = tmp.getBlue()-(int)(tmp.getBlue()/3*Math.random());
+                col = new Color(red,green,blue);
+            }
+            iterator.next().setColor(col);
+            i++;
          }
      }
 }

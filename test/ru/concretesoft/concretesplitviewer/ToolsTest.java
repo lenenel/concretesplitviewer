@@ -2,7 +2,7 @@
  * ToolsTest.java
  * JUnit based test
  *
- * Created on 15 Январь 2007 г., 20:34
+ * Created on 15 пїЅпїЅпїЅпїЅпїЅпїЅ 2007 пїЅ., 20:34
  */
 
 package ru.concretesoft.concretesplitviewer;
@@ -38,7 +38,7 @@ public class ToolsTest extends TestCase {
             Vector<Group> gr = new Vector<Group>();
             gr.add(g);
             if(d.getLengthOfDist(1)<0){
-                int [] lens = Tools.calculatLengthsOfLap(gr);
+                int [] lens = Tools.calculatLengthsOfLaps(gr);
                 for(int i=0; i< lens.length; i++)
                     d.setLengthOfDist(i+1,lens[i]);
             }
@@ -64,7 +64,7 @@ public class ToolsTest extends TestCase {
             Vector<Group> gr = new Vector<Group>();
             gr.add(g);
             if(d.getLengthOfDist(1)<0){
-                int [] lens = Tools.calculatLengthsOfLap(gr);
+                int [] lens = Tools.calculatLengthsOfLaps(gr);
                 for(int i=0; i< lens.length; i++)
                     d.setLengthOfDist(i+1,lens[i]);
             }
@@ -92,7 +92,7 @@ public class ToolsTest extends TestCase {
             Vector<Group> gr = new Vector<Group>();
             gr.add(g);
             if(d.getLengthOfDist(1)<0){
-                int [] lens = Tools.calculatLengthsOfLap(gr);
+                int [] lens = Tools.calculatLengthsOfLaps(gr);
                 for(int i=0; i< lens.length; i++)
                     d.setLengthOfDist(i+1,lens[i]);
             }
@@ -120,7 +120,7 @@ public class ToolsTest extends TestCase {
             Vector<Group> gr = new Vector<Group>();
             gr.add(g);
             if(d.getLengthOfDist(1)<0){
-                int [] lens = Tools.calculatLengthsOfLap(gr);
+                int [] lens = Tools.calculatLengthsOfLaps(gr);
                 for(int i=0; i< lens.length; i++)
                     d.setLengthOfDist(i+1,lens[i]);
             }
