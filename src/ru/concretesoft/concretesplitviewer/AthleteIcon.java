@@ -12,7 +12,9 @@ package ru.concretesoft.concretesplitviewer;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FontMetrics;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import javax.swing.Icon;
 
 
@@ -35,7 +37,7 @@ public class AthleteIcon implements Icon{
     private Time totTime,diffTime;
     /**
      * Creates a new instance of AthleteIcon
-     * 
+     *
      * a - Спортсмен
      * fM - объект типа java.awt.FontMetrics для определения размеров
      */
@@ -48,93 +50,92 @@ public class AthleteIcon implements Icon{
      * Метод возвращает спортсмена.
      *
      */
-   public Athlete getAthlete(){
-       return athlete;
-   }
-   /**
+    public Athlete getAthlete(){
+        return athlete;
+    }
+    /**
      * Метод устанавливает цвет спорстмена.
      *
      */
-   public void setColor(Color c){
-       color = c;
-       
-   }
-   /**
+    public void setColor(Color c){
+        color = c;
+        
+    }
+    /**
      * Метод возвращает цвет спортсмена.
      *
      */
-   public Color getColor(){
-       return color;
-   }
-   /**
+    public Color getColor(){
+        return color;
+    }
+    /**
      * Метод делает спортсмена выбраным или снимает выбор.
      *
      */
-   public void setSelected(boolean selected){
-       this.selected = selected;
-       
-       
-   }
-   /**
+    public void setSelected(boolean selected){
+        this.selected = selected;
+        
+        
+    }
+    /**
      * Метод устанавливает выбранные перегоны.
      *
      */
-   public void setSplits(int[] spl){
+    public void setSplits(int[] spl){
         viewSplits = spl;
         
         totTime = null;
-
+        
         diffTime = null;
         
-   }
-   /**
+    }
+    /**
      * Метод устанавливает место, которое занимает спортсмен.
      *
      */
-   public void setPosition(int n){
-       position = n;
-   }
-   /**
+    public void setPosition(int n){
+        position = n;
+    }
+    /**
      * Метод возвращает состояние выбора спортсмена.
      *
      */
-   public boolean isSelected(){
-       return selected;
-   }
-   
-   /** Method calculating "mean" speed this athlete
-    *
-    * @return  "mean" speed
-    *
-    * @see  #Tools.getComplexMeanSpeed(Distance, Athlete, int[], double)
-    */
-   public Time getMeanSpeed(){
-       return Tools.getComplexMeanSpeed(athlete.getGroup().getDistance(),athlete, viewSplits, 0.1);
-   }
-
-   /**
+    public boolean isSelected(){
+        return selected;
+    }
+    
+    /** Method calculating "mean" speed this athlete
+     *
+     * @return  "mean" speed
+     *
+     * @see  #Tools.getComplexMeanSpeed(Distance, Athlete, int[], double)
+     */
+    public Time getMeanSpeed(){
+        return Tools.getComplexMeanSpeed(athlete.getGroup().getDistance(),athlete, viewSplits, 0.1);
+    }
+    
+    /**
      * Метод возвращает полное время по всем выбранным перегонам
      *
      */
-   public Time getTotalTime(){
-       
-       Time totTime = new Time(0,3);
-       if(viewSplits != null)
-           for(int i=0;i<viewSplits.length;i++){
-                totTime.addTime(athlete.getLap(viewSplits[i]));
-            }
-       else 
-           totTime = athlete.getTotalTime();
-       return totTime;
-   }
-   
-   
-   // Реализация методов интерфейса Icon
-   
+    public Time getTotalTime(){
+        
+        Time totTime = new Time(0,3);
+        if(viewSplits != null)
+            for(int i=0;i<viewSplits.length;i++){
+            totTime.addTime(athlete.getLap(viewSplits[i]));
+            } else
+                totTime = athlete.getTotalTime();
+        return totTime;
+    }
+    
+    
+    // Реализация методов интерфейса Icon
+    
     public void paintIcon(Component c, Graphics g, int x, int y) {
         String text = athlete.getFamilyName()+" "+athlete.getName();
         if(totTime==null)
-                totTime = getTotalTime();
+            totTime = getTotalTime();
 //        Time totTime = getTotalTime();
         String time = totTime.getTimeString();
         
@@ -154,25 +155,33 @@ public class AthleteIcon implements Icon{
         int sizeMean = g.getFontMetrics().stringWidth("+000:00");
         Color curColor;
         Color foreground;
-        if(selected){
-           foreground = Color.WHITE;
-           curColor = color;
-        }
-        else {
-           foreground = Color.BLACK;
-           curColor = Color.WHITE;
-        }
+        // This is WHITE background for whole rectangle in all cases
+        curColor = Color.WHITE;
         g.setColor(curColor);
         g.fillRect(x,y,getIconWidth(),getIconHeight());
-         
+        // Then border for selected
+        if(selected){
+            // Outer "color" rectangle
+            curColor = color;
+            g.setColor(curColor);
+            g.fillRoundRect(x,y,getIconWidth()+4,getIconHeight(),6,6);
+            // Fill inner rectangle with gradient color-to-white from bottom to top
+            Graphics2D g2 = (Graphics2D)g;
+            GradientPaint colorToWhite = new GradientPaint(x+4,y+getIconHeight(),color,x+4,y+4,Color.white);
+            g2.setPaint(colorToWhite);
+            g2.fillRect(x+2,y+2,getIconWidth(),getIconHeight()-4);
+        }
+        // Then text
+        foreground = Color.BLACK;
         g.setColor(foreground);
-        g.drawString(position+"",x,y+g.getFontMetrics().getHeight()-3);
-        g.drawString(time,x+sizeMest+otst,y+g.getFontMetrics().getHeight()-3);
-        g.drawString(diff,x+sizeMest+sizeTime+2*otst,y+g.getFontMetrics().getHeight()-3);
-        g.drawString(text,x+sizeTime+3*otst+sizeMest+sizeMean,y+g.getFontMetrics().getHeight()-3);
+        int yPosition = y + g.getFontMetrics().getHeight() - 0;
+        g.drawString(position+"", 2 + x, yPosition);
+        g.drawString(time, 2 + x+sizeMest+otst, yPosition);
+        g.drawString(diff, 2 + x+sizeMest+sizeTime+2*otst, yPosition);
+        g.drawString(text, 2 + x+sizeTime+3*otst+sizeMest+sizeMean, yPosition);
         this.g = g;
     }
-
+    
     public int getIconWidth() {
         String text = athlete.getFamilyName()+" "+athlete.getName();
         if(g==null){
@@ -182,7 +191,7 @@ public class AthleteIcon implements Icon{
         return g.getFontMetrics().stringWidth(text)+g.getFontMetrics().stringWidth("000 0:00:00 +000:00")+otst*2;
         
     }
-
+    
     public int getIconHeight() {
         if(g==null){
             return fM.getHeight()+5;
