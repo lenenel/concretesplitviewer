@@ -88,7 +88,13 @@ public class Main extends javax.swing.JFrame {
         
         //load last file from previous session
         String typeOfLastFile = properties.getProperty("Type_of_last_file");
-        File lastFile = new File(properties.getProperty("The_Last_File"));
+        File lastFile;
+        try {
+            lastFile = new File(properties.getProperty("The_Last_File"));
+        } catch (java.lang.NullPointerException e) {
+            System.out.println("There isn't Last [used] File Name in property. Assume null file name and user should open file manually.");
+            lastFile = null;
+        }
         if((typeOfLastFile!=null)&&(lastFile!=null)){
             try{
                 
