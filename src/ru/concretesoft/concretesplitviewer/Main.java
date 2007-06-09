@@ -157,14 +157,14 @@ public class Main extends javax.swing.JFrame {
         jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.Y_AXIS));
 
         jScrollPane1.setPreferredSize(new java.awt.Dimension(200, 200));
-        jList1.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                jList1ValueChanged(evt);
-            }
-        });
         jList1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jList1MouseClicked(evt);
+            }
+        });
+        jList1.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                jList1ValueChanged(evt);
             }
         });
 
@@ -174,14 +174,14 @@ public class Main extends javax.swing.JFrame {
 
         jScrollPane2.setPreferredSize(new java.awt.Dimension(200, 200));
         jList2.setSelectionBackground(new java.awt.Color(255, 255, 255));
-        jList2.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                jList2ValueChanged(evt);
-            }
-        });
         jList2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jList2MouseClicked(evt);
+            }
+        });
+        jList2.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                jList2ValueChanged(evt);
             }
         });
 
@@ -190,6 +190,7 @@ public class Main extends javax.swing.JFrame {
         jPanel2.add(jScrollPane2);
 
         jButton3.setText(java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("set_different_colors"));
+        jButton3.setAlignmentX(0.5F);
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
