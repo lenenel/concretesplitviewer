@@ -174,10 +174,15 @@ public class AthleteIcon implements Icon{
         // Then text
         foreground = Color.BLACK;
         g.setColor(foreground);
+        // Use one base line for all elements
         int yPosition = y + g.getFontMetrics().getHeight() - 0;
-        g.drawString(position+"", 2 + x, yPosition);
-        g.drawString(time, 2 + x+sizeMest+otst, yPosition);
-        g.drawString(diff, 2 + x+sizeMest+sizeTime+2*otst, yPosition);
+        // Right horizontal alligment for "position", "time" and "diff" with deltaX
+        int deltaX = sizeMest - g.getFontMetrics().stringWidth(position+"");
+        g.drawString(position+"", 2 + x + deltaX , yPosition);
+        deltaX = sizeTime - g.getFontMetrics().stringWidth(time);
+        g.drawString(time, 2 + x + sizeMest + otst + deltaX, yPosition);
+        deltaX = sizeMean - g.getFontMetrics().stringWidth(diff);
+        g.drawString(diff, 2 + x + sizeMest + sizeTime + 2*otst + deltaX, yPosition);
         g.drawString(text, 2 + x+sizeTime+3*otst+sizeMest+sizeMean, yPosition);
         this.g = g;
     }
