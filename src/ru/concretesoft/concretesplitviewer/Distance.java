@@ -1,7 +1,7 @@
 /*
  * Distance.java
  *
- * Created on 27 Июнь 2006 г., 19:28
+ * Created on 27 РСЋРЅСЊ 2006 Рі., 19:28
  *
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.
@@ -13,9 +13,9 @@ import java.util.Vector;
 
 /**
  *
- * @author Мытинский Леонид
+ * @author РњС‹С‚РёРЅСЃРєРёР№ Р›РµРѕРЅРёРґ
  *
- * Класс описывающий дистанцию
+ * РљР»Р°СЃСЃ РѕРїРёСЃС‹РІР°СЋС‰РёР№ РґРёСЃС‚Р°РЅС†РёСЋ
  */
 public class Distance {
     private String name;
@@ -25,10 +25,10 @@ public class Distance {
     private Vector<Group> groups;
     /** Creates a new instance of Distance 
      *
-     * name - название дистанции (обычно название группы)
-     * length - длина дистанции 
-     * numberOfCP - количество пунктов
-     * lengths - массив содержащий длины перегонов
+     * name - РЅР°Р·РІР°РЅРёРµ РґРёСЃС‚Р°РЅС†РёРё (РѕР±С‹С‡РЅРѕ РЅР°Р·РІР°РЅРёРµ РіСЂСѓРїРїС‹)
+     * length - РґР»РёРЅР° РґРёСЃС‚Р°РЅС†РёРё 
+     * numberOfCP - РєРѕР»РёС‡РµСЃС‚РІРѕ РїСѓРЅРєС‚РѕРІ
+     * lengths - РјР°СЃСЃРёРІ СЃРѕРґРµСЂР¶Р°С‰РёР№ РґР»РёРЅС‹ РїРµСЂРµРіРѕРЅРѕРІ
      *
      */
     public Distance(String name, int length, int numberOfCP, int[] lengths) {
@@ -42,31 +42,31 @@ public class Distance {
         this(name, length, numberOfCP, null);
     }
     /*
-     * Метод возвращает название дистанции.
+     * РњРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ РЅР°Р·РІР°РЅРёРµ РґРёСЃС‚Р°РЅС†РёРё.
      */
     public String getName(){
         return name;
     }
      /*
-     * Метод устанавливает название дистанции.
+     * РњРµС‚РѕРґ СѓСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РЅР°Р·РІР°РЅРёРµ РґРёСЃС‚Р°РЅС†РёРё.
      */
     public void setName(String n){
         name = n;
     }
      /*
-     * Метод возвращает длину дистанции.
+     * РњРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ РґР»РёРЅСѓ РґРёСЃС‚Р°РЅС†РёРё.
      */
     public int getLength(){
         return length;
     }
      /*
-     * Метод возвращает количество пунктов
+     * РњРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ РїСѓРЅРєС‚РѕРІ
      */
     public int getNumberOfCP(){
         return numberOfCP;
     }
      /*
-      * Метод возвращает длину перегона на пункт n
+      * РњРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ РґР»РёРЅСѓ РїРµСЂРµРіРѕРЅР° РЅР° РїСѓРЅРєС‚ n
       * Method return lenght of laps with number <code>n</code>. n=1 means distance from start to first control point
       * 
       * @return  lenght of distance from <code>n-1</code>th to <code>n</code>th control point. If distance has no lenghts of laps returned -1.
@@ -79,7 +79,7 @@ public class Distance {
         return lengths[n-1];
     }
      /*
-      * Метод устанавливает длину перегона на пункт n равной l.
+      * РњРµС‚РѕРґ СѓСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РґР»РёРЅСѓ РїРµСЂРµРіРѕРЅР° РЅР° РїСѓРЅРєС‚ n СЂР°РІРЅРѕР№ l.
       */
     public void setLengthOfDist(int n, int l){
         if(lengths==null) lengths = new int[getNumberOfCP()+1];
@@ -106,7 +106,7 @@ public class Distance {
         groups.remove(g);
     }
      /*
-     * Метод добовляет группу к дистанции.
+     * РњРµС‚РѕРґ РґРѕР±РѕРІР»СЏРµС‚ РіСЂСѓРїРїСѓ Рє РґРёСЃС‚Р°РЅС†РёРё.
      */
     public void addGroup(Group g){
         if(!groups.contains(g))
@@ -114,19 +114,19 @@ public class Distance {
         else;
     }
      /*
-     * Метод устанавливает набор групп для этой дистанции
+     * РњРµС‚РѕРґ СѓСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РЅР°Р±РѕСЂ РіСЂСѓРїРї РґР»СЏ СЌС‚РѕР№ РґРёСЃС‚Р°РЅС†РёРё
      */
     public void setGroups(Vector<Group> grs){
         groups = (Vector<Group>)grs.clone();
     }
      /*
-     * Метод возвращает все группы принадлижащие этой дистанции.
+     * РњРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ РІСЃРµ РіСЂСѓРїРїС‹ РїСЂРёРЅР°РґР»РёР¶Р°С‰РёРµ СЌС‚РѕР№ РґРёСЃС‚Р°РЅС†РёРё.
      */
     public Vector<Group> getGroups(){
         return (Vector<Group>) groups.clone();
     }
      /*
-     * Метод сравнивает эту дистанцию с дистанцией d
+     * РњРµС‚РѕРґ СЃСЂР°РІРЅРёРІР°РµС‚ СЌС‚Сѓ РґРёСЃС‚Р°РЅС†РёСЋ СЃ РґРёСЃС‚Р°РЅС†РёРµР№ d
      */
     public boolean equals(Distance d){
         return (getLength() == d.getLength()) && (getNumberOfCP() == d.getNumberOfCP());

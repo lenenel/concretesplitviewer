@@ -1,7 +1,7 @@
 /*
  * AthleteIcon.java
  *
- * Created on 28 Июнь 2006 г., 22:50
+ * Created on 28 РСЋРЅСЊ 2006 Рі., 22:50
  *
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.
@@ -21,9 +21,9 @@ import javax.swing.Icon;
 
 /**
  *
- * @author Мытинский Леонид
+ * @author РњС‹С‚РёРЅСЃРєРёР№ Р›РµРѕРЅРёРґ
  *
- * Вспомогательный класс для отображения спортсменов в списке спортсменов
+ * Р’СЃРїРѕРјРѕРіР°С‚РµР»СЊРЅС‹Р№ РєР»Р°СЃСЃ РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ СЃРїРѕСЂС‚СЃРјРµРЅРѕРІ РІ СЃРїРёСЃРєРµ СЃРїРѕСЂС‚СЃРјРµРЅРѕРІ
  */
 public class AthleteIcon implements Icon{
     private Athlete athlete;
@@ -38,8 +38,8 @@ public class AthleteIcon implements Icon{
     /**
      * Creates a new instance of AthleteIcon
      *
-     * a - Спортсмен
-     * fM - объект типа java.awt.FontMetrics для определения размеров
+     * a - РЎРїРѕСЂС‚СЃРјРµРЅ
+     * fM - РѕР±СЉРµРєС‚ С‚РёРїР° java.awt.FontMetrics РґР»СЏ РѕРїСЂРµРґРµР»РµРЅРёСЏ СЂР°Р·РјРµСЂРѕРІ
      */
     public AthleteIcon(Athlete a,FontMetrics fM) {
         athlete =a;
@@ -47,14 +47,14 @@ public class AthleteIcon implements Icon{
         color = Color.WHITE;
     }
     /**
-     * Метод возвращает спортсмена.
+     * РњРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ СЃРїРѕСЂС‚СЃРјРµРЅР°.
      *
      */
     public Athlete getAthlete(){
         return athlete;
     }
     /**
-     * Метод устанавливает цвет спорстмена.
+     * РњРµС‚РѕРґ СѓСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ С†РІРµС‚ СЃРїРѕСЂСЃС‚РјРµРЅР°.
      *
      */
     public void setColor(Color c){
@@ -62,14 +62,14 @@ public class AthleteIcon implements Icon{
         
     }
     /**
-     * Метод возвращает цвет спортсмена.
+     * РњРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ С†РІРµС‚ СЃРїРѕСЂС‚СЃРјРµРЅР°.
      *
      */
     public Color getColor(){
         return color;
     }
     /**
-     * Метод делает спортсмена выбраным или снимает выбор.
+     * РњРµС‚РѕРґ РґРµР»Р°РµС‚ СЃРїРѕСЂС‚СЃРјРµРЅР° РІС‹Р±СЂР°РЅС‹Рј РёР»Рё СЃРЅРёРјР°РµС‚ РІС‹Р±РѕСЂ.
      *
      */
     public void setSelected(boolean selected){
@@ -78,7 +78,7 @@ public class AthleteIcon implements Icon{
         
     }
     /**
-     * Метод устанавливает выбранные перегоны.
+     * РњРµС‚РѕРґ СѓСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РІС‹Р±СЂР°РЅРЅС‹Рµ РїРµСЂРµРіРѕРЅС‹.
      *
      */
     public void setSplits(int[] spl){
@@ -90,14 +90,14 @@ public class AthleteIcon implements Icon{
         
     }
     /**
-     * Метод устанавливает место, которое занимает спортсмен.
+     * РњРµС‚РѕРґ СѓСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РјРµСЃС‚Рѕ, РєРѕС‚РѕСЂРѕРµ Р·Р°РЅРёРјР°РµС‚ СЃРїРѕСЂС‚СЃРјРµРЅ.
      *
      */
     public void setPosition(int n){
         position = n;
     }
     /**
-     * Метод возвращает состояние выбора спортсмена.
+     * РњРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ СЃРѕСЃС‚РѕСЏРЅРёРµ РІС‹Р±РѕСЂР° СЃРїРѕСЂС‚СЃРјРµРЅР°.
      *
      */
     public boolean isSelected(){
@@ -115,7 +115,7 @@ public class AthleteIcon implements Icon{
     }
     
     /**
-     * Метод возвращает полное время по всем выбранным перегонам
+     * РњРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ РїРѕР»РЅРѕРµ РІСЂРµРјСЏ РїРѕ РІСЃРµРј РІС‹Р±СЂР°РЅРЅС‹Рј РїРµСЂРµРіРѕРЅР°Рј
      *
      */
     public Time getTotalTime(){
@@ -130,7 +130,7 @@ public class AthleteIcon implements Icon{
     }
     
     
-    // Реализация методов интерфейса Icon
+    // Р РµР°Р»РёР·Р°С†РёСЏ РјРµС‚РѕРґРѕРІ РёРЅС‚РµСЂС„РµР№СЃР° Icon
     
     public void paintIcon(Component c, Graphics g, int x, int y) {
         String text = athlete.getFamilyName()+" "+athlete.getName();

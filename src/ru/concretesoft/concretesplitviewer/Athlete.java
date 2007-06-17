@@ -1,7 +1,7 @@
 /*
  * Athlete.java
  *
- * Created on 27 Июнь 2006 г., 14:53
+ * Created on 27 РСЋРЅСЊ 2006 Рі., 14:53
  *
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.
@@ -11,10 +11,10 @@ package ru.concretesoft.concretesplitviewer;
 
 /**
  *
- * @author Мытинский Леонид
+ * @author РњС‹С‚РёРЅСЃРєРёР№ Р›РµРѕРЅРёРґ
  * 
  * Object of model which content is infarmation of Family name, First name, year of birthday, group in which athlete runs and splits on all control points
- * Объект хранит информацию о спортсмене. Фамилия, Имя, год рождения, группу и отсечки на всех пунктах.
+ * РћР±СЉРµРєС‚ С…СЂР°РЅРёС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ СЃРїРѕСЂС‚СЃРјРµРЅРµ. Р¤Р°РјРёР»РёСЏ, РРјСЏ, РіРѕРґ СЂРѕР¶РґРµРЅРёСЏ, РіСЂСѓРїРїСѓ Рё РѕС‚СЃРµС‡РєРё РЅР° РІСЃРµС… РїСѓРЅРєС‚Р°С….
  *  
  */
 public class Athlete {
@@ -26,14 +26,14 @@ public class Athlete {
     
     /**
      * Creates a new instance of Athlete 
-     *  Создаёт новый экземпляр объекта Athlete
+     *  РЎРѕР·РґР°С‘С‚ РЅРѕРІС‹Р№ СЌРєР·РµРјРїР»СЏСЂ РѕР±СЉРµРєС‚Р° Athlete
      * 
      * 
-     * @param fN  Family name (Фамилия)
-     * @param n  First name (Имя)
-     * @param s  Splits (Отсечки)
-     * @param g  Group (Группа)
-     * @param yOfB  Year of birthday (Год рождения)
+     * @param fN  Family name (Р¤Р°РјРёР»РёСЏ)
+     * @param n  First name (РРјСЏ)
+     * @param s  Splits (РћС‚СЃРµС‡РєРё)
+     * @param g  Group (Р“СЂСѓРїРїР°)
+     * @param yOfB  Year of birthday (Р“РѕРґ СЂРѕР¶РґРµРЅРёСЏ)
      */
     public Athlete(String fN,String n,Time[] s,Group g, int yOfB) {
         familyName = fN;
@@ -47,43 +47,43 @@ public class Athlete {
     
     /**
      * Creates a new instance of Athlete with year of birthday equal 2000
-     *  Создаёт новый экземпляр объекта Athlete с годом рождения спортсмена по умолчанию равным 2000
+     *  РЎРѕР·РґР°С‘С‚ РЅРѕРІС‹Р№ СЌРєР·РµРјРїР»СЏСЂ РѕР±СЉРµРєС‚Р° Athlete СЃ РіРѕРґРѕРј СЂРѕР¶РґРµРЅРёСЏ СЃРїРѕСЂС‚СЃРјРµРЅР° РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ СЂР°РІРЅС‹Рј 2000
      * 
      * 
-     * @param fN  Family name (Фамилия)
-     * @param n  First name (Имя)
-     * @param s  Splits (Отсечки)
-     * @param g  Group (Группа)
+     * @param fN  Family name (Р¤Р°РјРёР»РёСЏ)
+     * @param n  First name (РРјСЏ)
+     * @param s  Splits (РћС‚СЃРµС‡РєРё)
+     * @param g  Group (Р“СЂСѓРїРїР°)
      */
     public Athlete(String fN, String n, Time[] s,Group g){
         this(fN,n,s,g,2000);
     }
     
     /** Method returns time from control point <code>n-1</code> to control point <code>n</code>
-     * Метод возвращает время от пункта <code>n-1</code> до пункта <code>n</code>
+     * РњРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ РІСЂРµРјСЏ РѕС‚ РїСѓРЅРєС‚Р° <code>n-1</code> РґРѕ РїСѓРЅРєС‚Р° <code>n</code>
      * 
-     * @param  n  control point's number (номер контрольного пункта до которого определяется время)
+     * @param  n  control point's number (РЅРѕРјРµСЂ РєРѕРЅС‚СЂРѕР»СЊРЅРѕРіРѕ РїСѓРЅРєС‚Р° РґРѕ РєРѕС‚РѕСЂРѕРіРѕ РѕРїСЂРµРґРµР»СЏРµС‚СЃСЏ РІСЂРµРјСЏ)
      *
      * @return  Time from control point <code>n-1</code> to control point <code>n</code>
-     *          (Время от пункта <code>n-1</code> до пункта <code>n</code>)
+     *          (Р’СЂРµРјСЏ РѕС‚ РїСѓРЅРєС‚Р° <code>n-1</code> РґРѕ РїСѓРЅРєС‚Р° <code>n</code>)
      */
     public Time getLap(int n){
         return splits[n-1];
     }
     
     /** Method returns number of control points
-     *  Метод возвращает количество пунктов
+     *  РњРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ РїСѓРЅРєС‚РѕРІ
      *  
-     * @return  number of control points (количество пунктов, которые пробежал спортсмен)
+     * @return  number of control points (РєРѕР»РёС‡РµСЃС‚РІРѕ РїСѓРЅРєС‚РѕРІ, РєРѕС‚РѕСЂС‹Рµ РїСЂРѕР±РµР¶Р°Р» СЃРїРѕСЂС‚СЃРјРµРЅ)
      */
     public int getNumberOfLaps(){
         return splits.length;
     }
     
     /** Method for calculting full time that athlete spend on all laps 
-     * Метод возвращает полное время затраченое на прохождение всех перегонов
+     * РњРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ РїРѕР»РЅРѕРµ РІСЂРµРјСЏ Р·Р°С‚СЂР°С‡РµРЅРѕРµ РЅР° РїСЂРѕС…РѕР¶РґРµРЅРёРµ РІСЃРµС… РїРµСЂРµРіРѕРЅРѕРІ
      * 
-     * @return  full time that athlete spend on all laps (полное время затраченое на прохождение всех перегонов)
+     * @return  full time that athlete spend on all laps (РїРѕР»РЅРѕРµ РІСЂРµРјСЏ Р·Р°С‚СЂР°С‡РµРЅРѕРµ РЅР° РїСЂРѕС…РѕР¶РґРµРЅРёРµ РІСЃРµС… РїРµСЂРµРіРѕРЅРѕРІ)
      */
     public Time getTotalTime(){
         Time t = new Time(0,3);
@@ -93,15 +93,15 @@ public class Athlete {
         return t;
     }
     /** Method returns athlete's year of birth
-     * Метод возвращает год рождения
+     * РњРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ РіРѕРґ СЂРѕР¶РґРµРЅРёСЏ
      *
-     * @return  athlete's year of birth (возвращает год рождения)
+     * @return  athlete's year of birth (РІРѕР·РІСЂР°С‰Р°РµС‚ РіРѕРґ СЂРѕР¶РґРµРЅРёСЏ)
      */
     public int getYearOfBirth(){
         return yearOfBirth;
     }
      /** Family name of athlete
-      * Метод возвращает Фамилию
+      * РњРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ Р¤Р°РјРёР»РёСЋ
       *
       * @return  family name of Athlete
       */
@@ -109,7 +109,7 @@ public class Athlete {
         return familyName;
     }
      /** First name of athlete
-      * Метод возвращает Имя
+      * РњРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ РРјСЏ
       *
       * @return  First name of athlete
      */
@@ -117,7 +117,7 @@ public class Athlete {
         return name;
     }
      /** Method sets new group for this athlete
-      * Метод меняет группу спортсмена
+      * РњРµС‚РѕРґ РјРµРЅСЏРµС‚ РіСЂСѓРїРїСѓ СЃРїРѕСЂС‚СЃРјРµРЅР°
       *
       * @param  g  new group
      */
@@ -125,7 +125,7 @@ public class Athlete {
         group = g;
     }
      /** Get group of athlete
-      * Метод возвращает группу спортсмена
+      * РњРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ РіСЂСѓРїРїСѓ СЃРїРѕСЂС‚СЃРјРµРЅР°
       * 
       * @return  group in which athlete was viewing
      */
@@ -133,7 +133,7 @@ public class Athlete {
         return group;
     }
      /** Return information about athlete
-      * Переопределение метода toString
+      * РџРµСЂРµРѕРїСЂРµРґРµР»РµРЅРёРµ РјРµС‚РѕРґР° toString
       * 
       * @return  information about athlete in format "FamilyName FirstName FullTimeOfRunning"
      */
