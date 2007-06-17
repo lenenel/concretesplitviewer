@@ -36,6 +36,7 @@ public class OSVReader extends SplitReader{
     private Vector<Group> allGroups;
     private String encoding = "CP1251";
     private int version = 0; // 0 - unknown version
+    private String eventDescription = ""; // Event description if it presents in file
     
     /** Creates a new instance of OSVReader */
     public OSVReader(File file)  throws IOException {
@@ -188,6 +189,7 @@ public class OSVReader extends SplitReader{
             System.err.println("Bad 'Version 1' file format: @SPLITS is not presented.");
             return false;
         }
+        eventDescription = headerLines[4];
         
         // All interesting descriptors presented.
         // Parse.
@@ -267,7 +269,9 @@ public class OSVReader extends SplitReader{
                 String[] athleteNames = athleteName.split("[ \\t]+");
                 Athlete a = new Athlete(athleteNames[0].trim(), 
                         (athleteNames.length>1?(athleteNames[1].trim()):""), 
-                        athleteSplits, allGroups.lastElement());
+                        athleteSplits, allGroups.lastElement(),
+                        1900,
+                        athleteResult);
             }
         }
         
@@ -301,6 +305,14 @@ public class OSVReader extends SplitReader{
     
     public Vector<Group> getGroupsByDist(int number) {
         return null;
+    }
+
+    public String getFileName() {
+        return file.getName();
+    }
+
+    public String getEventDescription() {
+        return eventDescription;
     }
     
 }

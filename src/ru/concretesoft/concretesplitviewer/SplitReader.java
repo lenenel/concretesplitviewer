@@ -44,5 +44,6 @@ public abstract  class SplitReader {
      */
     public abstract Vector<Group> getGroupsByDist(int number);
     
-    
+    public abstract String getFileName();
+    public abstract String getEventDescription();
 }

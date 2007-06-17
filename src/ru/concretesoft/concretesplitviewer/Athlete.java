@@ -24,9 +24,43 @@ public class Athlete {
     private Group group;
     private boolean dSQ = false;
     
+    
+    /*
+     * Finish time as it's in protocol (or in split-file), not calculated as sum of splits.
+     * If there isn't finish time in protocol, then 0.
+     */
+    private Time finishTime; 
+    
     /**
      * Creates a new instance of Athlete 
      *  Создаёт новый экземпляр объекта Athlete
+     * 
+     * @param fN  Family name (Фамилия)
+     * @param n  First name (Имя)
+     * @param s  Splits (Отсечки)
+     * @param g  Group (Группа)
+     * @param yOfB  Year of birthday (Год рождения)
+     * @param finish Finish time from protocol (Финишное время по протоколу)
+     */
+    public Athlete(String fN,String n,Time[] s,Group g, int yOfB, String finish) {
+        familyName = fN;
+        name = n;
+        splits = s;
+        yearOfBirth = yOfB;
+        String[] hhmmss = finish.trim().split(":");
+        int seconds = 0;
+        for (int i = 0; i < hhmmss.length; i++) {
+            seconds = 60 * seconds + Integer.parseInt(hhmmss[i]);
+        }
+        finishTime = new Time(seconds,2);
+        finishTime.setTimeInSeconds(seconds);
+        group = g;
+        group.addAthlete(this);
+    }
+    
+    /**
+     * Creates a new instance of Athlete with default finishTime (zero)
+     *  Создаёт новый экземпляр объекта Athlete со значением finishTime по умолчанию (ноль)
      * 
      * 
      * @param fN  Family name (Фамилия)
@@ -36,13 +70,7 @@ public class Athlete {
      * @param yOfB  Year of birthday (Год рождения)
      */
     public Athlete(String fN,String n,Time[] s,Group g, int yOfB) {
-        familyName = fN;
-        name = n;
-        splits = s;
-        yearOfBirth = yOfB;
-        group = g;
-        group.addAthlete(this);
-                
+        this(fN, n, s, g, yOfB, "00");
     }
     
     /**

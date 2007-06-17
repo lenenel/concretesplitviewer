@@ -32,6 +32,8 @@ public class SFReader extends SplitReader{
     private Vector<String> groupsNames;
     private Vector<Group> allGroups;
     private String encoding = "CP1251";
+    private String eventDescription = ""; // Event description if it presents in file
+
     /** Creates a new instance of SFReader */
     public SFReader(File f) throws FileNotFoundException, IOException {
         this.file=f;
@@ -191,4 +193,11 @@ public class SFReader extends SplitReader{
         return null;
     }
     
-}
+    public String getFileName() {
+        return file.getName();
+    }
+
+    public String getEventDescription() {
+        return eventDescription;
+    }
+ }

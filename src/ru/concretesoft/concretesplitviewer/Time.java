@@ -1,7 +1,7 @@
 /*
  * Time.java
  *
- * Created on 28 Январь 2006 г., 23:04
+ * Created on 28 РЇРЅРІР°СЂСЊ 2006 Рі., 23:04
  *
  * To change this template, choose Tools | Options and locate the template under
  * the Source Creation and Management node. Right-click the template and choose
@@ -12,28 +12,28 @@ package ru.concretesoft.concretesplitviewer;
 
 /**
  *
- * @author Мытинский Леонид
+ * @author РњС‹С‚РёРЅСЃРєРёР№ Р›РµРѕРЅРёРґ
  *
- * Обект для работы со временем.
+ * РћР±РµРєС‚ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃРѕ РІСЂРµРјРµРЅРµРј.
  */
 public class Time implements Comparable{
     private String timeS;
     private int time,fields;
+    
     /** Creates a new instance of Time 
-     * time - время в формате ЧЧММСС либо ММСС, в зависимости от количества полей
-     * fields - количество полей
+     * time - РІСЂРµРјСЏ РІ С„РѕСЂРјР°С‚Рµ Р§Р§РњРњРЎРЎ Р»РёР±Рѕ РњРњРЎРЎ, РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ РєРѕР»РёС‡РµСЃС‚РІР° РїРѕР»РµР№
+     * fields - РєРѕР»РёС‡РµСЃС‚РІРѕ РїРѕР»РµР№
      */
     public Time(int time, int fields) {
         
         setFields(fields);
         setTime(time);
         
-        
     }
     
      /** Creates a new instance of Time 
-     * @param  s  время в формате ЧЧ:ММ:СС либо ММ:СС, в зависимости от количества полей
-     * @param  fields  количество полей
+     * @param  s  РІСЂРµРјСЏ РІ С„РѕСЂРјР°С‚Рµ Р§Р§:РњРњ:РЎРЎ Р»РёР±Рѕ РњРњ:РЎРЎ, РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ РєРѕР»РёС‡РµСЃС‚РІР° РїРѕР»РµР№
+     * @param  fields  РєРѕР»РёС‡РµСЃС‚РІРѕ РїРѕР»РµР№
      */
     public Time(String s,int f){
 //        this.timeS = s;
@@ -89,8 +89,8 @@ public class Time implements Comparable{
         return (time == t.getTimeInSeconds());
     }
     /**
-     * Усановить время
-     * time - время в формате ЧЧММСС, либо ММСС обрабатываются в зависимости от установленного количества полей
+     * РЈСЃР°РЅРѕРІРёС‚СЊ РІСЂРµРјСЏ
+     * time - РІСЂРµРјСЏ РІ С„РѕСЂРјР°С‚Рµ Р§Р§РњРњРЎРЎ, Р»РёР±Рѕ РњРњРЎРЎ РѕР±СЂР°Р±Р°С‚С‹РІР°СЋС‚СЃСЏ РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ СѓСЃС‚Р°РЅРѕРІР»РµРЅРЅРѕРіРѕ РєРѕР»РёС‡РµСЃС‚РІР° РїРѕР»РµР№
      */
     public void setTime(int time){
         java.util.Vector<Integer> tmp = new java.util.Vector<Integer>();
@@ -131,8 +131,8 @@ public class Time implements Comparable{
         timeS=new String(bs,0,bs.length-1);
     }
     /**
-     * Усановить время в секундах
-     * t - время в секундах
+     * РЈСЃР°РЅРѕРІРёС‚СЊ РІСЂРµРјСЏ РІ СЃРµРєСѓРЅРґР°С…
+     * t - РІСЂРµРјСЏ РІ СЃРµРєСѓРЅРґР°С…
      */
     public void setTimeInSeconds(int t){
         this.time = t;
@@ -175,8 +175,8 @@ public class Time implements Comparable{
         this.timeS = temp;
     }
     /**
-     * Усановить количество полей
-     * f - количество полей
+     * РЈСЃР°РЅРѕРІРёС‚СЊ РєРѕР»РёС‡РµСЃС‚РІРѕ РїРѕР»РµР№
+     * f - РєРѕР»РёС‡РµСЃС‚РІРѕ РїРѕР»РµР№
      */
     private void setFields(int f){
         if(f>=3)f = 3;
@@ -184,7 +184,7 @@ public class Time implements Comparable{
         this.fields = f;
     }
      /**
-     * Увеличить время на t
+     * РЈРІРµР»РёС‡РёС‚СЊ РІСЂРµРјСЏ РЅР° t
      */
     public void addTime(Time t){
         setTimeInSeconds(time+t.getTimeInSeconds());
@@ -192,13 +192,13 @@ public class Time implements Comparable{
         
     }
      /**
-     * Метод возвращает строку содержащую время в формате чч:мм:сс, либо мм:сс
+     * РњРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ СЃС‚СЂРѕРєСѓ СЃРѕРґРµСЂР¶Р°С‰СѓСЋ РІСЂРµРјСЏ РІ С„РѕСЂРјР°С‚Рµ С‡С‡:РјРј:СЃСЃ, Р»РёР±Рѕ РјРј:СЃСЃ
      */
     public String getTimeString(){
         return timeS;
     }
     /**
-     * Метод возвращает время в секундах
+     * РњРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ РІСЂРµРјСЏ РІ СЃРµРєСѓРЅРґР°С…
      */
     public int getTimeInSeconds(){
        
