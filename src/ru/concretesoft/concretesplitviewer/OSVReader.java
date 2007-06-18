@@ -145,23 +145,23 @@ public class OSVReader extends SplitReader{
          */
         int nameStart = 0, nameEnd = 0, resultStart = 0, resultEnd = 0, splitStart = 0;
         boolean namePresented = false, resultPresented = false, splitPresented = false;
-        Pattern pName = Pattern.compile(".*@NAME[ \\t]+(\\d+).*[ \\t]+(\\d+)\\s*");
-        Pattern pResult = Pattern.compile(".*@RESULT[ \\t]+(\\d+).*[ \\t]+(\\d+)\\s*");
+        Pattern pName = Pattern.compile(".*@NAME(.+),(.+)\\s*");
+        Pattern pResult = Pattern.compile(".*@RESULT(.+),(.+)\\s*");
         Pattern pSplits = Pattern.compile(".*@SPLITS[ \\t]+(\\d+)\\s*");
         
         for (int i = 1; i < headerLines.length; i++) {
             Matcher mName = pName.matcher(headerLines[i]);
             if (mName.matches()) {
-                nameStart = Integer.parseInt(mName.group(1));
-                nameEnd   = Integer.parseInt(mName.group(2));
+                nameStart = Integer.parseInt(mName.group(1).trim());
+                nameEnd   = Integer.parseInt(mName.group(2).trim());
                 nameEnd   = nameEnd + nameStart - 1;
                 namePresented = true;
                 continue;
             }
             Matcher mResult = pResult.matcher(headerLines[i]);
             if (mResult.matches()) {
-                resultStart = Integer.parseInt(mResult.group(1));
-                resultEnd   = Integer.parseInt(mResult.group(2));
+                resultStart = Integer.parseInt(mResult.group(1).trim());
+                resultEnd   = Integer.parseInt(mResult.group(2).trim());
                 resultEnd   = resultEnd + resultStart - 1;
                 resultPresented = true;
                 continue;
@@ -189,7 +189,7 @@ public class OSVReader extends SplitReader{
             System.err.println("Bad 'Version 1' file format: @SPLITS is not presented.");
             return false;
         }
-        eventDescription = headerLines[4];
+        eventDescription = headerLines[4].trim();
         
         // All interesting descriptors presented.
         // Parse.
