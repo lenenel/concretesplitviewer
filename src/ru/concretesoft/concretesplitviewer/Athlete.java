@@ -120,6 +120,12 @@ public class Athlete {
         }
         return t;
     }
+    
+    /**
+     * Returns finish time
+     */
+    public Time getFinishTime() { return finishTime; }
+    
     /** Method returns athlete's year of birth
      * Метод возвращает год рождения
      *
