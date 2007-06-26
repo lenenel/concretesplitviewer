@@ -1,7 +1,7 @@
 /*
  * OSVReader.java
  *
- * Created on 27 Июнь 2006 г., 19:42
+ * Created on 27 пїЅпїЅпїЅпїЅ 2006 пїЅ., 19:42
  *
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.
@@ -22,9 +22,9 @@ import java.util.regex.Pattern;
 
 /**
  *
- * @author Мытинский Леонид
+ * @author пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
  *
- * Класс для чтения OSV файлов
+ * пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ OSV пїЅпїЅпїЅпїЅпїЅпїЅ
  */
 public class OSVReader extends SplitReader{
     private File file;
@@ -267,7 +267,7 @@ public class OSVReader extends SplitReader{
                     }
                 }
                 String[] athleteNames = athleteName.split("[ \\t]+");
-                Athlete a = new Athlete(athleteNames[0].trim(), 
+                Athlete a = new Athlete((athleteNames.length>0?(athleteNames[0].trim()):""), 
                         (athleteNames.length>1?(athleteNames[1].trim()):""), 
                         athleteSplits, allGroups.lastElement(),
                         1900,
