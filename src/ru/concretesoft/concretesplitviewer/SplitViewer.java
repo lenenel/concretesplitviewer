@@ -30,5 +30,22 @@ public interface SplitViewer {
      *  @return  positive number of laps whith that associated the point or -1 if the point is associated with no point.
      */
     public int getSplit(Point p);
-    
+    /**
+     * Returns x coordinates of viewing laps
+     *
+     * @return  array of viewing lap's x coordinates. <code>null</code> if nothing show
+     */
+    public int[] getXCoordinatesOfLaps();
+    /**
+     * Add listener of changing x coordinates
+     *
+     * @param  listener  listener of changing
+     */
+    public void addXCoordinatesListener(XCoordinatesListener listener);
+    /**
+     * Remove listener of changing x coordinates
+     *
+     * @param  listener  listener of changing
+     */
+    public void removeXCoordinatesListener(XCoordinatesListener listener);
 }

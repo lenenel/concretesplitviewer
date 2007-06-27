@@ -13,6 +13,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.GeneralPath;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
@@ -22,18 +23,21 @@ import javax.swing.event.ListDataListener;
  *
  * Panel show all laps as bricks with same heigths and length relate to size of lap. Color of filling brick means selected or not it lap.
  */
-public class LapsTopPanel extends javax.swing.JPanel implements ListDataListener,MouseListener{
+public class LapsTopPanel extends javax.swing.JPanel implements ListDataListener,MouseListener,XCoordinatesListener{
     private AthleteListModel model;
     private int[] xCoord;
     private boolean[] selected;
+    private SplitViewer splitViewer;
     /** Creates new form LapsTopPanel */
     private LapsTopPanel() {
         
     }
-    public LapsTopPanel(AthleteListModel model) {
+    public LapsTopPanel(AthleteListModel model, SplitViewer splitViewer) {
         setModel(model);
         xCoord = null;
         this.addMouseListener(this);
+        setSplitViewer(splitViewer);
+        
     }
     public void paint(Graphics g){
         
@@ -43,15 +47,16 @@ public class LapsTopPanel extends javax.swing.JPanel implements ListDataListener
         double height = d.getHeight();
         g2.setPaint(Color.WHITE);
         g2.fillRect(0, 0, (int) width, (int) height);
-        if((model!=null)&&(model.getDistance()!=null)){
+        Distance distance = model.getDistance();
+        if((model!=null)&&(distance!=null)){
             int otst;
             FontMetrics fM = g2.getFontMetrics();
             otst = fM.stringWidth("-000:00")+5;
-            int allLength = model.getDistance().getLength();
+            int allLength = distance.getLength();
             double scale = (width-otst) / allLength;
-            int nOfCp = model.getDistance().getNumberOfCP();
+            int nOfCp = distance.getNumberOfCP();
             xCoord = new int[nOfCp+1];
-            
+            int[] xCoordFromViewer = splitViewer.getXCoordinatesOfLaps();
             //Creating boolean array of selected laps
             selected = new boolean[nOfCp];
             for(boolean b:selected){
@@ -65,18 +70,63 @@ public class LapsTopPanel extends javax.swing.JPanel implements ListDataListener
             
             int curX = otst;
             xCoord[0]=curX;
+            int yOtst = (int)(height/2);
             for(int i = 0; i < nOfCp; i++){
-                double w = model.getDistance().getLengthOfDist(i+1)*scale;
-                g2.setPaint(Color.BLACK);
-                g2.drawLine(curX+(int)w,0,curX+(int)w,(int)height);
-                if(selected[i])
-                    g2.setPaint(Color.GREEN);
-                else
-                    g2.setPaint(Color.RED);
-                g2.fillRect(curX+1,0,(int)w-1,(int)height);
-                curX=curX+(int)w;
-                xCoord[i+1]=curX;
+                
+//                g2.setPaint(Color.BLACK);
+//                g2.drawLine(curX+(int)w,0,curX+(int)w,(int)(height/2));
+//                if(selected[i])
+//                    g2.setPaint(Color.GREEN);
+//                else
+//                    g2.setPaint(Color.RED);
+//                g2.fillRect(curX+1,0,(int)w-1,(int)(height/2));
+//                g2.setPaint(Color.BLACK);
+//                String s;
+//                s= ((i+1)==distance.getNumberOfCP())? java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("Finish"): (i+1)+"";
+//                if(fM.stringWidth(s)<=w){
+//                    g2.drawString(s,curX+(int)(w/2)-fM.stringWidth(s)/2,fM.getHeight());
+//                }else;
+                
             }
+            if((xCoordFromViewer!=null)&&(xCoordFromViewer.length==viewSplits.length)){
+                
+                int lastView=0;
+//                g2.drawLine(xCoord[0],(int)(height/2),xCoord[0],(int)height);
+                for(int i = 1; i < nOfCp+1; i++){
+                    double w = distance.getLengthOfDist(i)*scale;
+                    curX=curX+(int)w;
+                    xCoord[i]=curX;
+                    GeneralPath path = new GeneralPath();
+                    path.moveTo(xCoord[i],0);
+                    path.lineTo(xCoord[i],yOtst);
+                    if(lastView < viewSplits.length){
+                        if(viewSplits[lastView]>i){
+                            int x = (lastView>0)?xCoordFromViewer[lastView-1]:xCoord[0];
+                            path.lineTo(x,(float)height);
+//                            g2.drawLine(xCoord[i],(int)(height/2),x,(int)height);
+                        }else if(viewSplits[lastView]==i){
+                            path.lineTo(xCoordFromViewer[lastView],(float)height);
+                            int x = (lastView>0)?xCoordFromViewer[lastView-1]:xCoord[0];
+                            path.lineTo(x,(float)height);
+//                            g2.drawLine(xCoord[i],(int)(height/2),xCoordFromViewer[lastView],(int)height);
+                            lastView++;
+                        }else;
+                    }else{
+                        path.lineTo(xCoordFromViewer[xCoordFromViewer.length-1],(float)height);
+//                        g2.drawLine(xCoord[i],(int)(height/2),xCoordFromViewer[xCoordFromViewer.length-1],(int)height);
+                    }
+                    path.lineTo(xCoord[i-1],yOtst);
+                    path.lineTo(xCoord[i-1],0);
+                    
+                    if(selected[i-1])
+                        g2.setPaint(Color.GREEN);
+                    else
+                        g2.setPaint(Color.RED);
+                    g2.fill(path);
+                    g2.setPaint(Color.BLACK);
+                    g2.draw(path);
+                }
+            }else;
         }else;
     }
     /** Sets model
@@ -138,6 +188,22 @@ public class LapsTopPanel extends javax.swing.JPanel implements ListDataListener
     }
 
     public void mouseExited(MouseEvent e) {
+    }
+
+    public SplitViewer getSplitViewer() {
+        return splitViewer;
+    }
+
+    public void setSplitViewer(SplitViewer splitViewer) {
+        if(this.splitViewer!=null){
+            this.splitViewer.removeXCoordinatesListener(this);
+        }
+        this.splitViewer = splitViewer;
+        this.splitViewer.addXCoordinatesListener(this);
+    }
+
+    public void xCoordinatesChanged(SplitViewer source) {
+        repaint();
     }
     
 }

@@ -1,7 +1,7 @@
 /*
  * SecondBestSplitViewer.java
  *
- * Created on 30 Июнь 2006 г., 0:17
+ * Created on 30 РСЋРЅСЊ 2006 Рі., 0:17
  */
 
 package ru.concretesoft.concretesplitviewer;
@@ -28,9 +28,9 @@ import ru.spb.ConcreteSoft.tipWindow.TipWindow;
 
 /**
  *
- * @author Мытинский Леонид
+ * @author РњС‹С‚РёРЅСЃРєРёР№ Р›РµРѕРЅРёРґ
  *
- * Панель для отображения сплитов в виде относительно второго лучшего
+ * РџР°РЅРµР»СЊ РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ СЃРїР»РёС‚РѕРІ РІ РІРёРґРµ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕ РІС‚РѕСЂРѕРіРѕ Р»СѓС‡С€РµРіРѕ
  */
 public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitViewer,ListDataListener,ListSelectionListener, MouseListener{
     private AthleteListModel aModel;
@@ -49,6 +49,8 @@ public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitVi
     private TipThreadSplitViewer tipThread;
 
     private int yMin;
+    
+    private Vector<XCoordinatesListener> listeners;
     /** Creates new form SecondBestSplitViewer */
     public SecondBestSplitViewer() {
         tipWindow = new TipWindow();
@@ -58,6 +60,7 @@ public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitVi
         otst = -1;
         addMouseMotionListener(MouseMoveQueue.getInstance());
         addMouseListener(this);
+        listeners = new Vector<XCoordinatesListener>();
 //        tipWindow = new TipWindow();
 ////        tipWindow.setVisible(true);
 //        TipThreadSplitViewer tipThread = new TipThreadSplitViewer(tipWindow, this);
@@ -88,7 +91,7 @@ public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitVi
         FontMetrics fM = g2.getFontMetrics();
         otst = (otst==-1)? fM.stringWidth("-000:00")+5: otst;
         int width = d.width-otst;
-        int height = d.height-fM.getHeight()-2;
+        int height = d.height-2;
         Distance dist = aModel.getDistance();
         AthleteIcon[] athletes = (AthleteIcon[])(aModel.getSelectedValues());
         int[] splits = aModel.getViewingSplits();
@@ -108,20 +111,20 @@ public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitVi
             for(int i=0;i<sizes.length;i++){
                 sizes[i] = (int)(((double)dist.getLengthOfDist(splits[i])/totalLength)*width);
                 g2.drawLine(x+sizes[i],0,x+sizes[i],height);
-                String s;
-                if(i<=(splits.length-2)){
-                    int diff = splits[i+1]-splits[i];
-                    if(diff>1) 
-                        s = splits[i]+"-"+(splits[i+1]-1);
-                    else 
-                        s=splits[i]+"";
-                } else {
-                    if(splits[i]==dist.getNumberOfCP()) 
-                        s=java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("Finish");
-                    else 
-                        s = splits[i]+"";
-                }
-                g2.drawString(s,x+sizes[i]-fM.stringWidth(s)/2,height+fM.getHeight()+1);
+//                String s;
+//                if(i<=(splits.length-2)){
+//                    int diff = splits[i+1]-splits[i];
+//                    if(diff>1) 
+//                        s = splits[i]+"-"+(splits[i+1]-1);
+//                    else 
+//                        s=splits[i]+"";
+//                } else {
+//                    if(splits[i]==dist.getNumberOfCP()) 
+//                        s=java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("Finish");
+//                    else 
+//                        s = splits[i]+"";
+//                }
+//                g2.drawString(s,x+sizes[i]-fM.stringWidth(s)/2,height+fM.getHeight()+1);
                 x+=sizes[i];
                 xCoord[i] = x;
             }
@@ -220,6 +223,9 @@ public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitVi
             
         }else{
             xCoord=null;
+        }
+        for(XCoordinatesListener e: listeners){
+            e.xCoordinatesChanged(this);
         }
     }
     
@@ -400,5 +406,14 @@ public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitVi
 
     public void mouseExited(MouseEvent e) {
         tipThread.finish();
+    }
+    public int[] getXCoordinatesOfLaps(){
+        return xCoord;
+    }
+    public void addXCoordinatesListener(XCoordinatesListener listener) {
+        listeners.add(listener);
+    }
+    public void removeXCoordinatesListener(XCoordinatesListener listener) {
+        listeners.remove(listener);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * StandardSplitViewer.java
  *
- * Created on 28 Июнь 2006 г., 13:07
+ * Created on 28 РСЋРЅСЊ 2006 Рі., 13:07
  */
 
 package ru.concretesoft.concretesplitviewer;
@@ -27,9 +27,9 @@ import ru.spb.ConcreteSoft.tipWindow.TipWindow;
 
 /**
  *
- * @author Мытинский Леонид
+ * @author РњС‹С‚РёРЅСЃРєРёР№ Р›РµРѕРЅРёРґ
  *
- * Панель для отображения сплитов в стандартном виде
+ * РџР°РЅРµР»СЊ РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ СЃРїР»РёС‚РѕРІ РІ СЃС‚Р°РЅРґР°СЂС‚РЅРѕРј РІРёРґРµ
  */
 public class StandardSplitViewer extends javax.swing.JPanel implements SplitViewer,ListDataListener,ListSelectionListener, MouseListener{
     private AthleteListModel aModel;
@@ -38,6 +38,7 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
     private int heightStr=5;
     private TipWindow tipWindow;
     private TipThreadSplitViewer tipThread;
+    private Vector<XCoordinatesListener> listeners;
 
    
     /**
@@ -48,7 +49,7 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
         initComponents();
         addMouseMotionListener(MouseMoveQueue.getInstance());
         addMouseListener(this);
-
+        listeners = new Vector<XCoordinatesListener>();
         
     }
 
@@ -73,7 +74,7 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
         heightStr =  fM.getHeight();
         otst = fM.stringWidth("-000:00")+5;
         int width = d.width-otst;
-        int height = d.height-heightStr-2;
+        int height = d.height;//-heightStr-2;
         AthleteIcon[] athletes = (AthleteIcon[])(aModel.getSelectedValues());
         int[] spl = aModel.getViewingSplits();
         Distance dist = aModel.getDistance();
@@ -100,17 +101,7 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
             g2.setPaint(Color.BLACK);
             for(int i=0;i<spl.length;i++){
                 g2.drawLine(xCoord[i],0,xCoord[i],height);
-                String s;
-                if(i<=(spl.length-2)){
-                    int diff = spl[i+1]-spl[i];
-                    if(diff>1) s = spl[i]+"-"+(spl[i+1]-1);
-                    else s=spl[i]+"";
-                } else {
-                    s= (spl[i]==dist.getNumberOfCP())? java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("Finish"): "";
-    //                if(spl[i]==dist.getNumberOfCP()) s=java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("Finish");
-    //                else s = spl[i]+"";
-                }
-                    g2.drawString(s,xCoord[i]-fM.stringWidth(s)/2,height+fM.getHeight()+1);
+//                
             }
             g2.setPaint(Color.RED);
             int yMax = athletes[size-1].getTotalTime().getTimeInSeconds();
@@ -127,7 +118,7 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
 
             String s = tmp.getTimeString();
             g2.setPaint(Color.BLACK);
-            g2.drawString(s,otst-fM.stringWidth(s),height+1);
+            g2.drawString(s,otst-fM.stringWidth(s),height-1);
              float dash1[] = {10.0f};
             BasicStroke dashed = new BasicStroke(1.0f, 
                                                   java.awt.BasicStroke.CAP_BUTT, 
@@ -182,7 +173,9 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
         }else{
             xCoord=null;
         }
-        
+        for(XCoordinatesListener e: listeners){
+            e.xCoordinatesChanged(this);
+        }
     }
     private Color convertToColor(int c){
         if(c<=255)
@@ -274,6 +267,17 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
 
     public void mouseExited(MouseEvent e) {
         tipThread.finish();
+    }
+
+    public int[] getXCoordinatesOfLaps() {
+        return xCoord;
+    }
+
+    public void addXCoordinatesListener(XCoordinatesListener listener) {
+        listeners.add(listener);
+    }
+    public void removeXCoordinatesListener(XCoordinatesListener listener) {
+        listeners.remove(listener);
     }
     
 }

@@ -36,7 +36,7 @@ import ru.spb.ConcreteSoft.tipWindow.TipWindow;
  */
 public class Main extends javax.swing.JFrame {
     private JFileChooser jFC; // Объект для выбора файлов
-    private LapsTopPanel lTP;
+    private LapsTopPanel lapsTopPanel;
     private GroupListModel groupListModel; // модель списка для выбора групп
     private AthleteListModel athletesModel; // модель списка для выбора спортсменов
     private GroupSelectionModel groupSelectionModel; // модель выбора для групп
@@ -64,9 +64,9 @@ public class Main extends javax.swing.JFrame {
         groupListModel = new GroupListModel();
         athletesModel = new AthleteListModel(getGraphics().getFontMetrics());
         athletesModel.setGroupsList(jList1);
-        lTP = new LapsTopPanel(athletesModel);
-        lTP.setPreferredSize(new Dimension(100,20));
-        lTP.setAlignmentX(1.0f);
+        lapsTopPanel = new LapsTopPanel(athletesModel,viewers[0]);
+        lapsTopPanel.setPreferredSize(new Dimension(100,20));
+        lapsTopPanel.setAlignmentX(1.0f);
         // Добавление возможных вариантов просмотра в выпадающий список
         for(int i=0;i<viewers.length;i++){
             jComboBox1.addItem(viewers[i]);
@@ -74,8 +74,8 @@ public class Main extends javax.swing.JFrame {
         }
         
         
-        jPanel1.add((javax.swing.JPanel)jComboBox1.getSelectedItem(),java.awt.BorderLayout.CENTER);
-        jPanel1.add(lTP,java.awt.BorderLayout.NORTH);
+//        jPanel1.add((javax.swing.JPanel)jComboBox1.getSelectedItem(),java.awt.BorderLayout.CENTER);
+//        jPanel1.add(lapsTopPanel,java.awt.BorderLayout.NORTH);
         
         // Задание моделей для списков
         jList1.setModel(groupListModel);
@@ -392,8 +392,9 @@ public class Main extends javax.swing.JFrame {
         
         if(evt.getStateChange()==evt.SELECTED){
             SplitViewer sV = (SplitViewer)evt.getItem();
+            lapsTopPanel.setSplitViewer(sV);
             jPanel1.add((javax.swing.JPanel)jComboBox1.getSelectedItem(),java.awt.BorderLayout.CENTER);
-            jPanel1.add(lTP,java.awt.BorderLayout.NORTH);
+            jPanel1.add(lapsTopPanel,java.awt.BorderLayout.NORTH);
 //            tipThread = new TipThreadSplitViewer(tipWindow, (SplitViewer)jComboBox1.getSelectedItem());
 //            tipThread.start();
             this.validate();
