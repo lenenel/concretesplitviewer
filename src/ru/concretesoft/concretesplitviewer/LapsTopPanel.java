@@ -6,9 +6,11 @@
 
 package ru.concretesoft.concretesplitviewer;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
@@ -28,6 +30,7 @@ public class LapsTopPanel extends javax.swing.JPanel implements ListDataListener
     private int[] xCoord;
     private boolean[] selected;
     private SplitViewer splitViewer;
+    private int yOtst = 10;
     /** Creates new form LapsTopPanel */
     private LapsTopPanel() {
         
@@ -47,6 +50,7 @@ public class LapsTopPanel extends javax.swing.JPanel implements ListDataListener
         double height = d.getHeight();
         g2.setPaint(Color.WHITE);
         g2.fillRect(0, 0, (int) width, (int) height);
+        
         Distance distance = model.getDistance();
         if((model!=null)&&(distance!=null)){
             int otst;
@@ -70,7 +74,7 @@ public class LapsTopPanel extends javax.swing.JPanel implements ListDataListener
             
             int curX = otst;
             xCoord[0]=curX;
-            int yOtst = (int)(height/2);
+            yOtst = (int)(height/2);
             for(int i = 0; i < nOfCp; i++){
                 
 //                g2.setPaint(Color.BLACK);
@@ -96,35 +100,54 @@ public class LapsTopPanel extends javax.swing.JPanel implements ListDataListener
                     double w = distance.getLengthOfDist(i)*scale;
                     curX=curX+(int)w;
                     xCoord[i]=curX;
-                    GeneralPath path = new GeneralPath();
-                    path.moveTo(xCoord[i],0);
-                    path.lineTo(xCoord[i],yOtst);
-                    if(lastView < viewSplits.length){
-                        if(viewSplits[lastView]>i){
-                            int x = (lastView>0)?xCoordFromViewer[lastView-1]:xCoord[0];
-                            path.lineTo(x,(float)height);
-//                            g2.drawLine(xCoord[i],(int)(height/2),x,(int)height);
-                        }else if(viewSplits[lastView]==i){
-                            path.lineTo(xCoordFromViewer[lastView],(float)height);
-                            int x = (lastView>0)?xCoordFromViewer[lastView-1]:xCoord[0];
-                            path.lineTo(x,(float)height);
-//                            g2.drawLine(xCoord[i],(int)(height/2),xCoordFromViewer[lastView],(int)height);
-                            lastView++;
-                        }else;
-                    }else{
-                        path.lineTo(xCoordFromViewer[xCoordFromViewer.length-1],(float)height);
-//                        g2.drawLine(xCoord[i],(int)(height/2),xCoordFromViewer[xCoordFromViewer.length-1],(int)height);
-                    }
-                    path.lineTo(xCoord[i-1],yOtst);
-                    path.lineTo(xCoord[i-1],0);
-                    
+                    GeneralPath pathTop = new GeneralPath();
+                    GeneralPath pathBottom = new GeneralPath();
+                    pathTop.moveTo(xCoord[i-1],yOtst);
+                    pathTop.lineTo(xCoord[i-1],0);
+                    pathTop.lineTo(xCoord[i],0);
+                    pathTop.lineTo(xCoord[i],yOtst);
                     if(selected[i-1])
                         g2.setPaint(Color.GREEN);
                     else
                         g2.setPaint(Color.RED);
-                    g2.fill(path);
+                    g2.fill(pathTop);
+                    g2.setStroke(new BasicStroke(1.0f));
                     g2.setPaint(Color.BLACK);
-                    g2.draw(path);
+                    g2.draw(pathTop);
+                    pathBottom.moveTo(xCoord[i],yOtst);
+                    if(lastView < viewSplits.length){
+                        if(viewSplits[lastView]>i){
+                            int x = (lastView>0)?xCoordFromViewer[lastView-1]:xCoord[0];
+                            pathBottom.lineTo(x,(float)height);
+//                            g2.drawLine(xCoord[i],(int)(height/2),x,(int)height);
+                        }else if(viewSplits[lastView]==i){
+                            pathBottom.lineTo(xCoordFromViewer[lastView],(float)height);
+                            int x = (lastView>0)?xCoordFromViewer[lastView-1]:xCoord[0];
+                            pathBottom.lineTo(x,(float)height);
+//                            g2.drawLine(xCoord[i],(int)(height/2),xCoordFromViewer[lastView],(int)height);
+                            lastView++;
+                        }else;
+                    }else{
+                        pathBottom.lineTo(xCoordFromViewer[xCoordFromViewer.length-1],(float)height);
+//                        g2.drawLine(xCoord[i],(int)(height/2),xCoordFromViewer[xCoordFromViewer.length-1],(int)height);
+                    }
+                    pathBottom.lineTo(xCoord[i-1],yOtst);
+                    
+                    GradientPaint greenToWhite = new GradientPaint(xCoord[0],yOtst,Color.GREEN,xCoord[0],(int)height,Color.WHITE);
+                    if(selected[i-1])
+                        g2.setPaint(greenToWhite);
+                    else
+                        g2.setPaint(Color.RED);
+                    
+                    g2.fill(pathBottom);
+                    float dash1[] = {1.0f};
+                    BasicStroke dashed = new BasicStroke(0.5f, 
+                                                  java.awt.BasicStroke.CAP_BUTT, 
+                                                  java.awt.BasicStroke.JOIN_MITER, 
+                                                  10.0f, dash1, 0.0f);
+                    g2.setStroke(dashed);
+                    g2.setPaint(Color.BLACK);
+                    g2.draw(pathBottom);
                 }
             }else;
         }else;
@@ -165,7 +188,8 @@ public class LapsTopPanel extends javax.swing.JPanel implements ListDataListener
 
     public void mouseClicked(MouseEvent e) {
         int x = e.getX();
-        if(xCoord[0]<x){
+        int y = e.getY();
+        if((xCoord[0]<x)&&(y<yOtst)){
             for(int i=1;i<xCoord.length;i++){
                 if(xCoord[i]>x){
                     if(selected[i-1]) 
