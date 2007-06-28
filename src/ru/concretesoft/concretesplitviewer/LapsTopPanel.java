@@ -6,6 +6,7 @@
 
 package ru.concretesoft.concretesplitviewer;
 
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -13,6 +14,7 @@ import java.awt.FontMetrics;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.GeneralPath;
@@ -93,7 +95,7 @@ public class LapsTopPanel extends javax.swing.JPanel implements ListDataListener
                 
             }
             if((xCoordFromViewer!=null)&&(xCoordFromViewer.length==viewSplits.length)){
-                
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 int lastView=0;
 //                g2.drawLine(xCoord[0],(int)(height/2),xCoord[0],(int)height);
                 for(int i = 1; i < nOfCp+1; i++){
