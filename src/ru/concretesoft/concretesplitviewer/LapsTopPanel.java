@@ -55,14 +55,20 @@ public class LapsTopPanel extends javax.swing.JPanel implements ListDataListener
         
         Distance distance = model.getDistance();
         if((model!=null)&&(distance!=null)){
+            //determin shift from left side (same way that in SplitViewer)
             int otst;
             FontMetrics fM = g2.getFontMetrics();
             otst = fM.stringWidth("-000:00")+5;
+            
+            //Determin scale (pixels/meters)
             int allLength = distance.getLength();
             double scale = (width-otst) / allLength;
+            
+            
             int nOfCp = distance.getNumberOfCP();
             xCoord = new int[nOfCp+1];
             int[] xCoordFromViewer = splitViewer.getXCoordinatesOfLaps();
+            
             //Creating boolean array of selected laps
             selected = new boolean[nOfCp];
             for(boolean b:selected){
@@ -77,64 +83,63 @@ public class LapsTopPanel extends javax.swing.JPanel implements ListDataListener
             int curX = otst;
             xCoord[0]=curX;
             yOtst = (int)(height/2);
-            for(int i = 0; i < nOfCp; i++){
-                
-//                g2.setPaint(Color.BLACK);
-//                g2.drawLine(curX+(int)w,0,curX+(int)w,(int)(height/2));
-//                if(selected[i])
-//                    g2.setPaint(Color.GREEN);
-//                else
-//                    g2.setPaint(Color.RED);
-//                g2.fillRect(curX+1,0,(int)w-1,(int)(height/2));
-//                g2.setPaint(Color.BLACK);
-//                String s;
-//                s= ((i+1)==distance.getNumberOfCP())? java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("Finish"): (i+1)+"";
-//                if(fM.stringWidth(s)<=w){
-//                    g2.drawString(s,curX+(int)(w/2)-fM.stringWidth(s)/2,fM.getHeight());
-//                }else;
-                
-            }
+            
+            //if x coordiantes of laps in SplitViewer are known and 
+            //numbers of viewing splits and x coordinates are same then draw
             if((xCoordFromViewer!=null)&&(xCoordFromViewer.length==viewSplits.length)){
+                
+                //set anti-alialiasing on
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                
                 int lastView=0;
-//                g2.drawLine(xCoord[0],(int)(height/2),xCoord[0],(int)height);
                 for(int i = 1; i < nOfCp+1; i++){
+                    //size of lap in pixels
                     double w = distance.getLengthOfDist(i)*scale;
-                    curX=curX+(int)w;
+                    curX=curX+(int)w;//right side of lap
                     xCoord[i]=curX;
+                    
+                    //Create two GeneralPaths for top(vertical sides) and bottom(connection zone) parts of lap 
                     GeneralPath pathTop = new GeneralPath();
                     GeneralPath pathBottom = new GeneralPath();
+                    
+                    //Top Path
                     pathTop.moveTo(xCoord[i-1],yOtst);
                     pathTop.lineTo(xCoord[i-1],0);
                     pathTop.lineTo(xCoord[i],0);
                     pathTop.lineTo(xCoord[i],yOtst);
+                    
+                    //Fill top path green if selected else red 
                     if(selected[i-1])
                         g2.setPaint(Color.GREEN);
                     else
                         g2.setPaint(Color.RED);
                     g2.fill(pathTop);
+                    //draw sides of lap
                     g2.setStroke(new BasicStroke(1.0f));
                     g2.setPaint(Color.BLACK);
                     g2.draw(pathTop);
+                    
+                    //Bottom path
                     pathBottom.moveTo(xCoord[i],yOtst);
                     if(lastView < viewSplits.length){
                         if(viewSplits[lastView]>i){
                             int x = (lastView>0)?xCoordFromViewer[lastView-1]:xCoord[0];
                             pathBottom.lineTo(x,(float)height);
-//                            g2.drawLine(xCoord[i],(int)(height/2),x,(int)height);
+
                         }else if(viewSplits[lastView]==i){
                             pathBottom.lineTo(xCoordFromViewer[lastView],(float)height);
                             int x = (lastView>0)?xCoordFromViewer[lastView-1]:xCoord[0];
                             pathBottom.lineTo(x,(float)height);
-//                            g2.drawLine(xCoord[i],(int)(height/2),xCoordFromViewer[lastView],(int)height);
+
                             lastView++;
                         }else;
                     }else{
                         pathBottom.lineTo(xCoordFromViewer[xCoordFromViewer.length-1],(float)height);
-//                        g2.drawLine(xCoord[i],(int)(height/2),xCoordFromViewer[xCoordFromViewer.length-1],(int)height);
+
                     }
                     pathBottom.lineTo(xCoord[i-1],yOtst);
                     
+                    //Fill bottom path
                     GradientPaint greenToWhite = new GradientPaint(xCoord[0],yOtst,Color.GREEN,xCoord[0],(int)height,Color.WHITE);
                     if(selected[i-1])
                         g2.setPaint(greenToWhite);
@@ -142,6 +147,8 @@ public class LapsTopPanel extends javax.swing.JPanel implements ListDataListener
                         g2.setPaint(Color.RED);
                     
                     g2.fill(pathBottom);
+                    
+                    //draw connection lines
                     float dash1[] = {1.0f};
                     BasicStroke dashed = new BasicStroke(0.5f, 
                                                   java.awt.BasicStroke.CAP_BUTT, 
@@ -191,7 +198,9 @@ public class LapsTopPanel extends javax.swing.JPanel implements ListDataListener
     public void mouseClicked(MouseEvent e) {
         int x = e.getX();
         int y = e.getY();
-        if((xCoord[0]<x)&&(y<yOtst)){
+        if((xCoord[0]<x)&&(y<yOtst)){//If click was made in area with laps and vertical dividers
+            
+            //find on which lap was made click
             for(int i=1;i<xCoord.length;i++){
                 if(xCoord[i]>x){
                     if(selected[i-1]) 
@@ -221,9 +230,12 @@ public class LapsTopPanel extends javax.swing.JPanel implements ListDataListener
     }
 
     public void setSplitViewer(SplitViewer splitViewer) {
+        //remove listener from previous SplitViewer
         if(this.splitViewer!=null){
             this.splitViewer.removeXCoordinatesListener(this);
         }
+        
+        //set new SplitViewer and add on it listener
         this.splitViewer = splitViewer;
         this.splitViewer.addXCoordinatesListener(this);
     }
