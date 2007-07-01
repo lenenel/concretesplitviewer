@@ -15,6 +15,7 @@ import java.awt.FontMetrics;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import javax.swing.Icon;
 
 
@@ -133,6 +134,9 @@ public class AthleteIcon implements Icon{
     // Реализация методов интерфейса Icon
     
     public void paintIcon(Component c, Graphics g, int x, int y) {
+        Graphics2D g2 = (Graphics2D)g;
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+       
         String text = athlete.getFamilyName()+" "+athlete.getName();
         if(totTime==null)
             totTime = getTotalTime();
@@ -150,40 +154,40 @@ public class AthleteIcon implements Icon{
         
         String diff = diffTime.getTimeString();
         
-        int sizeTime = g.getFontMetrics().stringWidth("0:00:00");
-        int sizeMest = g.getFontMetrics().stringWidth("000");
-        int sizeMean = g.getFontMetrics().stringWidth("+000:00");
+        int sizeTime = g2.getFontMetrics().stringWidth("0:00:00");
+        int sizeMest = g2.getFontMetrics().stringWidth("000");
+        int sizeMean = g2.getFontMetrics().stringWidth("+000:00");
         Color curColor;
         Color foreground;
         // This is WHITE background for whole rectangle in all cases
         curColor = Color.WHITE;
-        g.setColor(curColor);
-        g.fillRect(x,y,getIconWidth(),getIconHeight());
+        g2.setColor(curColor);
+        g2.fillRect(x,y,getIconWidth(),getIconHeight());
         // Then border for selected
         if(selected){
             // Outer "color" rectangle
             curColor = color;
-            g.setColor(curColor);
-            g.fillRoundRect(x,y,getIconWidth()+4,getIconHeight(),6,6);
+            g2.setColor(curColor);
+            g2.fillRoundRect(x,y,getIconWidth()+4,getIconHeight(),6,6);
             // Fill inner rectangle with gradient color-to-white from bottom to top
-            Graphics2D g2 = (Graphics2D)g;
+            
             GradientPaint colorToWhite = new GradientPaint(x+4,y+getIconHeight(),color,x+4,y+4,Color.white);
             g2.setPaint(colorToWhite);
             g2.fillRect(x+2,y+2,getIconWidth(),getIconHeight()-4);
         }
         // Then text
         foreground = Color.BLACK;
-        g.setColor(foreground);
+        g2.setColor(foreground);
         // Use one base line for all elements
-        int yPosition = y + g.getFontMetrics().getHeight() - 0;
+        int yPosition = y + g2.getFontMetrics().getHeight() - 0;
         // Right horizontal alligment for "position", "time" and "diff" with deltaX
-        int deltaX = sizeMest - g.getFontMetrics().stringWidth(position+"");
-        g.drawString(position+"", 2 + x + deltaX , yPosition);
-        deltaX = sizeTime - g.getFontMetrics().stringWidth(time);
-        g.drawString(time, 2 + x + sizeMest + otst + deltaX, yPosition);
-        deltaX = sizeMean - g.getFontMetrics().stringWidth(diff);
-        g.drawString(diff, 2 + x + sizeMest + sizeTime + 2*otst + deltaX, yPosition);
-        g.drawString(text, 2 + x+sizeTime+3*otst+sizeMest+sizeMean, yPosition);
+        int deltaX = sizeMest - g2.getFontMetrics().stringWidth(position+"");
+        g2.drawString(position+"", 2 + x + deltaX , yPosition);
+        deltaX = sizeTime - g2.getFontMetrics().stringWidth(time);
+        g2.drawString(time, 2 + x + sizeMest + otst + deltaX, yPosition);
+        deltaX = sizeMean - g2.getFontMetrics().stringWidth(diff);
+        g2.drawString(diff, 2 + x + sizeMest + sizeTime + 2*otst + deltaX, yPosition);
+        g2.drawString(text, 2 + x+sizeTime+3*otst+sizeMest+sizeMean, yPosition);
         this.g = g;
     }
     
