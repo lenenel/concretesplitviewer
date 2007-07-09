@@ -1,7 +1,7 @@
 /*
  * StandardSplitViewer.java
  *
- * Created on 28 Июнь 2006 г., 13:07
+ * Created on 28 �?юнь 2006 г., 13:07
  */
 
 package ru.concretesoft.concretesplitviewer;

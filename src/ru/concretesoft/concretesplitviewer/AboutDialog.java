@@ -1,7 +1,7 @@
 /*
  * AboutDialog.java
  *
- * Created on 13 Ã‡È 2007 „., 20:54
+ * Created on 13 –ú–∞–π 2007 –≥., 20:54
  */
 
 package ru.concretesoft.concretesplitviewer;

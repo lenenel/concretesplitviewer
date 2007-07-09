@@ -1,7 +1,7 @@
 /*
  * SplitReader.java
  *
- * Created on 27 Июнь 2006 г., 14:32
+ * Created on 27 РСЋРЅСЊ 2006 Рі., 14:32
  *
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.
@@ -13,33 +13,33 @@ import java.util.Vector;
 
 /**
  *
- * @author Мытинский Леонид
+ * @author РњС‹С‚РёРЅСЃРєРёР№ Р›РµРѕРЅРёРґ
  *
- * Абстрактный класс, описывающий читателей из файла сплитов
+ * РђР±СЃС‚СЂР°РєС‚РЅС‹Р№ РєР»Р°СЃСЃ, РѕРїРёСЃС‹РІР°СЋС‰РёР№ С‡РёС‚Р°С‚РµР»РµР№ РёР· С„Р°Р№Р»Р° СЃРїР»РёС‚РѕРІ
  */
 public abstract  class SplitReader {
     /**
-     * Метод для получения названий всех групп
+     * РњРµС‚РѕРґ РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РЅР°Р·РІР°РЅРёР№ РІСЃРµС… РіСЂСѓРїРї
      *
      */
     public abstract Vector<String> getGroupsNames();
     /**
-     * Метод для получения всех групп
+     * РњРµС‚РѕРґ РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РІСЃРµС… РіСЂСѓРїРї
      *
      */
     public abstract Vector<Group> getAllGroups();
     /**
-     * Метод для получения группы по названию
+     * РњРµС‚РѕРґ РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РіСЂСѓРїРїС‹ РїРѕ РЅР°Р·РІР°РЅРёСЋ
      *
      */
     public abstract Group getGroup(String name);
     /**
-     * Метод для получения группы по номеру
+     * РњРµС‚РѕРґ РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РіСЂСѓРїРїС‹ РїРѕ РЅРѕРјРµСЂСѓ
      *
      */
     public abstract Group getGroup(int number);
     /**
-     * Метод для получения групп по дистанции
+     * РњРµС‚РѕРґ РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РіСЂСѓРїРї РїРѕ РґРёСЃС‚Р°РЅС†РёРё
      *
      */
     public abstract Vector<Group> getGroupsByDist(int number);

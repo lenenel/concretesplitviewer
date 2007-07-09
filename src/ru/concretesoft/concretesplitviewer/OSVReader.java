@@ -12,7 +12,6 @@ package ru.concretesoft.concretesplitviewer;
 
 import java.io.File;
 import java.io.FileInputStream;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
@@ -46,10 +45,12 @@ public class OSVReader extends SplitReader{
         
         
         int length = (int)file.length();
-        byte[] s = new byte[length];
-        
-        
-        
+        byte[] s = null;
+        try {
+            s = new byte[length];
+        } catch (java.lang.OutOfMemoryError e) {
+            throw new IOException("File too long to fit into memory.");
+        }
         
         fIS.read(s);
         try{
@@ -267,8 +268,8 @@ public class OSVReader extends SplitReader{
                     }
                 }
                 String[] athleteNames = athleteName.split("[ \\t]+");
-                Athlete a = new Athlete((athleteNames.length>0?(athleteNames[0].trim()):""), 
-                        (athleteNames.length>1?(athleteNames[1].trim()):""), 
+                Athlete a = new Athlete((athleteNames.length>0?(athleteNames[0].trim()):""),
+                        (athleteNames.length>1?(athleteNames[1].trim()):""),
                         athleteSplits, allGroups.lastElement(),
                         1900,
                         athleteResult);
@@ -306,11 +307,11 @@ public class OSVReader extends SplitReader{
     public Vector<Group> getGroupsByDist(int number) {
         return null;
     }
-
+    
     public String getFileName() {
         return file.getName();
     }
-
+    
     public String getEventDescription() {
         return eventDescription;
     }

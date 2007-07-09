@@ -1,7 +1,7 @@
 /*
  * GroupSelectionModel.java
  *
- * Created on 1 Июль 2006 г., 13:17
+ * Created on 1 РСЋР»СЊ 2006 Рі., 13:17
  *
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.
@@ -18,11 +18,11 @@ import javax.swing.event.ListSelectionListener;
 
 /**
  *
- * @author Мытинский Леонид
+ * @author РњС‹С‚РёРЅСЃРєРёР№ Р›РµРѕРЅРёРґ
  *
- * Класс определяющий модель выбора групп в списке.
- * Если происходит попытка добавления группы к уже выбранным, то происходит проверка совпадения дистанций у выбранных групп и у новой.
- * Выбор осуществляется только в случае совпадения дистанций.
+ * РљР»Р°СЃСЃ РѕРїСЂРµРґРµР»СЏСЋС‰РёР№ РјРѕРґРµР»СЊ РІС‹Р±РѕСЂР° РіСЂСѓРїРї РІ СЃРїРёСЃРєРµ.
+ * Р•СЃР»Рё РїСЂРѕРёСЃС…РѕРґРёС‚ РїРѕРїС‹С‚РєР° РґРѕР±Р°РІР»РµРЅРёСЏ РіСЂСѓРїРїС‹ Рє СѓР¶Рµ РІС‹Р±СЂР°РЅРЅС‹Рј, С‚Рѕ РїСЂРѕРёСЃС…РѕРґРёС‚ РїСЂРѕРІРµСЂРєР° СЃРѕРІРїР°РґРµРЅРёСЏ РґРёСЃС‚Р°РЅС†РёР№ Сѓ РІС‹Р±СЂР°РЅРЅС‹С… РіСЂСѓРїРї Рё Сѓ РЅРѕРІРѕР№.
+ * Р’С‹Р±РѕСЂ РѕСЃСѓС‰РµСЃС‚РІР»СЏРµС‚СЃСЏ С‚РѕР»СЊРєРѕ РІ СЃР»СѓС‡Р°Рµ СЃРѕРІРїР°РґРµРЅРёСЏ РґРёСЃС‚Р°РЅС†РёР№.
  */
 public class GroupSelectionModel implements ListSelectionModel, GroupModelListener{
     Vector<Group> groups;
@@ -33,7 +33,7 @@ public class GroupSelectionModel implements ListSelectionModel, GroupModelListen
     Vector<ListSelectionListener> list;
     /** Creates a new instance of GroupSelectionModel
      * 
-     * gr - Набор всех групп
+     * gr - РќР°Р±РѕСЂ РІСЃРµС… РіСЂСѓРїРї
      */
     public GroupSelectionModel(GroupListModel gLM) {
         if(gLM==null) groups=new Vector<Group>();
@@ -47,7 +47,7 @@ public class GroupSelectionModel implements ListSelectionModel, GroupModelListen
         list = new Vector<ListSelectionListener>();
     }
     
-    // Реализация всех необходимых методов
+    // Р РµР°Р»РёР·Р°С†РёСЏ РІСЃРµС… РЅРµРѕР±С…РѕРґРёРјС‹С… РјРµС‚РѕРґРѕРІ
          
     public void setSelectionInterval(int index0, int index1) {
         anchor = index0;

@@ -1,7 +1,7 @@
 /*
  * MyFileFilter.java
  *
- * Created on 27 Июнь 2006 г., 23:40
+ * Created on 27 РСЋРЅСЊ 2006 Рі., 23:40
  *
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.
@@ -16,9 +16,9 @@ import javax.swing.filechooser.FileFilter;
 
 /**
  *
- * @author Мытинский Леонид
+ * @author РњС‹С‚РёРЅСЃРєРёР№ Р›РµРѕРЅРёРґ
  *
- * Класс фильтра файлов
+ * РљР»Р°СЃСЃ С„РёР»СЊС‚СЂР° С„Р°Р№Р»РѕРІ
  */
 public class MyFileFilter extends FileFilter {
     private Vector<String> ext;

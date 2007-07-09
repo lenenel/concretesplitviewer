@@ -1,7 +1,7 @@
 /*
  * GroupListModel.java
  *
- * Created on 23 ίνβΰπό 2007 γ., 21:10
+ * Created on 23 Π―Π½Π²Π°Ρ€Ρ 2007 Π³., 21:10
  *
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.

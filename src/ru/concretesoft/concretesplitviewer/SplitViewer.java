@@ -1,7 +1,7 @@
 /*
  * SplitViewer.java
  *
- * Created on 30 Июнь 2006 г., 0:18
+ * Created on 30 РСЋРЅСЊ 2006 Рі., 0:18
  *
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.
@@ -14,9 +14,9 @@ import java.awt.Point;
 
 /**
  *
- * @author Мытинский Леонид
+ * @author РњС‹С‚РёРЅСЃРєРёР№ Р›РµРѕРЅРёРґ
  *
- * Интерфейс для отображения сплитов
+ * РРЅС‚РµСЂС„РµР№СЃ РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ СЃРїР»РёС‚РѕРІ
  */
 public interface SplitViewer {
     public void removeSplit(int x);

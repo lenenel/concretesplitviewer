@@ -1,7 +1,7 @@
 /*
  * Group.java
  *
- * Created on 27 Июнь 2006 г., 14:49
+ * Created on 27 РСЋРЅСЊ 2006 Рі., 14:49
  *
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.
@@ -15,9 +15,9 @@ import java.util.Vector;
 
 /**
  *
- * @author Мытинский Леонид
+ * @author РњС‹С‚РёРЅСЃРєРёР№ Р›РµРѕРЅРёРґ
  *
- * Класс, описывающий объект "группа". Этот объект содержит всех спортсменов из одной группы.
+ * РљР»Р°СЃСЃ, РѕРїРёСЃС‹РІР°СЋС‰РёР№ РѕР±СЉРµРєС‚ "РіСЂСѓРїРїР°". Р­С‚РѕС‚ РѕР±СЉРµРєС‚ СЃРѕРґРµСЂР¶РёС‚ РІСЃРµС… СЃРїРѕСЂС‚СЃРјРµРЅРѕРІ РёР· РѕРґРЅРѕР№ РіСЂСѓРїРїС‹.
  */
 public class Group {
     private Vector<Athlete> athletes = new Vector<Athlete>();
@@ -27,38 +27,38 @@ public class Group {
     public Group() {
     }
      /*
-     * Метод добавляет спортсмена в группу.
+     * РњРµС‚РѕРґ РґРѕР±Р°РІР»СЏРµС‚ СЃРїРѕСЂС‚СЃРјРµРЅР° РІ РіСЂСѓРїРїСѓ.
      */
     public void addAthlete(Athlete a){
         athletes.add(a);
     }
      /*
-     * Метод удаляет спортсмена из группы.
+     * РњРµС‚РѕРґ СѓРґР°Р»СЏРµС‚ СЃРїРѕСЂС‚СЃРјРµРЅР° РёР· РіСЂСѓРїРїС‹.
      */
     public void removeAthlete(Athlete a){
         athletes.remove(a);
     }
      /*
-     * Метод возвращает название группы.
+     * РњРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ РЅР°Р·РІР°РЅРёРµ РіСЂСѓРїРїС‹.
      */
     public String getName(){
         return name;
     }
      /*
-     * Метод возвращает дистанцию.
+     * РњРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ РґРёСЃС‚Р°РЅС†РёСЋ.
      */
     public Distance getDistance(){
         return dist;
     }
      /*
-     * Метод устанавливает дистанцию.
+     * РњРµС‚РѕРґ СѓСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РґРёСЃС‚Р°РЅС†РёСЋ.
      */
     public void setDistance(Distance d){
         dist = d;
         d.addGroup(this);
     }
      /*
-     * Метод возвращает набор времён показаных на перегоне n.
+     * РњРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ РЅР°Р±РѕСЂ РІСЂРµРјС‘РЅ РїРѕРєР°Р·Р°РЅС‹С… РЅР° РїРµСЂРµРіРѕРЅРµ n.
      */
     public HashSet<Time> getTimesOnLap(int n){
         HashSet<Time> tmp = new HashSet<Time>();
@@ -70,25 +70,25 @@ public class Group {
         return tmp;
     }
      /*
-     * Метод устанавливает название группы.
+     * РњРµС‚РѕРґ СѓСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РЅР°Р·РІР°РЅРёРµ РіСЂСѓРїРїС‹.
      */
     public void setName(String name){
         this.name = name;
     }
      /*
-     * Метод возвращает спортсмена по порядковому номеру.
+     * РњРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ СЃРїРѕСЂС‚СЃРјРµРЅР° РїРѕ РїРѕСЂСЏРґРєРѕРІРѕРјСѓ РЅРѕРјРµСЂСѓ.
      */
     public Athlete getAthlete(int n){
         return athletes.get(n-1);
     }
      /*
-     * Метод возвращает всех спортсменов этой группы.
+     * РњРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ РІСЃРµС… СЃРїРѕСЂС‚СЃРјРµРЅРѕРІ СЌС‚РѕР№ РіСЂСѓРїРїС‹.
      */
     public Vector<Athlete> getAthletes(){
         return (Vector<Athlete>)athletes.clone();
     }
      /*
-     * Переопределение метода toString
+     * РџРµСЂРµРѕРїСЂРµРґРµР»РµРЅРёРµ РјРµС‚РѕРґР° toString
      */
     public String toString(){
         return getName();

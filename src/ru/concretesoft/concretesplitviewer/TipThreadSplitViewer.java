@@ -1,7 +1,7 @@
 /*
  * TipThreadSplitViewer.java
  *
- * Created on 17 Февраль 2007 г., 18:02
+ * Created on 17 Р¤РµРІСЂР°Р»СЊ 2007 Рі., 18:02
  *
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.
