@@ -84,7 +84,7 @@ public class GlassSecondBestViewPanel extends javax.swing.JPanel {
 
     public void setYLocation(int yLocation) {
         this.yLocation = yLocation;
-        int diff = (int)(yLocation*scale)-yCoord[cPsNumber];
+        int diff = (int)(yLocation*scale)-yCoord[cPsNumber]+yMin;
         for(int i = cPsNumber; i < yCoord.length; i++)
             yCoord[i]=yCoord[i]+diff;
         repaint();

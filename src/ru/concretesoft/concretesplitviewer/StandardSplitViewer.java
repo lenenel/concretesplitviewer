@@ -16,7 +16,6 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.util.Iterator;
 import java.util.Vector;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
@@ -275,7 +274,7 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
                 for(int j = 0; j < selectedAthletes.length; j++){
                     int yA = 0;
                     for(int k=0;k<=editingCPNumber;k++){
-                        yA += selectedAthletes[j].getAthlete().getLap(aModel.getViewingSplits()[k+1]).getTimeInSeconds();
+                        yA += selectedAthletes[j].getAthlete().getLap(aModel.getViewingSplits()[k]).getTimeInSeconds();
                     }
                     yA = getSize().height - (int)(yA/scale);
                     System.out.println(y+" "+yA);
