@@ -15,10 +15,11 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.TreeSet;
 import java.util.Vector;
+import javax.swing.JPanel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
@@ -28,11 +29,11 @@ import ru.spb.ConcreteSoft.tipWindow.TipWindow;
 
 /**
  *
- * @author Мытинский Леонид
+ * @author Mytinski Leonid
  *
  * Панель для отображения сплитов в виде относительно второго лучшего
  */
-public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitViewer,ListDataListener,ListSelectionListener, MouseListener{
+public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitViewer,ListDataListener,ListSelectionListener, MouseListener, MouseMotionListener{
     private AthleteListModel aModel;
     private HashSet<Group> groups;
     private Time[] secondBest;
@@ -51,16 +52,26 @@ public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitVi
     private int yMin;
     
     private Vector<XCoordinatesListener> listeners;
+    
+    private AthleteIcon editingAthlete;
+    private int editingCPNumber;
+    private GlassSecondBestViewPanel glassPane;
+    private int yLocationOfStartDrag;
     /** Creates new form SecondBestSplitViewer */
     public SecondBestSplitViewer() {
+        editingAthlete = null;
+        
         tipWindow = new TipWindow();
         initComponents();
 
         groups = new HashSet<Group>();
         otst = -1;
         addMouseMotionListener(MouseMoveQueue.getInstance());
+        addMouseMotionListener(this);
         addMouseListener(this);
         listeners = new Vector<XCoordinatesListener>();
+        
+        glassPane = new GlassSecondBestViewPanel();
 //        tipWindow = new TipWindow();
 ////        tipWindow.setVisible(true);
 //        TipThreadSplitViewer tipThread = new TipThreadSplitViewer(tipWindow, this);
@@ -82,6 +93,7 @@ public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitVi
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
+    @Override
     public void paint(Graphics g){
         Graphics2D g2 = (Graphics2D)g;
         Dimension d = getSize();
@@ -270,6 +282,7 @@ public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitVi
         else 
             return t2;
     }
+    @Override
     public String toString(){
         return java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("Second_Best_View");
     }
@@ -384,19 +397,70 @@ public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitVi
     }
 
     public void mouseClicked(MouseEvent evt) {
-        if((evt.getButton()==evt.BUTTON2)||(evt.getMouseModifiersText(evt.getModifiers()).equals("Shift+Button1"))){
+        if((evt.getButton()==MouseEvent.BUTTON2)||(MouseEvent.getMouseModifiersText(evt.getModifiers()).equals("Shift+Button1"))){
             aModel.restoreAllSplits();
         }
-        else if(evt.getButton()==evt.BUTTON1){
+        else if(evt.getButton()==MouseEvent.BUTTON1){
             
             removeSplit(evt.getX());
         }
     }
 
     public void mousePressed(MouseEvent e) {
+        //Find near node
+        int x = e.getX();
+        int y = e.getY();
+        
+        for(int i = 0; i < xCoord.length; i++){
+            System.out.println(x+" "+xCoord[i]);
+            if(Math.abs(xCoord[i]-x) < 5){// 5 horizontal points on both sides
+                editingCPNumber = i;// порядковый номер из отображаемых
+                double scale = (yMax - yMin) / (double)getSize().height;
+                AthleteIcon[] selectedAthletes = (AthleteIcon[]) aModel.getSelectedValues();
+                for(int j = 0; j < yCoord.size(); j++){
+                    int yA = (int) ((yCoord.get(j)[i] - yMin) / scale);
+                    System.out.println(y+" "+yA);
+                    if(Math.abs(y-yA)<2){// 2 vertical points on both sides
+                        yLocationOfStartDrag = yA;
+                        editingAthlete = selectedAthletes[j];// set editing athlete
+                        glassPane.setAthlete(editingAthlete);
+                        glassPane.setViewingSplits(aModel.getViewingSplits());
+                        glassPane.setCPsNumber(editingCPNumber);
+                        glassPane.setScale(scale);
+                        glassPane.setXCoord(xCoord);
+                        glassPane.setYCoord(yCoord.get(j));
+                        glassPane.setOtst(otst);
+                        glassPane.setYMin(yMin);
+                        glassPane.setVisible(true);
+                        glassPane.setLocationOnScreen(this.getLocationOnScreen());
+                        glassPane.setYLocation(y);
+                        System.out.println(editingAthlete.getAthlete().getFamilyName());
+                        break;
+                    }
+                }
+                break;
+            } else if(x < xCoord[i]){
+                break;
+            }
+        }
     }
 
     public void mouseReleased(MouseEvent e) {
+        glassPane.setVisible(false);
+        glassPane.setAthlete(null);
+        if(editingAthlete == null){
+            return ;
+        }
+        double scale = (yMax - yMin) / (double)getSize().height;
+        editingCPNumber = aModel.getViewingSplits()[editingCPNumber];// change to real cp's number 
+        Time oldTime = editingAthlete.getAthlete().getLap(editingCPNumber);
+        int diff = e.getY()-yLocationOfStartDrag;
+        int diffInSec = (int)(diff*scale);
+        Time newTime = new Time(0, 2);
+        newTime.setTimeInSeconds(oldTime.getTimeInSeconds()+diffInSec);
+        editingAthlete.getAthlete().setTimeOnLap(newTime, editingCPNumber);
+        editingAthlete = null;
+        editingCPNumber = 0;
     }
     
     public void mouseEntered(MouseEvent e) {
@@ -415,5 +479,24 @@ public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitVi
     }
     public void removeXCoordinatesListener(XCoordinatesListener listener) {
         listeners.remove(listener);
+    }
+
+    public void mouseDragged(MouseEvent e) {
+        if((editingAthlete == null)||(glassPane==null)){
+            return ;
+        }
+        glassPane.setYLocation(e.getY());
+    }
+
+    public void mouseMoved(MouseEvent e) {
+        
+    }
+    
+    public void setGlassPane(GlassSecondBestViewPanel tP){
+        glassPane = tP;
+    }
+
+    public JPanel getGlassPane() {
+        return glassPane;
     }
 }

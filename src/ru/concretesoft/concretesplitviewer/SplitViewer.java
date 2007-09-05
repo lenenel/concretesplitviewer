@@ -9,12 +9,11 @@
 
 package ru.concretesoft.concretesplitviewer;
 
-import java.awt.Color;
 import java.awt.Point;
 
 /**
  *
- * @author Мытинский Леонид
+ * @author Mytinski Leonid
  *
  * Интерфейс для отображения сплитов
  */
@@ -48,4 +47,10 @@ public interface SplitViewer {
      * @param  listener  listener of changing
      */
     public void removeXCoordinatesListener(XCoordinatesListener listener);
+    /**
+     * Returns <code>JPanel</code> that will be glass for main frame
+     * 
+     * @return <code>JPanel</code> that will be glass for main frame
+     */
+    public javax.swing.JPanel getGlassPane();
 }

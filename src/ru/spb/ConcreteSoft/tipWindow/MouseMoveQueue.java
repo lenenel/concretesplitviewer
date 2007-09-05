@@ -11,12 +11,11 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 
 
 /**
  * A singleton queue that holds and return last position
- * where mouse motion event occured.
+ * where mouse moved event occured.
  *
  * @author mbb
  */
@@ -39,7 +38,7 @@ public class MouseMoveQueue implements MouseMotionListener {
     }
     
     public void mouseDragged(MouseEvent e) {
-        mouseMotion(e);
+        
     }
 
     public void mouseMoved(MouseEvent e) {

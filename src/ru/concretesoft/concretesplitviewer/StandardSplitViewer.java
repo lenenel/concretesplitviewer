@@ -15,6 +15,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.util.Iterator;
 import java.util.Vector;
 import javax.swing.event.ListDataEvent;
@@ -31,7 +32,7 @@ import ru.spb.ConcreteSoft.tipWindow.TipWindow;
  *
  * Панель для отображения сплитов в стандартном виде
  */
-public class StandardSplitViewer extends javax.swing.JPanel implements SplitViewer,ListDataListener,ListSelectionListener, MouseListener{
+public class StandardSplitViewer extends javax.swing.JPanel implements SplitViewer,ListDataListener,ListSelectionListener, MouseListener, MouseMotionListener{
     private AthleteListModel aModel;
     private int[] xCoord;
     private int otst=5;
@@ -39,7 +40,10 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
     private TipWindow tipWindow;
     private TipThreadSplitViewer tipThread;
     private Vector<XCoordinatesListener> listeners;
-
+    private GlassStandartSplitViewerPanel glassPane;
+    private int editingCPNumber;
+    private AthleteIcon editingAthlete;
+    private int yLocationOfStartDrag;
    
     /**
      * Creates new form StandardSplitViewer
@@ -49,8 +53,9 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
         initComponents();
         addMouseMotionListener(MouseMoveQueue.getInstance());
         addMouseListener(this);
+        addMouseMotionListener(this);
         listeners = new Vector<XCoordinatesListener>();
-        
+        glassPane = new GlassStandartSplitViewerPanel();
     }
 
 
@@ -65,6 +70,7 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
         setLayout(new java.awt.GridBagLayout());
 
     }// </editor-fold>//GEN-END:initComponents
+    @Override
     public void paint(Graphics g){
         Graphics2D g2 = (Graphics2D)g;
         Dimension d = getSize();
@@ -188,6 +194,7 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
             return new Color(0,1021-c,255);
         return null;
     }
+    @Override
     public String toString(){
         return java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("Standart_View");
     }
@@ -245,19 +252,75 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
     }
 
     public void mouseClicked(MouseEvent evt) {
-        if((evt.getButton()==evt.BUTTON2)||(evt.getMouseModifiersText(evt.getModifiers()).equals("Shift+Button1"))){
+        if((evt.getButton()==MouseEvent.BUTTON2)||(MouseEvent.getMouseModifiersText(evt.getModifiers()).equals("Shift+Button1"))){
             aModel.restoreAllSplits();
         }
-        else if(evt.getButton()==evt.BUTTON1){
+        else if(evt.getButton()==MouseEvent.BUTTON1){
             
             removeSplit(evt.getX());
         }
     }
 
     public void mousePressed(MouseEvent e) {
+        //Find near node
+        int x = e.getX();
+        int y = e.getY();
+        for(int i = 0; i < xCoord.length; i++){
+            System.out.println(x+" "+xCoord[i]);
+            if(Math.abs(xCoord[i]-x) < 5){// 5 horizontal points on both sides
+                editingCPNumber = i;
+                AthleteIcon[] selectedAthletes = (AthleteIcon[]) aModel.getSelectedValues();
+                int yMax = selectedAthletes[selectedAthletes.length-1].getTotalTime().getTimeInSeconds();
+                double scale = yMax / (double)getSize().height;
+                for(int j = 0; j < selectedAthletes.length; j++){
+                    int yA = 0;
+                    for(int k=0;k<=editingCPNumber;k++){
+                        yA += selectedAthletes[j].getAthlete().getLap(aModel.getViewingSplits()[k+1]).getTimeInSeconds();
+                    }
+                    yA = getSize().height - (int)(yA/scale);
+                    System.out.println(y+" "+yA);
+                    if(Math.abs(y-yA)<2){// 2 vertical points on both sides
+                        yLocationOfStartDrag = yA;
+                        editingAthlete = selectedAthletes[j];// set editing athlete
+                        glassPane.setAthlete(editingAthlete);
+                        glassPane.setViewingSplits(aModel.getViewingSplits());
+                        glassPane.setCPsNumber(editingCPNumber);
+                        glassPane.setScale(scale);
+                        glassPane.setXCoord(xCoord);
+                        glassPane.setYMax(yMax);
+                        glassPane.setOtst(otst);
+                        glassPane.setVisible(true);
+                        glassPane.setLocationOnScreen(this.getLocationOnScreen());
+                        glassPane.setYLocation(y);
+                        System.out.println(editingAthlete.getAthlete().getFamilyName());
+                        break;
+                    }
+                }
+                break;
+            } else if(x < xCoord[i]){
+                break;
+            }
+        }
     }
 
     public void mouseReleased(MouseEvent e) {
+        glassPane.setVisible(false);
+        glassPane.setAthlete(null);
+        if(editingAthlete == null){
+            return ;
+        }
+        AthleteIcon[] selectedAthletes = (AthleteIcon[]) aModel.getSelectedValues();
+        int yMax = selectedAthletes[selectedAthletes.length-1].getTotalTime().getTimeInSeconds();
+        double scale = yMax / (double)getSize().height;
+        editingCPNumber = aModel.getViewingSplits()[editingCPNumber];
+        Time oldTime = editingAthlete.getAthlete().getLap(editingCPNumber);
+        int diff = e.getY()-yLocationOfStartDrag;
+        int diffInSec = (int)(diff*scale);
+        Time newTime = new Time(0, 2);
+        newTime.setTimeInSeconds(oldTime.getTimeInSeconds()-diffInSec);
+        editingAthlete.getAthlete().setTimeOnLap(newTime, editingCPNumber);
+        editingAthlete = null;
+        editingCPNumber = 0;
     }
 
     public void mouseEntered(MouseEvent e) {
@@ -278,6 +341,21 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
     }
     public void removeXCoordinatesListener(XCoordinatesListener listener) {
         listeners.remove(listener);
+    }
+
+    public GlassStandartSplitViewerPanel getGlassPane() {
+        return glassPane;
+    }
+
+    public void mouseDragged(MouseEvent e) {
+        if (editingAthlete == null){
+            return ;
+        }
+        glassPane.setYLocation(e.getY());
+    }
+
+    public void mouseMoved(MouseEvent e) {
+        
     }
     
 }

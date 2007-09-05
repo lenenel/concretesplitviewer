@@ -30,7 +30,7 @@ import javax.swing.event.ListSelectionListener;
  * Класс описывающий модель данных для списка спортсменов.
  * Модель содержит объекты типа AthleteIcon.
  */
-public class AthleteListModel implements ListModel,ListSelectionModel,ListSelectionListener{
+public class AthleteListModel implements ListModel,ListSelectionModel,ListSelectionListener,AthleteListener{
         private Vector<ListDataListener> listeners;
         private Vector<AthleteIcon> athletes;
         private Vector<ListSelectionListener> selectionListeners;
@@ -78,7 +78,9 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
                 distance = as.get(0).getGroup().getDistance();
                 Iterator<Athlete> itA = as.iterator();
                 while(itA.hasNext()){
-                    athletes.add(new AthleteIcon(itA.next(),fontMetrics));
+                    AthleteIcon temp = new AthleteIcon(itA.next(),fontMetrics);
+                    athletes.add(temp);
+                    temp.getAthlete().addAthleteListener(this);
                 }
                 setDifferntColorsForAthletes(athletes);
                 allLaps();
@@ -226,10 +228,16 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
                 Iterator<AthleteIcon> it = athletes.iterator();
                 while(it.hasNext()){
                     AthleteIcon aI = it.next();
-                    aI.setSplits(spl);
+                    aI.setSplits(viewLaps);
                 }
+                recolculateList();
+            }
+        }
+        private void recolculateList(){
+            if(athletes != null){
+                
                 Vector<AthleteIcon> athletesNew = new Vector<AthleteIcon>();
-                it = athletes.iterator();
+                Iterator<AthleteIcon> it = athletes.iterator();
                 while(it.hasNext()){
                     if(athletesNew.size()==0)
                         athletesNew.add(it.next());
@@ -415,6 +423,9 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
         }
 
     public void valueChanged(ListSelectionEvent e) {
+        valueChanged();
+    }
+    private void valueChanged(){
         setAthletes(null);
         Object[] g1 =  groupsList.getSelectedValues();
         Vector<Athlete> all = new Vector<Athlete>();
@@ -444,7 +455,6 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
         setAthletes(all);
         setViewSplits(null);
     }
-
     public JList getGroupsList() {
         return groupsList;
     }
@@ -534,4 +544,8 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
             i++;
          }
      }
+
+    public void splitsChanged() {
+        recolculateList();
+    }
 }

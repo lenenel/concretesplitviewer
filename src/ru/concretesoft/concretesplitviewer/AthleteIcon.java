@@ -22,11 +22,11 @@ import javax.swing.Icon;
 
 /**
  *
- * @author Мытинский Леонид
+ * @author Mytinski Leonid
  *
  * Вспомогательный класс для отображения спортсменов в списке спортсменов
  */
-public class AthleteIcon implements Icon{
+public class AthleteIcon implements Icon, AthleteListener{
     private Athlete athlete;
     private Graphics g;
     private FontMetrics fM;
@@ -44,6 +44,7 @@ public class AthleteIcon implements Icon{
      */
     public AthleteIcon(Athlete a,FontMetrics fM) {
         athlete =a;
+        athlete.addAthleteListener(this);
         this.fM = fM;
         color = Color.WHITE;
     }
@@ -206,6 +207,11 @@ public class AthleteIcon implements Icon{
             return fM.getHeight()+5;
         }
         return g.getFontMetrics().getHeight()+5;
+    }
+
+    public void splitsChanged() {
+        totTime = null;
+        diffTime = null;
     }
     
     

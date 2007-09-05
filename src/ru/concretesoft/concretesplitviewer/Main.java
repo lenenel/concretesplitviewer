@@ -8,6 +8,7 @@ package ru.concretesoft.concretesplitviewer;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ItemEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
@@ -18,7 +19,7 @@ import java.util.Vector;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListDataEvent;
@@ -55,6 +56,7 @@ public class Main extends javax.swing.JFrame {
         
         loadProperties();
         initComponents();
+
         
         
         // Инициализация переменных объекта
@@ -390,11 +392,12 @@ public class Main extends javax.swing.JFrame {
 //            tipThread.finish();
 //        else;
         
-        if(evt.getStateChange()==evt.SELECTED){
+        if(evt.getStateChange()==ItemEvent.SELECTED){
             SplitViewer sV = (SplitViewer)evt.getItem();
             lapsTopPanel.setSplitViewer(sV);
             jPanel1.add((javax.swing.JPanel)jComboBox1.getSelectedItem(),java.awt.BorderLayout.CENTER);
             jPanel1.add(lapsTopPanel,java.awt.BorderLayout.NORTH);
+            setGlassPane(sV.getGlassPane());
 //            tipThread = new TipThreadSplitViewer(tipWindow, (SplitViewer)jComboBox1.getSelectedItem());
 //            tipThread.start();
             this.validate();

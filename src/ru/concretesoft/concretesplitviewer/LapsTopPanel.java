@@ -6,7 +6,6 @@
 
 package ru.concretesoft.concretesplitviewer;
 
-import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -44,6 +43,7 @@ public class LapsTopPanel extends javax.swing.JPanel implements ListDataListener
         setSplitViewer(splitViewer);
         
     }
+    @Override
     public void paint(Graphics g){
         
         Graphics2D g2 = (Graphics2D) g;

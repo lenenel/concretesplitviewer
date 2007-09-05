@@ -9,9 +9,11 @@
 
 package ru.concretesoft.concretesplitviewer;
 
+import java.util.Vector;
+
 /**
  *
- * @author Мытинский Леонид
+ * @author Mytinski Leonid
  * 
  * Object of model which content is infarmation of Family name, First name, year of birthday, group in which athlete runs and splits on all control points
  * Объект хранит информацию о спортсмене. Фамилия, Имя, год рождения, группу и отсечки на всех пунктах.
@@ -19,11 +21,11 @@ package ru.concretesoft.concretesplitviewer;
  */
 public class Athlete {
     private String familyName, name;
-    private Time[] splits;
+    private Time[] splits,originalSplits;
     private int yearOfBirth;
     private Group group;
     private boolean dSQ = false;
-    
+    private java.util.Vector<AthleteListener> listeners;
     
     /*
      * Finish time as it's in protocol (or in split-file), not calculated as sum of splits.
@@ -46,6 +48,7 @@ public class Athlete {
         familyName = fN;
         name = n;
         splits = s;
+        originalSplits = s;
         yearOfBirth = yOfB;
         String[] hhmmss = finish.trim().split(":");
         int seconds = 0;
@@ -56,6 +59,7 @@ public class Athlete {
         finishTime.setTimeInSeconds(seconds);
         group = g;
         group.addAthlete(this);
+        listeners = new java.util.Vector<AthleteListener>();
     }
     
     /**
@@ -120,9 +124,28 @@ public class Athlete {
         }
         return t;
     }
-    
+    /**
+     * Set new time on <code>n</code> lap 
+     * 
+     * @param  t  new time
+     * @param  n  control point's number
+     * 
+     */
+    public void setTimeOnLap(Time t, int n){
+        splits[n-1]=t;
+        notifyListeners();
+    }
+    /** Revert all changes made for this athlete
+     * 
+     * 
+     */
+    public void revertAllChanges(){
+        splits = originalSplits;
+        notifyListeners();
+    }
     /**
      * Returns finish time
+     * @return finish time
      */
     public Time getFinishTime() { return finishTime; }
     
@@ -166,11 +189,31 @@ public class Athlete {
     public Group getGroup(){
         return group;
     }
+    private void notifyListeners(){
+        for(AthleteListener list: listeners){
+            list.splitsChanged();
+        }
+    }
+    /**
+     * 
+     * @param  list  listener of changing athlete
+     */
+    public void addAthleteListener(AthleteListener list){
+        listeners.add(list);
+    }
+    /**
+     * 
+     * @param  list  listener of changing athlete
+     */
+    public void removeAthleteListener(AthleteListener list){
+        listeners.remove(list);
+    }
      /** Return information about athlete
       * Переопределение метода toString
       * 
       * @return  information about athlete in format "FamilyName FirstName FullTimeOfRunning"
      */
+    @Override
     public String toString(){
         return getFamilyName()+" "+getName()+" "+getTotalTime().getTimeString();
     }
