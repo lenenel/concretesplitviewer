@@ -16,7 +16,6 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Vector;
 import javax.swing.JPanel;
@@ -31,13 +30,14 @@ import ru.spb.ConcreteSoft.tipWindow.TipWindow;
  *
  * @author Mytinski Leonid
  *
+ * Panel for viewing splits relatively second best athlete
  * Панель для отображения сплитов в виде относительно второго лучшего
  */
 public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitViewer,ListDataListener,ListSelectionListener, MouseListener, MouseMotionListener{
     private AthleteListModel aModel;
-    private HashSet<Group> groups;
+
     private Time[] secondBest;
-    private Time[] best;
+
     private boolean draw = false;
     private int[] xCoord;
     
@@ -64,7 +64,6 @@ public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitVi
         tipWindow = new TipWindow();
         initComponents();
 
-        groups = new HashSet<Group>();
         otst = -1;
         addMouseMotionListener(MouseMoveQueue.getInstance());
         addMouseMotionListener(this);
@@ -218,20 +217,6 @@ public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitVi
                 }
                 k++;
             }
-//            for(int j=0;j<yCoord.size();j++){
-//                g2.setPaint(colorSheme[j]);
-//                int y = (int)(((yCoord[j][0]-yMin)/(double)h)*height);
-//                
-//                g2.drawLine(otst,y0,xCoord[0],y);
-//                for(int i=1;i<splits.length;i++){
-//                   
-//                   int y2 = (int)(((yCoord[j][i]-yMin)/(double)h)*height);
-//                   g2.drawLine(xCoord[i-1],y,xCoord[i],y2);
-////                   System.out.println(xCoord[i-1]+"  "+y+"  "+xCoord[i]+"  "+y2);
-//                   y=y2;
-//                   
-//                }
-//            }
             
         }else{
             xCoord=null;
@@ -240,52 +225,16 @@ public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitVi
             e.xCoordinatesChanged(this);
         }
     }
-    
-//    public boolean setColorSheme(Color[] c) {
-//        boolean value = false; 
-//        if((c==null)||(c.length!=aModel.getAthletes().size())){
-//            int size = aModel.getAthletes().size();
-//            colorSheme = new Color[size];
-//            for(int i=0;i<size;i++){
-//                colorSheme[i]=convertToColor( i*( 1024 / size ));
-//            }
-//            value = false;
-//        }else{
-//            colorSheme = c;
-//            value = true;
-//        }
-//        setDraw();
-//        return value;
-//        
-//    }
 
-    private Color convertToColor(int c){
-        if(c<=255)
-            return new Color(255,c,0);
-        if(c<=511)
-            return new Color(511-c,255,0);
-        if(c<=767)
-            return new Color(0,255,c-511);
-        if(c<=1023)
-            return new Color(0,1021-c,255);
-        return null;
-    }
-    private Time max(Time t1,Time t2){
-        if(t1.getTimeInSeconds()>t2.getTimeInSeconds())
-            return t1;
-        else 
-            return t2;
-    }
-    private Time min(Time t1,Time t2){
-        if(t1.getTimeInSeconds()<t2.getTimeInSeconds())
-            return t1;
-        else 
-            return t2;
-    }
     @Override
     public String toString(){
         return java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("Second_Best_View");
     }
+    
+    /**
+     * Method check all parametrs needed for draw chart 
+     * 
+     */
     private void setDraw(){
         draw = (secondBest != null) && (aModel.getViewingSplits() != null) && (aModel.getSelectedValues().length != 0);
     }
@@ -302,7 +251,14 @@ public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitVi
         }
     }
 
-  
+    /**
+     * Method calculate all y coordinates of chart for all selected athletes
+     * and add they to <code>Vector yCoord</code>. Also finds maximum and 
+     * minimum of all calculated y coordinates and store they to <code>yMax</code> 
+     * and <code>yMin</code> fields.
+     * 
+     * 
+     */
     private void calculateYCoord(){
         
         AthleteIcon[] athletes = (AthleteIcon[])(aModel.getSelectedValues());
@@ -319,6 +275,12 @@ public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitVi
         
         
     }
+    /**
+     * Method calculates all y coordinates of chart for one athlete 
+     * and add they to <code>Vector yCoord</code>
+     * 
+     * @param  a  athlete whose chart would be showed
+     */
     private void treatmentOneAthlete(Athlete a){
         yMax--;
         yMin++;
@@ -405,7 +367,8 @@ public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitVi
             removeSplit(evt.getX());
         }
     }
-
+    
+    
     public void mousePressed(MouseEvent e) {
         //Find near node
         int x = e.getX();
@@ -414,15 +377,16 @@ public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitVi
         for(int i = 0; i < xCoord.length; i++){
             System.out.println(x+" "+xCoord[i]);
             if(Math.abs(xCoord[i]-x) < 5){// 5 horizontal points on both sides
-                editingCPNumber = i;// порядковый номер из отображаемых
+                editingCPNumber = i;// index(only from viewing) of control point which would be edited
                 double scale = (yMax - yMin) / (double)getSize().height;
                 AthleteIcon[] selectedAthletes = (AthleteIcon[]) aModel.getSelectedValues();
                 for(int j = 0; j < yCoord.size(); j++){
                     int yA = (int) ((yCoord.get(j)[i] - yMin) / scale);
                     System.out.println(y+" "+yA);
                     if(Math.abs(y-yA)<2){// 2 vertical points on both sides
-                        yLocationOfStartDrag = yA;
+                        yLocationOfStartDrag = yA;// Store y coordinate(of node) of start dragging
                         editingAthlete = selectedAthletes[j];// set editing athlete
+                        // put all needed parameters to glass panel
                         glassPane.setAthlete(editingAthlete);
                         glassPane.setViewingSplits(aModel.getViewingSplits());
                         glassPane.setCPsNumber(editingCPNumber);

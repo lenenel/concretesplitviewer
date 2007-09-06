@@ -13,6 +13,8 @@ import java.awt.Point;
 /**
  *
  * @author  Mytinski Leonid
+ * 
+ * Glass panel for second best view that show chart after affecting drag&drop
  */
 public class GlassSecondBestViewPanel extends javax.swing.JPanel {
     private AlphaComposite composite;
@@ -24,9 +26,10 @@ public class GlassSecondBestViewPanel extends javax.swing.JPanel {
     private int yMin;
     private int[] xCoord;
     private int[] yCoord;
-//    private int[] yCoordOrig;
+    private int[] yCoordOrig;
     private int otst;
     private int[] viewingSplits;
+
     /** Creates new form TransientPanel */
     public GlassSecondBestViewPanel() {
         setOpaque(false);
@@ -60,9 +63,13 @@ public class GlassSecondBestViewPanel extends javax.swing.JPanel {
         g2.setPaint(athlete.getColor());
         Point p = locationOnScreen;
         Point pl = this.getLocationOnScreen();
-        g2.drawString(athlete.getAthlete().getFamilyName(), 
-                (int)(p.getX()-pl.getX()) + 20, 
-                (int)(p.getY()-pl.getY()) + 20);
+        Time t = new Time(0,2);
+        int diff = yCoord[cPsNumber] - yCoordOrig[cPsNumber];
+        t.setTimeInSeconds(diff);
+        g2.drawString(athlete.getAthlete().getFamilyName()+" "+t.getTimeString(), 
+                (int)(p.getX()-pl.getX()) + otst + 1, 
+                getHeight()-20);
+        g2.setComposite(composite);
         Athlete a = athlete.getAthlete();
         int xTemp = (cPsNumber == 0) ? otst : xCoord[cPsNumber-1];
         int yTemp = (cPsNumber == 0) ? 0 : yCoord[cPsNumber-1];
@@ -103,8 +110,8 @@ public class GlassSecondBestViewPanel extends javax.swing.JPanel {
     }
 
     public void setYCoord(int[] yCoord) {
-        this.yCoord = yCoord;
-//        yCoordOrig = yCoord;
+        this.yCoord = yCoord.clone();
+        yCoordOrig = yCoord.clone();
     }
 
     public void setOtst(int otst) {

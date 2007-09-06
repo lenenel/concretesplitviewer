@@ -26,7 +26,7 @@ public class GlassStandartSplitViewerPanel extends javax.swing.JPanel {
     /** Creates new form GlassStandartSplitViewerPanel */
     public GlassStandartSplitViewerPanel() {
         setOpaque(false);
-        composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f);
+        
     }
     
     /** This method is called from within the constructor to
@@ -50,9 +50,9 @@ public class GlassStandartSplitViewerPanel extends javax.swing.JPanel {
         g2.setPaint(athlete.getColor());
         Point p = locationOnScreen;
         Point pl = this.getLocationOnScreen();
-        g2.drawString(athlete.getAthlete().getFamilyName(), 
-                (int)(p.getX()-pl.getX()) + 20, 
-                (int)(p.getY()-pl.getY()) + 20);
+        
+        composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f);
+        g2.setComposite(composite);
         Athlete a = athlete.getAthlete();
         int yA = 0;
         for(int k=0;k<cPsNumber;k++){
@@ -63,7 +63,20 @@ public class GlassStandartSplitViewerPanel extends javax.swing.JPanel {
                     (int)(p.getY()-pl.getY()) + (int)((yMax-yA)/scale), 
                     (int)(p.getX()-pl.getX()) + xCoord[cPsNumber], 
                     (int)(p.getY()-pl.getY()) + yLocation);
+        int diff = yA;
         yA = yMax-(int)(yLocation*scale);
+        diff = yA - (diff + athlete.getAthlete().getLap(viewingSplits[cPsNumber]).getTimeInSeconds());
+        
+        composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f);
+        g2.setComposite(composite);
+        Time t = new Time(0,2);
+        t.setTimeInSeconds(diff);
+        g2.drawString(athlete.getAthlete().getFamilyName() + " " + t.getTimeString(), 
+                (int)(p.getX()-pl.getX()) + otst + 1, 
+                (int)(p.getY()-pl.getY()) + 20);
+        
+        composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f);
+        g2.setComposite(composite);
         for(int i = cPsNumber; i < viewingSplits.length-1; i++){
             int yANew = yA + a.getLap(viewingSplits[i+1]).getTimeInSeconds();
             g2.drawLine((int)(p.getX()-pl.getX()) + xCoord[i], 

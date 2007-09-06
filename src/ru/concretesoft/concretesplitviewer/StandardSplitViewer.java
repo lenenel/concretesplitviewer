@@ -28,14 +28,15 @@ import ru.spb.ConcreteSoft.tipWindow.TipWindow;
 /**
  *
  * @author Мытинский Леонид
- *
+ * 
+ * Panel for viewing splits in standatd way
  * Панель для отображения сплитов в стандартном виде
  */
 public class StandardSplitViewer extends javax.swing.JPanel implements SplitViewer,ListDataListener,ListSelectionListener, MouseListener, MouseMotionListener{
     private AthleteListModel aModel;
     private int[] xCoord;
     private int otst=5;
-    private int heightStr=5;
+
     private TipWindow tipWindow;
     private TipThreadSplitViewer tipThread;
     private Vector<XCoordinatesListener> listeners;
@@ -76,7 +77,7 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
         g2.setPaint(Color.WHITE);
         g2.fillRect(0,0,d.width,d.height);
         FontMetrics fM = g2.getFontMetrics();
-        heightStr =  fM.getHeight();
+
         otst = fM.stringWidth("-000:00")+5;
         int width = d.width-otst;
         int height = d.height;//-heightStr-2;
@@ -89,6 +90,7 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
         
         if((spl!=null)&&(size>0)){
             
+            // Calculating CP's x coordinates
             xCoord = new int[spl.length];
             if(dist!=null){
                 int totDist = Tools.calculatTotalLength(dist, spl);
@@ -101,17 +103,16 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
                 int sizeLap = width/spl.length;
                 for(int i=0;i<spl.length;i++)
                     xCoord[i] = sizeLap*(i+1);
-                int diff = width-spl.length*sizeLap;
             }
+            
+            // Draw vertical black line for each viewing CP
             g2.setPaint(Color.BLACK);
             for(int i=0;i<spl.length;i++){
                 g2.drawLine(xCoord[i],0,xCoord[i],height);
-//                
             }
-            g2.setPaint(Color.RED);
-            int yMax = athletes[size-1].getTotalTime().getTimeInSeconds();
-
             
+            // Calculate and draw horizontal lines with time 
+            int yMax = athletes[size-1].getTotalTime().getTimeInSeconds();
             int hTime = fM.getHeight();
             double stepTime = 30.0;
             int nT =(int) (yMax/stepTime);
@@ -124,7 +125,7 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
             String s = tmp.getTimeString();
             g2.setPaint(Color.BLACK);
             g2.drawString(s,otst-fM.stringWidth(s),height-1);
-             float dash1[] = {10.0f};
+            float dash1[] = {10.0f};
             BasicStroke dashed = new BasicStroke(1.0f, 
                                                   java.awt.BasicStroke.CAP_BUTT, 
                                                   java.awt.BasicStroke.JOIN_MITER, 
@@ -143,7 +144,7 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
                 g2.drawLine(otst,yH,otst + width,yH);
             }
             
-                
+   
             tmp.setTimeInSeconds((int)(stepTime*nT));
             s = tmp.getTimeString();
             
@@ -153,7 +154,7 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
             g2.setPaint(Color.LIGHT_GRAY);
             g2.drawLine(otst,yH,otst + width,yH);
             
-            
+            // Draw charts
             g2.setStroke(new BasicStroke(1.0f));
 
             for(int j=0;j<size;j++){
@@ -178,21 +179,13 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
         }else{
             xCoord=null;
         }
+        
+        // Notify listeners about changing of x coordinates
         for(XCoordinatesListener e: listeners){
             e.xCoordinatesChanged(this);
         }
     }
-    private Color convertToColor(int c){
-        if(c<=255)
-            return new Color(255,c,0);
-        if(c<=511)
-            return new Color(511-c,255,0);
-        if(c<=767)
-            return new Color(0,255,c-511);
-        if(c<=1023)
-            return new Color(0,1021-c,255);
-        return null;
-    }
+
     @Override
     public String toString(){
         return java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("Standart_View");
@@ -267,7 +260,7 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
         for(int i = 0; i < xCoord.length; i++){
             System.out.println(x+" "+xCoord[i]);
             if(Math.abs(xCoord[i]-x) < 5){// 5 horizontal points on both sides
-                editingCPNumber = i;
+                editingCPNumber = i;//index(only from viewing) of control point which would be edited
                 AthleteIcon[] selectedAthletes = (AthleteIcon[]) aModel.getSelectedValues();
                 int yMax = selectedAthletes[selectedAthletes.length-1].getTotalTime().getTimeInSeconds();
                 double scale = yMax / (double)getSize().height;
@@ -279,8 +272,9 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
                     yA = getSize().height - (int)(yA/scale);
                     System.out.println(y+" "+yA);
                     if(Math.abs(y-yA)<2){// 2 vertical points on both sides
-                        yLocationOfStartDrag = yA;
+                        yLocationOfStartDrag = yA;// Store y coordinate(of node) of start dragging
                         editingAthlete = selectedAthletes[j];// set editing athlete
+                        // put all needed parameters to glass panel
                         glassPane.setAthlete(editingAthlete);
                         glassPane.setViewingSplits(aModel.getViewingSplits());
                         glassPane.setCPsNumber(editingCPNumber);
@@ -288,8 +282,8 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
                         glassPane.setXCoord(xCoord);
                         glassPane.setYMax(yMax);
                         glassPane.setOtst(otst);
-                        glassPane.setVisible(true);
                         glassPane.setLocationOnScreen(this.getLocationOnScreen());
+                        glassPane.setVisible(true);
                         glassPane.setYLocation(y);
                         System.out.println(editingAthlete.getAthlete().getFamilyName());
                         break;
