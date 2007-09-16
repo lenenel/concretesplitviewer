@@ -6,30 +6,19 @@
 
 package ru.concretesoft.concretesplitviewer;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ItemEvent;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Properties;
-import java.util.TreeSet;
 import java.util.Vector;
-import javax.swing.DefaultListSelectionModel;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.JPanel;
-import javax.swing.ListModel;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
-import javax.swing.event.ListSelectionListener;
-import ru.spb.ConcreteSoft.tipWindow.TipWindow;
 
 /**
  *
- * @author  Мытинский Леонид
+ * @author  Mytinski Leonid
  *
  * Основное окно программы.
  * Содержит две кнопки, для открытия "сплитов"; два списка: один для выбора группы, другой для выбора спортсменов;
@@ -61,8 +50,10 @@ public class Main extends javax.swing.JFrame {
         
         // Инициализация переменных объекта
         jFC = new JFileChooser();
-        jFC.setCurrentDirectory(new File(properties.getProperty("Directory")));
-        
+        File currentDirectory = new File(properties.getProperty("Directory"));
+        if (currentDirectory.exists()){
+            jFC.setCurrentDirectory(currentDirectory);
+        }
         groupListModel = new GroupListModel();
         athletesModel = new AthleteListModel(getGraphics().getFontMetrics());
         athletesModel.setGroupsList(jList1);
@@ -97,7 +88,7 @@ public class Main extends javax.swing.JFrame {
             System.out.println("There isn't Last [used] File Name in property. Assume null file name and user should open file manually.");
             lastFile = null;
         }
-        if((typeOfLastFile!=null)&&(lastFile!=null)){
+        if((typeOfLastFile!=null)&&(lastFile!=null)&&(lastFile.exists())){
             try{
                 
                 SplitReader splitReader = null;
@@ -318,7 +309,7 @@ public class Main extends javax.swing.JFrame {
         for(int i = 0 ; i < icons.length ; i++){
             athletes.add(icons[i]);
         }
-        athletesModel.setDifferntColorsForAthletes(athletes);
+        AthleteListModel.setDifferntColorsForAthletes(athletes);
         repaint();
     }//GEN-LAST:event_jButton3ActionPerformed
     
@@ -376,9 +367,9 @@ public class Main extends javax.swing.JFrame {
     private void jPanel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseClicked
         SplitViewer sV = (SplitViewer)jComboBox1.getSelectedItem();
         
-        if((evt.getButton()==evt.BUTTON2)||(evt.getMouseModifiersText(evt.getModifiers()).equals("Shift+Button1"))){
+        if((evt.getButton()==MouseEvent.BUTTON2)||(MouseEvent.getMouseModifiersText(evt.getModifiers()).equals("Shift+Button1"))){
             athletesModel.restoreAllSplits();
-        } else if(evt.getButton()==evt.BUTTON1){
+        } else if(evt.getButton()==MouseEvent.BUTTON1){
             
             sV.removeSplit(evt.getX());
         }
@@ -488,7 +479,7 @@ public class Main extends javax.swing.JFrame {
         int val = jFC.showOpenDialog(this);
         File selectedFile = null;
         // Если нажата кнопка OK, то прочитать файл и заполнить список групп
-        if(val == jFC.APPROVE_OPTION){
+        if(val == JFileChooser.APPROVE_OPTION){
             selectedFile = jFC.getSelectedFile();
             properties.setProperty("Directory", jFC.getCurrentDirectory().getPath());
             properties.setProperty("The_Last_File", selectedFile.getPath());
@@ -546,6 +537,7 @@ public class Main extends javax.swing.JFrame {
      * Method save properties
      *
      *
+     * @throws java.io.IOException 
      */
     public void saveProperties() throws java.io.IOException{
         
