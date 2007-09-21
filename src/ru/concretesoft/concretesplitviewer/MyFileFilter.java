@@ -28,12 +28,10 @@ public class MyFileFilter extends FileFilter {
     }
 
     public boolean accept(File f) {
-        if(f.isDirectory()){
-            return true;
-        }
         String name = f.getName();
-        boolean b=false;
+        boolean b=true;
         if(f.isFile()){
+            b = false;
             String[] parts = name.split("\\.");
             
             Iterator it = ext.iterator();
