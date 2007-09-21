@@ -89,7 +89,7 @@ public class Main extends javax.swing.JFrame {
             System.out.println("There isn't Last [used] File Name in property. Assume null file name and user should open file manually.");
             lastFile = null;
         }
-        if((typeOfLastFile!=null)&&(lastFile!=null)&&(lastFile.exists())){
+        if((lastFile!=null)&&(lastFile.exists())){
             try{
                 
                 SplitReader splitReader = null;
