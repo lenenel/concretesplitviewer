@@ -16,7 +16,7 @@ import javax.swing.filechooser.FileFilter;
 
 /**
  *
- * @author Мытинский Леонид
+ * @author Mytinski Leonid
  *
  * Класс фильтра файлов
  */
@@ -29,12 +29,12 @@ public class MyFileFilter extends FileFilter {
 
     public boolean accept(File f) {
         String name = f.getName();
-        boolean b=true;
+        boolean b=false;
         if(f.isFile()){
             String[] parts = name.split("\\.");
             
             Iterator it = ext.iterator();
-            while((b)&&(it.hasNext())){
+            while((!b)&&(it.hasNext())){
                 b = parts[parts.length-1].equals(it.next());
             }
         }
