@@ -63,51 +63,55 @@ public class OSVReader extends SplitReader{
             all = "";
         }
         String[] groups = all.split("#");
+        
         if (isVersionOne(groups)) {
             // Already parsed by isVersionOne()
         } else {
             // Not 'Version 1'
             groupsNames = new Vector<String>();
             allGroups = new Vector<Group>();
-            for(int i=1;i<groups.length;i++){
-                allGroups.add(new Group());
-                String[] tmp = groups[i].split(" ",2);
-                groupsNames.add(tmp[0]);
-                allGroups.lastElement().setName(tmp[0]);
-                tmp = groups[i].split("\n");
-                String[] tmp1 = tmp[0].split("\\s*,\\s*");
-                int l = (int)((new Double(tmp1[2].split("\\s+")[0])).doubleValue()*1000);
-                int nCP = (new Integer(tmp1[1].split("\\s+")[0])).intValue()+1;
-                Distance d = new Distance(tmp1[0],l,nCP);
-                Iterator<Group> it = allGroups.iterator();
-                while(it.hasNext()){
-                    Distance dTmp = it.next().getDistance();
-                    if(dTmp == null) break;
-                    if(dTmp.equals(d)){
-                        dTmp.setName(dTmp.getName()+" "+d.getName());
-                        d=dTmp;
-                        break;
-                    }
-                }
-                allGroups.lastElement().setDistance(d);
-                for(int j=1;j<tmp.length;j++){
-                    String[] tmp2 = tmp[j].split("\\s+");
-//                Time totTime = new Time(tmp2[2],3);
-                    Time[] splits = new Time[nCP];
-                    for(int k = 0; k<nCP;k++){
-                        try{
-                            splits[k]=new Time(tmp2[k+3],2);
-                        } catch(java.lang.NumberFormatException e){
-                            splits[k]=new Time(0,2);
-                        } catch(java.lang.ArrayIndexOutOfBoundsException e){
-                            splits[k]=new Time(0,2);
+            try{
+                for(int i=1;i<groups.length;i++){
+                    allGroups.add(new Group());
+                    String[] tmp = groups[i].split(" ",2);
+                    groupsNames.add(tmp[0]);
+                    allGroups.lastElement().setName(tmp[0]);
+                    tmp = groups[i].split("\n");
+                    String[] tmp1 = tmp[0].split("\\s*,\\s*");
+                    int l = (int)((new Double(tmp1[2].split("\\s+")[0])).doubleValue()*1000);
+                    int nCP = (new Integer(tmp1[1].split("\\s+")[0])).intValue()+1;
+                    Distance d = new Distance(tmp1[0],l,nCP);
+                    Iterator<Group> it = allGroups.iterator();
+                    while(it.hasNext()){
+                        Distance dTmp = it.next().getDistance();
+                        if(dTmp == null) break;
+                        if(dTmp.equals(d)){
+                            dTmp.setName(dTmp.getName()+" "+d.getName());
+                            d=dTmp;
+                            break;
                         }
                     }
-                    Athlete a = new Athlete(tmp2[0],tmp2[1],splits,allGroups.lastElement());
-                    
+                    allGroups.lastElement().setDistance(d);
+                    for(int j=1;j<tmp.length;j++){
+                        String[] tmp2 = tmp[j].split("\\s+");
+    //                Time totTime = new Time(tmp2[2],3);
+                        Time[] splits = new Time[nCP];
+                        for(int k = 0; k<nCP;k++){
+                            try{
+                                splits[k]=new Time(tmp2[k+3],2);
+                            } catch(java.lang.NumberFormatException e){
+                                splits[k]=new Time(0,2);
+                            } catch(java.lang.ArrayIndexOutOfBoundsException e){
+                                splits[k]=new Time(0,2);
+                            }
+                        }
+                        Athlete a = new Athlete(tmp2[0],tmp2[1],splits,allGroups.lastElement());
+
+                    }
                 }
+            }catch(ArrayIndexOutOfBoundsException e){
+                throw new NotRightFormatException(file, "OSV", " array index of bound.");
             }
-            
             Iterator<Group> it = allGroups.iterator();
             while(it.hasNext()){
                 Distance d = it.next().getDistance();
@@ -116,6 +120,7 @@ public class OSVReader extends SplitReader{
                 }
             }
         }
+        
         if((groupsNames==null)||(groupsNames.size()==0)){
             throw new NotRightFormatException(file, "OSV", " unknown reason.");
         }
@@ -203,87 +208,89 @@ public class OSVReader extends SplitReader{
         // Parse.
         groupsNames = new Vector<String>();
         allGroups = new Vector<Group>();
-        
-        for(int i=1; i < groups.length; i++){
-            allGroups.add(new Group());
-            // Split all group lines
-            String[] groupLines = groups[i].split("\\n");
-            // Parse first line in group: find name, number of points and distance
-            String groupName = "";
-            int groupPoints = 0;
-            int groupDistance = 0;
-            Pattern pGroup = Pattern.compile("[ \\t]*([^\\s]+)[ \\t]*,[ \\t]*(\\d+).*,[ \\t]*(\\d+)\\.(\\d+).*\\s*");
-            Matcher mGroup = pGroup.matcher(groupLines[0]);
-            if (! mGroup.matches()) {
-                System.err.println("Bad 'Version 1' file format. Bad group description line: '"+groupLines[0]+"'");
-                return false;
-            } else {
-            }
-            groupName = mGroup.group(1);
-            groupPoints = Integer.parseInt(mGroup.group(2));
-            groupDistance = 1000 * Integer.parseInt(mGroup.group(3)) + Integer.parseInt(mGroup.group(4));
-            
-            Distance d = new Distance(groupName, groupDistance, groupPoints + 1);
-            
-            // Find equal distance in other groups and store this fact
-            Iterator<Group> it = allGroups.iterator();
-            while(it.hasNext()){
-                Distance dTmp = it.next().getDistance();
-                if(dTmp == null) break;
-                if(dTmp.equals(d)){
-                    dTmp.setName(dTmp.getName()+" "+d.getName());
-                    d=dTmp;
-                    break;
-                }
-            }
-            groupsNames.add(groupName);
-            allGroups.lastElement().setDistance(d);
-            allGroups.lastElement().setName(groupName);
-            
-            // Parse each line in the group
-            for (int j = 1; j < groupLines.length; j++) {
-                String athleteName = "";
-                String athleteResult = "";
-                Time[] athleteSplits = new Time[groupPoints + 1];
-                
-                if (groupLines[j].length() < nameEnd) {
-                    System.err.println("Bad 'Version 1' file format. Length of line: '"+groupLines[j]+"' is not enough for @NAME.");
+        try{
+            for(int i=1; i < groups.length; i++){
+                allGroups.add(new Group());
+                // Split all group lines
+                String[] groupLines = groups[i].split("\\n");
+                // Parse first line in group: find name, number of points and distance
+                String groupName = "";
+                int groupPoints = 0;
+                int groupDistance = 0;
+                Pattern pGroup = Pattern.compile("[ \\t]*([^\\s]+)[ \\t]*,[ \\t]*(\\d+).*,[ \\t]*(\\d+)\\.(\\d+).*\\s*");
+                Matcher mGroup = pGroup.matcher(groupLines[0]);
+                if (! mGroup.matches()) {
+                    System.err.println("Bad 'Version 1' file format. Bad group description line: '"+groupLines[0]+"'");
                     return false;
                 } else {
-                    athleteName = groupLines[j].substring(nameStart - 1, nameEnd);
                 }
-                
-                if (groupLines[j].length() < resultEnd) {
-                    System.err.println("Bad 'Version 1' file format. Length of line: '"+groupLines[j]+"' is not enough for @RESULT.");
-                    return false;
-                } else {
-                    athleteResult = groupLines[j].substring(resultStart - 1, resultEnd);
-                }
-                
-                if (groupLines[j].length() < splitStart) {
-                    System.err.println("Bad 'Version 1' file format. Length of line: '"+groupLines[j]+"' is not enough for @SPLITS.");
-                    return false;
-                } else {
-                    String[] theSplits = groupLines[j].substring(splitStart - 1).trim().split("\\s+");
-                    for(int k = 0; k < groupPoints + 1; k++){
-                        try{
-                            athleteSplits[k] = new Time(theSplits[k],2);
-                        } catch(java.lang.NumberFormatException e){
-                            athleteSplits[k] = new Time(0,2);
-                        } catch(java.lang.ArrayIndexOutOfBoundsException e){
-                            athleteSplits[k] = new Time(0,2);
-                        }
+                groupName = mGroup.group(1);
+                groupPoints = Integer.parseInt(mGroup.group(2));
+                groupDistance = 1000 * Integer.parseInt(mGroup.group(3)) + Integer.parseInt(mGroup.group(4));
+
+                Distance d = new Distance(groupName, groupDistance, groupPoints + 1);
+
+                // Find equal distance in other groups and store this fact
+                Iterator<Group> it = allGroups.iterator();
+                while(it.hasNext()){
+                    Distance dTmp = it.next().getDistance();
+                    if(dTmp == null) break;
+                    if(dTmp.equals(d)){
+                        dTmp.setName(dTmp.getName()+" "+d.getName());
+                        d=dTmp;
+                        break;
                     }
                 }
-                String[] athleteNames = athleteName.split("[ \\t]+");
-                Athlete a = new Athlete((athleteNames.length>0?(athleteNames[0].trim()):""),
-                        (athleteNames.length>1?(athleteNames[1].trim()):""),
-                        athleteSplits, allGroups.lastElement(),
-                        1900,
-                        athleteResult);
+                groupsNames.add(groupName);
+                allGroups.lastElement().setDistance(d);
+                allGroups.lastElement().setName(groupName);
+
+                // Parse each line in the group
+                for (int j = 1; j < groupLines.length; j++) {
+                    String athleteName = "";
+                    String athleteResult = "";
+                    Time[] athleteSplits = new Time[groupPoints + 1];
+
+                    if (groupLines[j].length() < nameEnd) {
+                        System.err.println("Bad 'Version 1' file format. Length of line: '"+groupLines[j]+"' is not enough for @NAME.");
+                        return false;
+                    } else {
+                        athleteName = groupLines[j].substring(nameStart - 1, nameEnd);
+                    }
+
+                    if (groupLines[j].length() < resultEnd) {
+                        System.err.println("Bad 'Version 1' file format. Length of line: '"+groupLines[j]+"' is not enough for @RESULT.");
+                        return false;
+                    } else {
+                        athleteResult = groupLines[j].substring(resultStart - 1, resultEnd);
+                    }
+
+                    if (groupLines[j].length() < splitStart) {
+                        System.err.println("Bad 'Version 1' file format. Length of line: '"+groupLines[j]+"' is not enough for @SPLITS.");
+                        return false;
+                    } else {
+                        String[] theSplits = groupLines[j].substring(splitStart - 1).trim().split("\\s+");
+                        for(int k = 0; k < groupPoints + 1; k++){
+                            try{
+                                athleteSplits[k] = new Time(theSplits[k],2);
+                            } catch(java.lang.NumberFormatException e){
+                                athleteSplits[k] = new Time(0,2);
+                            } catch(java.lang.ArrayIndexOutOfBoundsException e){
+                                athleteSplits[k] = new Time(0,2);
+                            }
+                        }
+                    }
+                    String[] athleteNames = athleteName.split("[ \\t]+");
+                    Athlete a = new Athlete((athleteNames.length>0?(athleteNames[0].trim()):""),
+                            (athleteNames.length>1?(athleteNames[1].trim()):""),
+                            athleteSplits, allGroups.lastElement(),
+                            1900,
+                            athleteResult);
+                }
             }
+        }catch(ArrayIndexOutOfBoundsException e){
+            return false;
         }
-        
         Iterator<Group> it = allGroups.iterator();
         while(it.hasNext()){
             Distance d = it.next().getDistance();

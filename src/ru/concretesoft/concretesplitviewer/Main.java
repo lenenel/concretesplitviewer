@@ -15,6 +15,7 @@ import java.util.Properties;
 import java.util.Vector;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -97,7 +98,8 @@ public class Main extends javax.swing.JFrame {
                 
                 if(splitReader != null)
                     readSplits(splitReader);
-                else;
+                else
+                    JOptionPane.showMessageDialog(this, java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("File_Open_Error_Message"), lastFile.getName(), JOptionPane.ERROR_MESSAGE);
                 
             }catch(IOException e){
                 System.out.println(e.getMessage());
@@ -391,12 +393,20 @@ public class Main extends javax.swing.JFrame {
         File file = showFileChooser(extensions);
         if(file != null){
             try{
-                properties.setProperty("Type_of_last_file","OSV");
-                saveProperties();
                 SplitReaderWraper splitWraper = new SplitReaderWraper(file);
                 SplitReader splitReader = splitWraper.createSplitReader();
                 if(splitReader!=null){
+                    
+                    properties.setProperty("Directory", file.getParent());
+                    properties.setProperty("The_Last_File", file.getPath());
+                    try{
+                        saveProperties();
+                    }catch(IOException e){
+                        System.out.println(e.getMessage());
+                    }
                     readSplits(splitReader);
+                }else{
+                    JOptionPane.showMessageDialog(this, java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("File_Open_Error_Message"), file.getName(), JOptionPane.ERROR_MESSAGE);
                 }
             } catch(IOException e){
                 System.out.println(e.getMessage());
@@ -428,13 +438,7 @@ public class Main extends javax.swing.JFrame {
         // Если нажата кнопка OK, то прочитать файл и заполнить список групп
         if(val == JFileChooser.APPROVE_OPTION){
             selectedFile = jFC.getSelectedFile();
-            properties.setProperty("Directory", jFC.getCurrentDirectory().getPath());
-            properties.setProperty("The_Last_File", selectedFile.getPath());
-            try{
-                saveProperties();
-            }catch(IOException e){
-                System.out.println(e.getMessage());
-            }
+            
         }else;
         jFC.removeChoosableFileFilter(filter);
         return selectedFile;

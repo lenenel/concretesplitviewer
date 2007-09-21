@@ -69,6 +69,7 @@ public class SFReader extends SplitReader{
         boolean dSQ=false;
         
         //for each line
+        try{
          for(int i=0;i<allLines.length;i++){
             //If line have the first not blank symbol "H"(М) or "D"(Ж) then parse one group
             if(allLines[i].matches("\\s+["+java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("H")+java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("D")+"].*\r")){
@@ -169,6 +170,9 @@ public class SFReader extends SplitReader{
                 
                 
             }
+        }
+        }catch(ArrayIndexOutOfBoundsException e){
+            throw new NotRightFormatException(f, "SFR", " array index of bounds");
         }
         if(groupsNames.size()==0){
             throw new NotRightFormatException(f, "SFR", "parser can't find group");
