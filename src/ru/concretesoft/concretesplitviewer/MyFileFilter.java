@@ -28,6 +28,9 @@ public class MyFileFilter extends FileFilter {
     }
 
     public boolean accept(File f) {
+        if(f.isDirectory()){
+            return true;
+        }
         String name = f.getName();
         boolean b=false;
         if(f.isFile()){
