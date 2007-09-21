@@ -21,9 +21,9 @@ import java.util.regex.Pattern;
 
 /**
  *
- * @author ��������� ������
+ * @author Mytinski Leonid
  *
- * ����� ��� ������ OSV ������
+ * Reader of OSV format files
  */
 public class OSVReader extends SplitReader{
     private File file;
@@ -37,8 +37,12 @@ public class OSVReader extends SplitReader{
     private int version = 0; // 0 - unknown version
     private String eventDescription = ""; // Event description if it presents in file
     
-    /** Creates a new instance of OSVReader */
-    public OSVReader(File file)  throws IOException {
+    /** Creates a new instance of OSVReader 
+     * @param file splits file
+     * @throws java.io.IOException 
+     * @throws ru.concretesoft.concretesplitviewer.NotRightFormatException
+     */
+    public OSVReader(File file)  throws IOException, NotRightFormatException {
         this.file=file;
         fIS = new FileInputStream(file);
         
@@ -112,6 +116,9 @@ public class OSVReader extends SplitReader{
                 }
             }
         }
+        if((groupsNames==null)||(groupsNames.size()==0)){
+            throw new NotRightFormatException(file, "OSV", " unknown reason.");
+        }
     }
     
     /**
@@ -120,7 +127,7 @@ public class OSVReader extends SplitReader{
      * @return true if successful, false if any kind of error found
      */
     private boolean isVersionOne(String[] groups) {
-        if (groups.length <= 0) {
+        if (groups.length <= 0){
             System.err.println("Please check are there records in file. May be it is empty.");
             return false;
         }
@@ -229,6 +236,7 @@ public class OSVReader extends SplitReader{
                     break;
                 }
             }
+            groupsNames.add(groupName);
             allGroups.lastElement().setDistance(d);
             allGroups.lastElement().setName(groupName);
             

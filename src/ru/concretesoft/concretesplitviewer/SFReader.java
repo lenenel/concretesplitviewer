@@ -14,12 +14,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.Iterator;
 import java.util.Vector;
 
 /**
  *
- * @author Мытинский Леонид
+ * @author Mytinski Leonid
  *
  * Класс для чтения SFR файлов
  */
@@ -28,25 +27,30 @@ public class SFReader extends SplitReader{
     private FileInputStream fIS;
     
     private String all;
-    private String nameOfComp;
+
     private Vector<String> groupsNames;
     private Vector<Group> allGroups;
     private String encoding = "CP1251";
     private String eventDescription = ""; // Event description if it presents in file
 
-    /** Creates a new instance of SFReader */
-    public SFReader(File f) throws FileNotFoundException, IOException {
+    /** Creates a new instance of SFReader 
+     * @param f splits file 
+     * @throws java.io.FileNotFoundException 
+     * @throws java.io.IOException 
+     * @throws ru.concretesoft.concretesplitviewer.NotRightFormatException 
+     */
+    public SFReader(File f) throws FileNotFoundException, IOException, NotRightFormatException {
         this.file=f;
         fIS = new FileInputStream(file);
-        
-        
-        
+
         int length = (int)file.length();
-        byte[] s = new byte[length];
-       
-           
-            
-           
+        byte[] s = null;
+        try {
+            s = new byte[length];
+        } catch (java.lang.OutOfMemoryError e) {
+            throw new IOException("File too long to fit into memory.");
+        }
+        
         fIS.read(s);
         try{
             all=new String(s,encoding);
@@ -57,8 +61,6 @@ public class SFReader extends SplitReader{
         
         groupsNames = new Vector<String>();
         allGroups = new Vector<Group>();
-//        int beginLine = 0;
-//        int endLine = all.indexOf("\n");
         String[] allLines = all.split("\n");
         Group g=null;
         String[] athleteAtr=null;
@@ -168,7 +170,9 @@ public class SFReader extends SplitReader{
                 
             }
         }
-        
+        if(groupsNames.size()==0){
+            throw new NotRightFormatException(f, "SFR", "parser can't find group");
+        }
         
     }
 
@@ -185,11 +189,11 @@ public class SFReader extends SplitReader{
         return allGroups.get(index);
     }
 
-    public Group getGroup(int number) {
-        return allGroups.get(number);
+    public Group getGroup(int index) {
+        return allGroups.get(index);
     }
 
-    public Vector<Group> getGroupsByDist(int number) {
+    public Vector<Group> getGroupsByDist(int index) {
         return null;
     }
     
