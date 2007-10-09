@@ -25,6 +25,7 @@ public class SplitReaderWraper {
     private File file;
     private SplitReader splitReader;
     private Class[] readers = new Class[]{
+        OCT2007Reader.class,
         OSVReader.class,
         SFReader.class
     };
