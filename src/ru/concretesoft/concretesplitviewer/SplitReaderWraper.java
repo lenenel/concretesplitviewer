@@ -11,6 +11,9 @@ package ru.concretesoft.concretesplitviewer;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -21,40 +24,75 @@ import java.io.IOException;
 public class SplitReaderWraper {
     private File file;
     private SplitReader splitReader;
+    private Class[] readers = new Class[]{
+        OSVReader.class,
+        SFReader.class
+    };
     
-    
+    /** Creates a new instance of <code>SplitReaderWraper</code> for file <code>file</code>
+     * 
+     * @param file file that sould be tryed to open
+     */
     public SplitReaderWraper(File file){
         splitReader = null;
         setFile(file);
     }
+    /**
+     * Creates a new instance of <code>SplitReaderWraper</code>
+     */
     public SplitReaderWraper(){
         this(null);
     }
     
+    /** Trys to read splits from file in all known formats
+     * 
+     * @return <code>SplitReader</code> object if trying to read is ok or <code>null</code> if readers are can't read this file
+     * @throws java.io.IOException 
+     */
+    @SuppressWarnings("unchecked")
     public SplitReader createSplitReader() throws IOException{
-        if (splitReader == null){
+        if(file==null)
+            return null;
+        
+        int countTry = 0;
+        while((splitReader == null)&&(countTry < readers.length)){
             try{
-                splitReader = new OSVReader(file);
-            }
-            catch(NotRightFormatException e){
-                System.out.println(e.getMessage());
-            }
-        }
-        if (splitReader == null){
-            try{
-                splitReader = new SFReader(file);
-            }
-            catch(NotRightFormatException e){
-                System.out.println(e.getMessage());
-            }
+                splitReader = (SplitReader) readers[countTry].getConstructor(File.class).newInstance(file);
+             }
+            catch (InstantiationException ex) {
+                Logger.getLogger(SplitReaderWraper.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalAccessException ex) {
+                Logger.getLogger(SplitReaderWraper.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalArgumentException ex) {
+                Logger.getLogger(SplitReaderWraper.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InvocationTargetException ex) {
+                if(ex.getCause().getClass().equals(NotRightFormatException.class)){
+                    System.out.println(ex.getCause().getMessage());
+                }else{
+                    Logger.getLogger(SplitReaderWraper.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } catch (NoSuchMethodException ex) {
+                Logger.getLogger(SplitReaderWraper.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SecurityException ex) {
+                Logger.getLogger(SplitReaderWraper.class.getName()).log(Level.SEVERE, null, ex);
+            } 
+            countTry++;
         }
         return splitReader;
     }
 
+    /**
+     * 
+     * @return file to read or <code>null</code> if file not set
+     */
     public File getFile() {
         return file;
     }
 
+    /**Sets file to read
+     * 
+     * @param file file to read
+     */
     public void setFile(File file) {
         this.file = file;
         splitReader = null;
