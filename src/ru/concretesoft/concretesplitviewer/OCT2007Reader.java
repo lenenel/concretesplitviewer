@@ -12,7 +12,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.Iterator;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -98,7 +97,7 @@ public class OCT2007Reader extends SplitReader{
          * OK. It seems OCT2007 format.
          * Try to parse it.
          */
-        Pattern groupPattern = Pattern.compile("^\\s+([^-\\s]+)\\s*(\\r\\n)+", Pattern.MULTILINE);
+        Pattern groupPattern = Pattern.compile("^\\s+([^-\\s:]+)\\s*(\\r\\n)+", Pattern.MULTILINE);
         Matcher groupMatcher = groupPattern.matcher(all);
 
         groupsNames = new Vector<String>();
@@ -141,12 +140,18 @@ public class OCT2007Reader extends SplitReader{
                 }
             }
             
-            // Store group's distance
-            int groupDistance = 5000;
-            Distance d = new Distance(groupName, groupDistance, numberOfPoints);
-            allGroups.lastElement().setDistance(d);
-            d.setLengthsOfDists(Tools.calculatLengthsOfLaps(d.getGroups()));
-
+            //Remove group if it doesn't have athletes
+            if(allGroups.lastElement().getAthletes().size() == 0){
+                allGroups.remove(allGroups.lastElement());
+                groupsNames.remove(groupsNames.lastElement());
+            }else{
+                // Store group's distance
+                int groupDistance = 5000;
+                Distance d = new Distance(groupName, groupDistance, numberOfPoints);
+                allGroups.lastElement().setDistance(d);
+                d.setLengthsOfDists(Tools.calculatLengthsOfLaps(d.getGroups()));
+            }
+            
             groupPatternIndex = endIndex;
         }
     }
