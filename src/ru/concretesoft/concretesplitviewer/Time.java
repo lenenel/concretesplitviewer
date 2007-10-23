@@ -18,9 +18,10 @@ package ru.concretesoft.concretesplitviewer;
  */
 public class Time implements Comparable{
     private String timeS;
-    private int time,fields;
+    private int time; // Time in seconds
+    private int fields; // Number of fields: 1,2 or 3
     
-    /** Creates a new instance of Time 
+    /** Creates a new instance of Time
      * time - время в формате ЧЧММСС либо ММСС, в зависимости от количества полей
      * fields - количество полей
      */
@@ -31,7 +32,28 @@ public class Time implements Comparable{
         
     }
     
-     /** Creates a new instance of Time 
+    /**
+     * Creates a new instance of Time
+     * @param hhmmss string time in "[[HH:]MM:]SS" form
+     *
+     * If hhmmss does not match "[[HH:]MM:]SS", sets time to 0.
+     */
+    public Time(String hhmmss) {
+        int ff      = 1;
+        int ttime   = 0;
+        if (hhmmss.trim().matches("((\\d{1,2}:)?\\d{1,2}:)?\\d\\d")) {
+            String pairs[] = hhmmss.split(":");
+            ff      = pairs.length;
+            ttime   = 0;
+            for (int i = 0; i < pairs.length; i++) {
+                ttime = 60 * ttime + (new Integer(pairs[i])).intValue();
+            }
+        }
+        setFields(ff);
+        setTimeInSeconds(ttime);
+    }
+    
+    /** Creates a new instance of Time
      * @param  s  время в формате ЧЧ:ММ:СС либо ММ:СС, в зависимости от количества полей
      * @param  fields  количество полей
      */
@@ -48,21 +70,20 @@ public class Time implements Comparable{
             
             if(!tmpS[i].equals("")){
                 
-                    int tInt = (new Integer(tmpS[i])).intValue();
-                    tInt = Math.abs(tInt);
-                    while(tInt>=60){
-                        int tmpSi1 = (new Integer(tmpS[i-1])).intValue();
-                        if(tmpSi1>=0)
-                            tmpS[i-1]=(tmpSi1+1)+"";
-                        else
-                            tmpS[i-1]=(tmpSi1-1)+"";
-                        tInt-=60;
-                    }
-                    tmpS[i]=tInt+"";
-                    while(tmpS[i].length()<2)tmpS[i]="0"+tmpS[i];
+                int tInt = (new Integer(tmpS[i])).intValue();
+                tInt = Math.abs(tInt);
+                while(tInt>=60){
+                    int tmpSi1 = (new Integer(tmpS[i-1])).intValue();
+                    if(tmpSi1>=0)
+                        tmpS[i-1]=(tmpSi1+1)+"";
+                    else
+                        tmpS[i-1]=(tmpSi1-1)+"";
+                    tInt-=60;
+                }
+                tmpS[i]=tInt+"";
+                while(tmpS[i].length()<2)tmpS[i]="0"+tmpS[i];
                 
-            }
-            else tmpS[i]="00";
+            } else tmpS[i]="00";
             
 //            temp+=tmpS[i];
         }
@@ -106,12 +127,12 @@ public class Time implements Comparable{
         }
         if(i<fields)
             for(int j=0;j<fields-i;j++){
-                tmp.add(tmp.size(),0);
+            tmp.add(tmp.size(),0);
             }
         if(i>fields)
             for(int j=i-1;j>=fields;j--){
-                tmp.set(j-1,tmp.get(j)*60+tmp.get(j-1));
-                tmp.remove(j);
+            tmp.set(j-1,tmp.get(j)*60+tmp.get(j-1));
+            tmp.remove(j);
             }
         for(int j=0;j<fields-1;j++){
             while(tmp.get(j)>60){
@@ -140,38 +161,34 @@ public class Time implements Comparable{
         if(t < 0){
             t = -t;
             ed = -1;
-        }
-        else;
+        } else;
         String temp = "";
         if(fields==2){
-             String tmpS = (t / 60) +"";
-             temp+=tmpS +":";
-             
-             tmpS = (t  % 60)+"";
-             if(tmpS.length()==1) tmpS = "0"+tmpS;
-             else;
-             temp+=tmpS;
-             if(ed<0){
+            String tmpS = (t / 60) +"";
+            temp+=tmpS +":";
+            
+            tmpS = (t  % 60)+"";
+            if(tmpS.length()==1) tmpS = "0"+tmpS;
+            else;
+            temp+=tmpS;
+            if(ed<0){
                 temp = "-"+temp;
-             }
-             else;
+            } else;
         }else if(fields==3){
             String tmpS = (t / 3600) +"";
             temp+=tmpS +":";
-
+            
             tmpS = ((t / 60) % 60)+"";
             if(tmpS.length()==1) tmpS = "0"+tmpS;
             temp+=tmpS +":";
-
-             tmpS = (t  % 60)+"";
-             if(tmpS.length()==1) tmpS = "0"+tmpS;
-             temp+=tmpS;
-             if(ed<0){
+            
+            tmpS = (t  % 60)+"";
+            if(tmpS.length()==1) tmpS = "0"+tmpS;
+            temp+=tmpS;
+            if(ed<0){
                 temp = "-"+temp;
-             }
-             else;
-        }
-        else;
+            } else;
+        } else;
         this.timeS = temp;
     }
     /**
@@ -183,15 +200,15 @@ public class Time implements Comparable{
         else f = 2;
         this.fields = f;
     }
-     /**
+    /**
      * Увеличить время на t
      */
     public void addTime(Time t){
         setTimeInSeconds(time+t.getTimeInSeconds());
-       
+        
         
     }
-     /**
+    /**
      * Метод возвращает строку содержащую время в формате чч:мм:сс, либо мм:сс
      */
     public String getTimeString(){
@@ -201,7 +218,7 @@ public class Time implements Comparable{
      * Метод возвращает время в секундах
      */
     public int getTimeInSeconds(){
-       
+        
         return time;
     }
     
@@ -209,17 +226,13 @@ public class Time implements Comparable{
         try{
             Time t = (Time)o;
             if(t.getTimeInSeconds()>time) return -1;
-            else 
+            else
                 if(t.getTimeInSeconds()<time) return 1;
-                    else return 0;
-        }
-        catch(ClassCastException e){
+                else return 0;
+        } catch(ClassCastException e){
             
         }
         return 0;
     }
-   
-        
-    
     
 }
