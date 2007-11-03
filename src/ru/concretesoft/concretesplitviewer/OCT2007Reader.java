@@ -80,7 +80,7 @@ public class OCT2007Reader extends SplitReader{
          * If no, we will not parse file.
          */
         String firstLineOfPattern = "[ \\t]*\\d+[ \\t]+\\d+[ \\t\\S]*([ \\t]+(\\d{1,2}:)?\\d\\d:\\d\\d)+[ \\t]*";
-        String secondLineOfPattern = "[ \\t]*([ \\t]+(\\d{1,2}:)?\\d\\d:\\d\\d)+[ \\t]*";
+        String secondLineOfPattern = "([ \\t]+(\\d{1,2}:)?\\d\\d:\\d\\d)+[ \\t]*";
         String thirdLineOfPattern = "---+[ \\t]*";
         Pattern hyphenPattern = Pattern.compile(thirdLineOfPattern + "\\r\\n");
         Matcher hyphenMatcher = hyphenPattern.matcher(all);
@@ -194,7 +194,7 @@ public class OCT2007Reader extends SplitReader{
             }
             // Set or check number of points
             if (numberOfPoints == 0) {
-                // This is fiirst athlete in the group. Set number of points
+                // This is first athlete in the group. Set number of points
                 numberOfPoints = words.length - firstTimeIndex;
             } else {
                 // Check number of points for all others athlete
