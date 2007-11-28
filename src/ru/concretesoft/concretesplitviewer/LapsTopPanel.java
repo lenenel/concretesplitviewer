@@ -61,7 +61,7 @@ public class LapsTopPanel extends javax.swing.JPanel implements ListDataListener
             otst = fM.stringWidth("-000:00")+5;
             
             //Determin scale (pixels/meters)
-            int allLength = distance.getLength();
+            int allLength = Tools.calculateTotalLength(distance);
             double scale = (width-otst) / allLength;
             
             

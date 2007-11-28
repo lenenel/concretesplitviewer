@@ -147,7 +147,7 @@ public class AthleteIcon implements Icon, AthleteListener{
         if(diffTime==null){
             Time meanSpeed = getMeanSpeed();
             String meanS = meanSpeed.getTimeString();
-            int totLength = Tools.calculatTotalLength(athlete.getGroup().getDistance(), viewSplits);
+            int totLength = Tools.calculateTotalLength(athlete.getGroup().getDistance(), viewSplits);
             int idealTime =(int) (meanSpeed.getTimeInSeconds() * totLength/1000.0);
             diffTime = new Time(0,2);
             diffTime.setTimeInSeconds(totTime.getTimeInSeconds()-idealTime);

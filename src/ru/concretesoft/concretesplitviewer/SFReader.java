@@ -14,6 +14,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Iterator;
 import java.util.Vector;
 
 /**
@@ -76,12 +77,12 @@ public class SFReader extends SplitReader{
                     if((athleteAtr!=null)&&(!dSQ)){
                         new Athlete(athleteAtr[3], athleteAtr[4], splits, g, 1900, athleteAtr[athleteAtr.length - 1]);
                         
-                        if(allGroups.lastElement().getDistance().getLengthOfDist(1)<0){
-                            if(lengths!=null)
-                                for(int j=0;j<lengths.length;j++){
-                                allGroups.lastElement().getDistance().setLengthOfDist(j+1,lengths[j]);
-                                }
-                        }
+//                        if(allGroups.lastElement().getDistance().getLengthOfDist(1)<0){
+//                            if(lengths!=null)
+//                                for(int j=0;j<lengths.length;j++){
+//                                allGroups.lastElement().getDistance().setLengthOfDist(j+1,lengths[j]);
+//                                }
+//                        }
                         athleteAtr=null;
                         splits = null;
                         lengths = null;
@@ -102,12 +103,12 @@ public class SFReader extends SplitReader{
                     if(allLines[i].matches("\\s*\\d+.*\r")){
                         if((athleteAtr!=null)&&(!dSQ)){
                             new Athlete(athleteAtr[3], athleteAtr[4], splits, g, 1900, athleteAtr[athleteAtr.length - 1]);
-                            if(allGroups.lastElement().getDistance().getLengthOfDist(1)<0){
-                                if(lengths!=null)
-                                    for(int j=0;j<lengths.length;j++){
-                                    allGroups.lastElement().getDistance().setLengthOfDist(j+1,lengths[j]);
-                                    }
-                            }
+//                            if(allGroups.lastElement().getDistance().getLengthOfDist(1)<0){
+//                                if(lengths!=null)
+//                                    for(int j=0;j<lengths.length;j++){
+//                                        allGroups.lastElement().getDistance().setLengthOfDist(j+1,lengths[j]);
+//                                    }
+//                            }
                         }
                         
                         athleteAtr = allLines[i].split("\\s+");
@@ -137,34 +138,42 @@ public class SFReader extends SplitReader{
                             }
                         }
                     } else if(allLines[i].matches("\\s*speed:.*\r")){
-                        String times = allLines[i].split("speed: ")[1];
-                        lengths = new int[g.getDistance().getNumberOfCP()];
-                        int totLen=0;
-                        for(int j=0;j<splits.length-1;j++){
-                            
-                            Time tmpTime;
-                            try{
-                                String tmp = times.substring(6*j,6*(j+1));
-                                tmp = tmp.replaceAll("\\s+","");
-                                tmpTime = new Time(tmp,2);
-                            } catch(java.lang.NumberFormatException e){
-                                tmpTime=new Time(1,2);
-                            } catch(java.lang.ArrayIndexOutOfBoundsException e){
-                                lengths = null;
-                                break;
-                            } catch(java.lang.StringIndexOutOfBoundsException e){
-                                lengths = null;
-                                break;
-                            }
-                            lengths[j] = (int)(((double)splits[j].getTimeInSeconds()/tmpTime.getTimeInSeconds())*1000);
-                            totLen+=lengths[j];
-                        }
-                        if(lengths!=null)
-                            lengths[splits.length-1]=g.getDistance().getLength()-totLen;
+//                        String times = allLines[i].split("speed: ")[1];
+//                        lengths = new int[g.getDistance().getNumberOfCP()];
+//                        int totLen=0;
+//                        for(int j=0;j<splits.length-1;j++){
+//                            
+//                            Time tmpTime;
+//                            try{
+//                                String tmp = times.substring(6*j,6*(j+1));
+//                                tmp = tmp.replaceAll("\\s+","");
+//                                tmpTime = new Time(tmp,2);
+//                            } catch(java.lang.NumberFormatException e){
+//                                tmpTime=new Time(1,2);
+//                            } catch(java.lang.ArrayIndexOutOfBoundsException e){
+//                                lengths = null;
+//                                break;
+//                            } catch(java.lang.StringIndexOutOfBoundsException e){
+//                                lengths = null;
+//                                break;
+//                            }
+//                            lengths[j] = (int)(((double)splits[j].getTimeInSeconds()/tmpTime.getTimeInSeconds())*1000);
+//                            totLen+=lengths[j];
+//                        }
+//                        if(lengths!=null)
+//                            lengths[splits.length-1]=g.getDistance().getLength()-totLen;
                     }
                     
                     
                     
+                }
+            }
+            //Set lengths of laps
+            Iterator<Group> it = allGroups.iterator();
+            while(it.hasNext()){
+                Distance d = it.next().getDistance();
+                if(d.getLengthOfDist(1) < 0){
+                    d.setLengthsOfDists(Tools.calculatLengthsOfLaps(d.getGroups()));
                 }
             }
         }catch(ArrayIndexOutOfBoundsException e){

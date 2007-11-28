@@ -23,9 +23,10 @@ import java.util.Vector;
  * Класс содержит различные методы для анализа сплитов
  */
 public class Tools {
+    private static final int TOTAL_DIST = 10000;
     
     
-    private Tools() { // (Pattern "Singleton") Запрещение создания экземпляра класса 
+    private Tools() { // (Pattern ?"Singleton"?) Запрещение создания экземпляра класса 
     }
     
     /** Method for finding splits of "ideal" athlete, that showed detrmin time (first, second, third, ...)
@@ -262,7 +263,7 @@ public class Tools {
                 totTime+=secBest[i].getTimeInSeconds();
             }
             for(int i=0;i<secBest.length;i++){
-                val[i] = (int)(((double)secBest[i].getTimeInSeconds() / totTime)*d.getLength());
+                val[i] = (int)(((double)secBest[i].getTimeInSeconds() / totTime)*TOTAL_DIST);
             }
             return val;
         }
@@ -276,9 +277,9 @@ public class Tools {
      *
      * @return  length of distance consist of given laps or <code>-1<code> if length of array <code>laps</code> more than number of control points in distance
      */
-    public static int calculatTotalLength(Distance d, int[] laps){
+    public static int calculateTotalLength(Distance d, int[] laps){
         if(laps==null){
-           return d.getLength();
+           return TOTAL_DIST;
         }else if(laps.length > d.getNumberOfCP()){
             return -1;
         }else{
@@ -288,5 +289,8 @@ public class Tools {
            }
            return totL;
        }
+    }
+    public static int calculateTotalLength(Distance d){
+        return calculateTotalLength(d, null);
     }
 }

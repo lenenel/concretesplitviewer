@@ -93,7 +93,7 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
             // Calculating CP's x coordinates
             xCoord = new int[spl.length];
             if(dist!=null){
-                int totDist = Tools.calculatTotalLength(dist, spl);
+                int totDist = Tools.calculateTotalLength(dist, spl);
                 int curDist=otst;
                 for(int i=0;i<spl.length;i++){
                     xCoord[i]=curDist + (int)((dist.getLengthOfDist(spl[i])/(double)totDist)*width);
