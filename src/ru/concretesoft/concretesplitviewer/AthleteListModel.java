@@ -1,4 +1,24 @@
 /*
+ * ConcreteSplitViewer program for analazing splits.
+ * Copyright (C) 2006-2007 Mytinski Leonid (Leonid.Mytinski@gmail.com)
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * 
+ */ 
+
+/*
  * AthleteListModel.java
  *
  * Created on 3 Июль 2006 г., 16:15
@@ -25,7 +45,7 @@ import javax.swing.event.ListSelectionListener;
 /**
  * 
  * 
- * @author Мытинский Леонид
+ * @author Mytinski Leonid
  * 
  * Класс описывающий модель данных для списка спортсменов.
  * Модель содержит объекты типа AthleteIcon.
@@ -411,7 +431,7 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
         }
 
         public int getSelectionMode() {
-            return this.MULTIPLE_INTERVAL_SELECTION;
+            return MULTIPLE_INTERVAL_SELECTION;
         }
 
         public void addListSelectionListener(ListSelectionListener x) {
@@ -469,19 +489,19 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
      *
      */
      public Collection<AthleteIcon> getOneLap(int number){
-         Vector<AthleteIcon> athletes = new Vector<AthleteIcon>();
+         Vector<AthleteIcon> athletesByOneLap = new Vector<AthleteIcon>();
          Iterator<AthleteIcon> iter = this.athletes.iterator();
          while(iter.hasNext()){
             AthleteIcon aI = iter.next();
-            int size = athletes.size();
+            int size = athletesByOneLap.size();
             if(size==0){
-                athletes.add(aI);
+                athletesByOneLap.add(aI);
             } else {
-                int i = findNearEl(athletes, aI.getAthlete(), number, 0, size-1);
-                athletes.insertElementAt(aI, i);
+                int i = findNearEl(athletesByOneLap, aI.getAthlete(), number, 0, size-1);
+                athletesByOneLap.insertElementAt(aI, i);
             }
          }
-         return athletes;
+         return athletesByOneLap;
      }
      private int findNearEl(Vector<AthleteIcon> as, Athlete a, int number, int min, int max){
          int size = max - min;
