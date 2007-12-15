@@ -52,8 +52,8 @@ public class Main extends javax.swing.JFrame {
     private AthleteListModel athletesModel; // модель списка для выбора спортсменов
     private GroupSelectionModel groupSelectionModel; // модель выбора для групп
     private SplitViewer[] viewers = new SplitViewer[]{
-        new StandardSplitViewer(),
-        new SecondBestSplitViewer()
+        new SecondBestSplitViewer(),
+        new StandardSplitViewer()
     }; // массив возможных вариантов просмотра
     private File propertiesFile;
     private Properties properties;
