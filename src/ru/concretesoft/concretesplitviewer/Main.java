@@ -29,6 +29,8 @@ package ru.concretesoft.concretesplitviewer;
 import java.awt.Dimension;
 import java.awt.event.ItemEvent;
 import java.awt.event.MouseEvent;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
@@ -153,6 +155,8 @@ public class Main extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
+        jSeparator2 = new javax.swing.JSeparator();
+        jMenuItem2 = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JSeparator();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
@@ -266,6 +270,15 @@ public class Main extends javax.swing.JFrame {
             }
         });
         jMenu1.add(jMenuItem1);
+        jMenu1.add(jSeparator2);
+
+        jMenuItem2.setText("Print");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem2);
         jMenu1.add(jSeparator1);
 
         jMenuItem3.setText(bundle.getString("Exit")); // NOI18N
@@ -405,6 +418,10 @@ public class Main extends javax.swing.JFrame {
         openFileWithDialog();
         
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        print();
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
     
     private void openFileWithDialog(){
         Vector<String> extensions = new Vector<String>();
@@ -432,6 +449,19 @@ public class Main extends javax.swing.JFrame {
                 System.out.println(e.getMessage());
             }
         } else;
+    }
+
+    private void print() {
+        SplitViewer sV = (SplitViewer)jComboBox1.getSelectedItem();
+        PrintUtilities pU = new PrintUtilities((javax.swing.JComponent)sV);
+        PrinterJob printJob = PrinterJob.getPrinterJob();
+        printJob.setPrintable(pU);
+        if (printJob.printDialog())
+          try {
+            printJob.print();
+          } catch(PrinterException pe) {
+            System.out.println("Error printing: " + pe);
+          }
     }
     
     
@@ -555,6 +585,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JPanel jPanel1;
@@ -563,6 +594,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JToolBar jToolBar2;
