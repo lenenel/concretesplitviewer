@@ -26,8 +26,10 @@
 
 package ru.concretesoft.concretesplitviewer;
 
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
@@ -40,8 +42,8 @@ import javax.swing.RepaintManager;
  */
 public class PrintUtilities implements Printable{
     
-    public JComponent component;
-    
+    private JComponent component;
+
     public PrintUtilities(JComponent component){
         this.component = component;
     }
@@ -52,6 +54,14 @@ public class PrintUtilities implements Printable{
         } else {
             Graphics2D g2d = (Graphics2D)graphics;
             g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+            
+            Dimension chartDimension = component.getSize();
+            
+            double chartXScale = pageFormat.getImageableWidth()/chartDimension.width;
+            double chartYScale = pageFormat.getImageableHeight()/chartDimension.height;
+            
+            g2d.transform(AffineTransform.getScaleInstance(chartXScale, chartYScale));
+            
             RepaintManager currentManager = RepaintManager.currentManager(component);
             currentManager.setDoubleBufferingEnabled(false);
             component.paint(g2d);

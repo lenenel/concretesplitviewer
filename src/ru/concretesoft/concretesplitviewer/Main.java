@@ -35,9 +35,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.Vector;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 /**
  *
@@ -453,15 +455,17 @@ public class Main extends javax.swing.JFrame {
 
     private void print() {
         SplitViewer sV = (SplitViewer)jComboBox1.getSelectedItem();
-        PrintUtilities pU = new PrintUtilities((javax.swing.JComponent)sV);
-        PrinterJob printJob = PrinterJob.getPrinterJob();
-        printJob.setPrintable(pU);
-        if (printJob.printDialog())
-          try {
-            printJob.print();
-          } catch(PrinterException pe) {
-            System.out.println("Error printing: " + pe);
-          }
+        JDialog previewDialog = new PrintPreviewDialog(this, true, (JComponent)sV, jList2);
+        previewDialog.setVisible(true);
+//        PrintUtilities pU = new PrintUtilities((javax.swing.JComponent)sV);
+//        PrinterJob printJob = PrinterJob.getPrinterJob();
+//        printJob.setPrintable(pU);
+//        if (printJob.printDialog())
+//          try {
+//            printJob.print();
+//          } catch(PrinterException pe) {
+//            System.out.println("Error printing: " + pe);
+//          }
     }
     
     
