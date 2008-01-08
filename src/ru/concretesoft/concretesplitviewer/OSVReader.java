@@ -46,6 +46,9 @@ import java.util.regex.Pattern;
  * Reader of OSV format files
  */
 public class OSVReader extends SplitReader{
+    
+    private final Boolean DEBUG = false;
+    
     private File file;
     private FileInputStream fIS;
     
@@ -84,7 +87,7 @@ public class OSVReader extends SplitReader{
         }
         String[] groups = all.split("#");
         
-        if (isVersionOne(groups)) {
+        if (isVersionOne(file, groups)) {
             // Already parsed by isVersionOne()
         } else {
             // Not 'Version 1'
@@ -151,7 +154,7 @@ public class OSVReader extends SplitReader{
      * @param groups Strings that produced by splitting file with '#'
      * @return true if successful, false if any kind of error found
      */
-    private boolean isVersionOne(String[] groups) {
+    private boolean isVersionOne(File file, String[] groups) throws NotRightFormatException {
         if (groups.length <= 0){
             System.err.println("Please check are there records in file. May be it is empty.");
             return false;
@@ -265,6 +268,8 @@ public class OSVReader extends SplitReader{
                 allGroups.lastElement().setDistance(d);
                 allGroups.lastElement().setName(groupName);
 
+                if (DEBUG) System.out.println(groupName);
+                
                 // Parse each line in the group
                 for (int j = 1; j < groupLines.length; j++) {
                     String athleteName = "";
@@ -289,6 +294,9 @@ public class OSVReader extends SplitReader{
                         System.err.println("Bad 'Version 1' file format. Length of line: '"+groupLines[j]+"' is not enough for @SPLITS.");
                         return false;
                     } else {
+                        
+                        if (DEBUG) System.out.println(groupLines[j]);
+                        
                         String[] theSplits = groupLines[j].substring(splitStart - 1).trim().split("\\s+");
                         for(int k = 0; k < groupPoints + 1; k++){
                             try{
@@ -310,6 +318,8 @@ public class OSVReader extends SplitReader{
             }
         }catch(ArrayIndexOutOfBoundsException e){
             return false;
+        } catch(NumberFormatException nfe) {
+            throw new NotRightFormatException(file, "OSV version 1", "bad number format: " + nfe.getMessage());
         }
         Iterator<Group> it = allGroups.iterator();
         while(it.hasNext()){
