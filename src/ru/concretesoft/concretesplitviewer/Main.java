@@ -33,8 +33,19 @@ import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
+import java.util.jar.Attributes;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -62,6 +73,9 @@ public class Main extends javax.swing.JFrame {
     private File propertiesFile;
     private Properties properties;
     
+    private Vector<String> namesOfReaders;
+    private URLClassLoader classLoader;
+    
     private static final String PROPERTIES_FILE_NAME = "properies.xml";
     private static final String DIRECTORY_NAME = ".ConcreteSplitViewer";
     
@@ -70,9 +84,9 @@ public class Main extends javax.swing.JFrame {
         
         loadProperties();
         initComponents();
+                
+        namesOfReaders = getReaders();
 
-        
-        
         // Инициализация переменных объекта
         jFC = new JFileChooser();
         File currentDirectory = new File(properties.getProperty("Directory"));
@@ -117,7 +131,7 @@ public class Main extends javax.swing.JFrame {
             try{
                 
                 SplitReader splitReader = null;
-                SplitReaderWraper splitWraper = new SplitReaderWraper(lastFile);
+                SplitReaderWraper splitWraper = new SplitReaderWraper(lastFile, namesOfReaders.toArray(new String[0]), classLoader);
                 splitReader = splitWraper.createSplitReader();
                 
                 if(splitReader != null)
@@ -130,6 +144,53 @@ public class Main extends javax.swing.JFrame {
             }
         }else;
         
+    }
+    private String getDefaultReadersDirectory(){
+        return Main.class.getResource("/readers").getFile();
+    }
+    private Vector<String> getReaders() {
+        Vector<String> names = new Vector<String>();
+        Vector<URL> urls = new Vector<URL>();
+        String readersDir = properties.getProperty("ReadersDirectory");
+        if(readersDir == null){
+            readersDir = getDefaultReadersDirectory();
+            properties.setProperty("ReadersDirectory", readersDir);
+            try{
+                saveProperties();
+            }catch(IOException ex){
+                ex.printStackTrace();
+            }
+        }
+        File directory = new File(readersDir);
+        if(directory.isDirectory()){
+            File[] files = directory.listFiles();
+            for(File file: files){
+                if(file.isFile()){
+                    try{
+                        urls.add(file.toURI().toURL());
+                        JarFile jarFile = new JarFile(file);
+                        Manifest manif = jarFile.getManifest();
+                        Map<String, Attributes> map = manif.getEntries();
+                        Attributes attr = manif.getMainAttributes();
+                        if(attr != null){
+                            String namesAll = attr.getValue("Readers");
+                            String[] namesS = namesAll.split(" ");
+                            for(String n: namesS){
+                                names.add(n);
+                            }
+                        }
+                    }catch(IOException ex){
+                        ex.printStackTrace();
+                    }
+                }
+            }
+            classLoader = new URLClassLoader(urls.toArray(new URL[0]));
+            names.add("ru.concretesoft.concretesplitviewer.OSVReader");
+            names.add("ru.concretesoft.concretesplitviewer.SFReader");
+            return names;
+        }else{
+            return null;
+        }
     }
     
     /** This method is called from within the constructor to
@@ -432,7 +493,7 @@ public class Main extends javax.swing.JFrame {
         File file = showFileChooser(extensions);
         if(file != null){
             try{
-                SplitReaderWraper splitWraper = new SplitReaderWraper(file);
+                SplitReaderWraper splitWraper = new SplitReaderWraper(file, namesOfReaders.toArray(new String[0]), classLoader);
                 SplitReader splitReader = splitWraper.createSplitReader();
                 if(splitReader!=null){
                     
@@ -534,9 +595,9 @@ public class Main extends javax.swing.JFrame {
         properties = new Properties();
         
         properties.setProperty("Directory",path);
+        properties.setProperty("ReadersDirectory", getDefaultReadersDirectory());
         
-        java.io.FileOutputStream fOS = new java.io.FileOutputStream(prop);
-        properties.storeToXML(fOS,"Properties");
+        saveProperties(prop);
     }
     /**
      * Method save properties
@@ -544,11 +605,14 @@ public class Main extends javax.swing.JFrame {
      *
      * @throws java.io.IOException 
      */
-    public void saveProperties() throws java.io.IOException{
+    public void saveProperties(File prop) throws java.io.IOException{
         
-        java.io.FileOutputStream fOS = new java.io.FileOutputStream(propertiesFile);
+        java.io.FileOutputStream fOS = new java.io.FileOutputStream(prop);
         properties.storeToXML(fOS,"Properties");
         
+    }
+    public void saveProperties() throws java.io.IOException{
+        saveProperties(propertiesFile);
     }
     /** "Обнуление" всех параметров оставшихся от предыдущего файла
      *

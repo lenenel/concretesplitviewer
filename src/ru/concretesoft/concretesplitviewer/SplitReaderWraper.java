@@ -32,6 +32,8 @@ package ru.concretesoft.concretesplitviewer;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URLClassLoader;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -44,25 +46,31 @@ import java.util.logging.Logger;
 public class SplitReaderWraper {
     private File file;
     private SplitReader splitReader;
-    private Class[] readers = new Class[]{
-        OCT2007Reader.class,
-        OSVReader.class,
-        SFReader.class
-    };
+    private Vector<Class> readers;
+    private URLClassLoader classLoader;
     
     /** Creates a new instance of <code>SplitReaderWraper</code> for file <code>file</code>
      * 
      * @param file file that sould be tryed to open
      */
-    public SplitReaderWraper(File file){
-        splitReader = null;
+    public SplitReaderWraper(File file, String[] readersNames, URLClassLoader classLoader){
+        readers = new Vector<Class>();
         setFile(file);
+        this.classLoader = classLoader;
+        for(String reader: readersNames){
+            try{
+                Class readerClass = classLoader.loadClass(reader);
+                readers.add(readerClass);
+            }catch(ClassNotFoundException ex){
+                Logger.getLogger(SplitReaderWraper.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
     /**
-     * Creates a new instance of <code>SplitReaderWraper</code>
+     * Creates a new instance of <code>SplitReaderWraper</code> with given class names of readers
      */
-    public SplitReaderWraper(){
-        this(null);
+    public SplitReaderWraper(String[] readersNames, URLClassLoader classLoader){
+        this(null, readersNames, classLoader);
     }
     
     /** Trys to read splits from file in all known formats
@@ -76,9 +84,9 @@ public class SplitReaderWraper {
             return null;
         
         int countTry = 0;
-        while((splitReader == null)&&(countTry < readers.length)){
+        while((splitReader == null)&&(countTry < readers.size())){
             try{
-                splitReader = (SplitReader) readers[countTry].getConstructor(File.class).newInstance(file);
+                splitReader = (SplitReader) readers.get(countTry).getConstructor(File.class).newInstance(file);
              }
             catch (InstantiationException ex) {
                 Logger.getLogger(SplitReaderWraper.class.getName()).log(Level.SEVERE, null, ex);

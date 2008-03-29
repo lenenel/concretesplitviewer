@@ -2,11 +2,13 @@
  * OSVReaderTest.java
  * JUnit based test
  *
- * Created on 27 хЧМЭ 2006 Ц., 21:20
+ * Created on 27 О©╫О©╫О©╫О©╫ 2006 О©╫., 21:20
  */
 
 package ru.concretesoft.concretesplitviewer;
 
+import ru.concretesoft.concretesplitviewer.*;
+import ru.concretesoft.concretesplitviewer.OSVReader;
 import junit.framework.*;
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -37,15 +39,15 @@ public class OSVReaderTest extends TestCase {
         int realL = gr.size();
         assertEquals(expL,realL);
         
-        String expFirst = "л21е";
+        String expFirst = "О©╫21О©╫";
         String realFirst = gr.get(0);
         assertEquals(expFirst,realFirst);
         
-        String expSec = "ф21е";
+        String expSec = "О©╫21О©╫";
         String realSec = gr.get(1);
         assertEquals(expSec,realSec);
         
-        expSec = "ф21а";
+        expSec = "О©╫21О©╫";
         realSec = gr.get(38);
         assertEquals(expSec,realSec);
     }
@@ -56,55 +58,55 @@ public class OSVReaderTest extends TestCase {
         Group first = gr.get(0);
         Athlete fA = first.getAthlete(1);
         
-        String expFirst = "анпрмхй";
+        String expFirst = "О©╫О©╫О©╫О©╫О©╫О©╫О©╫";
         String realFirst = fA.getFamilyName();
         assertEquals(expFirst,realFirst);
        
         fA = first.getAthlete(19);
-        String expSec = "лепемжнб";
+        String expSec = "О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫";
         String realSec = fA.getFamilyName();
         assertEquals(expSec,realSec);
         
         first = gr.get(13);
-        expFirst = "л40";
+        expFirst = "О©╫40";
         realFirst = first.getName();
         assertEquals(expFirst,realFirst);
         fA = first.getAthlete(3);
-        expFirst = "лекэмхйнб";
+        expFirst = "О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫";
         realFirst = fA.getFamilyName();
         assertEquals(expFirst,realFirst);
     }
 
     public void testGetGroup() throws IOException {
         OSVReader oR = new OSVReader(new File("1.osv"));
-        Group gr = oR.getGroup("л21е");
+        Group gr = oR.getGroup("О©╫21О©╫");
         
         Athlete fA = gr.getAthlete(1);
-        String expFirst = "анпрмхй";
+        String expFirst = "О©╫О©╫О©╫О©╫О©╫О©╫О©╫";
         String realFirst = fA.getFamilyName();
         assertEquals(expFirst,realFirst);
         
         fA = gr.getAthlete(19);
-        expFirst = "лепемжнб";
+        expFirst = "О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫";
         realFirst = fA.getFamilyName();
         assertEquals(expFirst,realFirst);
         
-        gr = oR.getGroup("л40");
+        gr = oR.getGroup("О©╫40");
         
         fA = gr.getAthlete(3);
-        expFirst = "лекэмхйнб";
+        expFirst = "О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫";
         realFirst = fA.getFamilyName();
         assertEquals(expFirst,realFirst);
         
          gr = oR.getGroup(13);
         
         fA = gr.getAthlete(3);
-        expFirst = "лекэмхйнб";
+        expFirst = "О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫";
         realFirst = fA.getFamilyName();
         assertEquals(expFirst,realFirst);
         
         Distance d = gr.getDistance();
-        expFirst = "л40 ф21ю";
+        expFirst = "О©╫40 О©╫21О©╫";
         realFirst = d.getName();
         assertEquals(expFirst,realFirst);
         
