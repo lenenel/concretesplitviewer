@@ -46,6 +46,8 @@ import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -81,7 +83,7 @@ public class Main extends javax.swing.JFrame {
     
     /** Creates new form Main */
     public Main() {
-        
+     
         loadProperties();
         initComponents();
                 
@@ -127,10 +129,12 @@ public class Main extends javax.swing.JFrame {
             System.out.println("There isn't Last [used] File Name in property. Assume null file name and user should open file manually.");
             lastFile = null;
         }
+
         if((lastFile!=null)&&(lastFile.exists())){
             try{
                 
                 SplitReader splitReader = null;
+                
                 SplitReaderWraper splitWraper = new SplitReaderWraper(lastFile, namesOfReaders.toArray(new String[0]), classLoader);
                 splitReader = splitWraper.createSplitReader();
                 
@@ -146,51 +150,57 @@ public class Main extends javax.swing.JFrame {
         
     }
     private String getDefaultReadersDirectory(){
-        return Main.class.getResource("/readers").getFile();
+        return Main.class.getResource("readers").getFile();
     }
     private Vector<String> getReaders() {
         Vector<String> names = new Vector<String>();
-        Vector<URL> urls = new Vector<URL>();
-        String readersDir = properties.getProperty("ReadersDirectory");
-        if(readersDir == null){
-            readersDir = getDefaultReadersDirectory();
-            properties.setProperty("ReadersDirectory", readersDir);
-            try{
-                saveProperties();
-            }catch(IOException ex){
-                ex.printStackTrace();
+        try {
+            Vector<URL> urls = new Vector<URL>();
+            // Directory for embedded readers
+            urls.add(new URL("file:/"));
+
+            String readersDir = properties.getProperty("ReadersDirectory");
+            if (readersDir == null) {
+                readersDir = getDefaultReadersDirectory();
+                properties.setProperty("ReadersDirectory", readersDir);
+                try {
+                    saveProperties();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
-        }
-        File directory = new File(readersDir);
-        if(directory.isDirectory()){
-            File[] files = directory.listFiles();
-            for(File file: files){
-                if(file.isFile()){
-                    try{
-                        urls.add(file.toURI().toURL());
-                        JarFile jarFile = new JarFile(file);
-                        Manifest manif = jarFile.getManifest();
-                        Map<String, Attributes> map = manif.getEntries();
-                        Attributes attr = manif.getMainAttributes();
-                        if(attr != null){
-                            String namesAll = attr.getValue("Readers");
-                            String[] namesS = namesAll.split(" ");
-                            for(String n: namesS){
-                                names.add(n);
+            File directory = new File(readersDir);
+            if (directory.isDirectory()) {
+                File[] files = directory.listFiles();
+                for (File file : files) {
+                    if (file.isFile()) {
+                        try {
+                            urls.add(file.toURI().toURL());
+                            JarFile jarFile = new JarFile(file);
+                            Manifest manif = jarFile.getManifest();
+                            Map<String, Attributes> map = manif.getEntries();
+                            Attributes attr = manif.getMainAttributes();
+                            if (attr != null) {
+                                String namesAll = attr.getValue("Readers");
+                                String[] namesS = namesAll.split(" ");
+                                for (String n : namesS) {
+                                    names.add(n);
+                                }
                             }
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
                         }
-                    }catch(IOException ex){
-                        ex.printStackTrace();
                     }
                 }
             }
             classLoader = new URLClassLoader(urls.toArray(new URL[0]));
+            // Embedded readers
             names.add("ru.concretesoft.concretesplitviewer.OSVReader");
             names.add("ru.concretesoft.concretesplitviewer.SFReader");
-            return names;
-        }else{
-            return null;
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return names;
     }
     
     /** This method is called from within the constructor to
