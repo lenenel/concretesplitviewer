@@ -150,7 +150,7 @@ public class Main extends javax.swing.JFrame {
         
     }
     private String getDefaultReadersDirectory(){
-        return Main.class.getResource("readers").getFile();
+        return Main.class.getResource("/").getFile() + "readers";
     }
     private Vector<String> getReaders() {
         Vector<String> names = new Vector<String>();
@@ -187,6 +187,8 @@ public class Main extends javax.swing.JFrame {
                                     names.add(n);
                                 }
                             }
+                        } catch (java.util.zip.ZipException ze) {
+                            System.out.println("File isn't looks like jar-file: " + file);
                         } catch (IOException ex) {
                             ex.printStackTrace();
                         }
