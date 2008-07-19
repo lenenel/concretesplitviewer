@@ -30,8 +30,8 @@
 package ru.concretesoft.concretesplitviewer;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.Iterator;
-import java.util.Vector;
 import javax.swing.filechooser.FileFilter;
 
 /**
@@ -41,9 +41,9 @@ import javax.swing.filechooser.FileFilter;
  * Класс фильтра файлов
  */
 public class MyFileFilter extends FileFilter {
-    private Vector<String> ext;
+    private Collection<String> ext;
     /** Creates a new instance of MyFileFilter */
-    public MyFileFilter(Vector<String> exts) {
+    public MyFileFilter(Collection<String> exts) {
         ext=exts;
     }
 

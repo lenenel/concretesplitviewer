@@ -36,7 +36,8 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.util.Vector;
+import java.util.LinkedList;
+import java.util.List;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
@@ -59,7 +60,7 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
 
     private TipWindow tipWindow;
     private TipThreadSplitViewer tipThread;
-    private Vector<XCoordinatesListener> listeners;
+    private List<XCoordinatesListener> listeners;
     private GlassStandartSplitViewerPanel glassPane;
     private int editingCPNumber;
     private AthleteIcon editingAthlete;
@@ -74,7 +75,7 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
         addMouseMotionListener(MouseMoveQueue.getInstance());
         addMouseListener(this);
         addMouseMotionListener(this);
-        listeners = new Vector<XCoordinatesListener>();
+        listeners = new LinkedList<XCoordinatesListener>();
         glassPane = new GlassStandartSplitViewerPanel();
     }
 
@@ -278,7 +279,7 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
         int x = e.getX();
         int y = e.getY();
         for(int i = 0; i < xCoord.length; i++){
-            System.out.println(x+" "+xCoord[i]);
+//            System.out.println(x+" "+xCoord[i]);
             if(Math.abs(xCoord[i]-x) < 5){// 5 horizontal points on both sides
                 editingCPNumber = i;//index(only from viewing) of control point which would be edited
                 AthleteIcon[] selectedAthletes = (AthleteIcon[]) aModel.getSelectedValues();
@@ -290,7 +291,7 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
                         yA += selectedAthletes[j].getAthlete().getLap(aModel.getViewingSplits()[k]).getTimeInSeconds();
                     }
                     yA = getSize().height - (int)(yA/scale);
-                    System.out.println(y+" "+yA);
+//                    System.out.println(y+" "+yA);
                     if(Math.abs(y-yA)<2){// 2 vertical points on both sides
                         yLocationOfStartDrag = yA;// Store y coordinate(of node) of start dragging
                         editingAthlete = selectedAthletes[j];// set editing athlete
@@ -305,7 +306,7 @@ public class StandardSplitViewer extends javax.swing.JPanel implements SplitView
                         glassPane.setLocationOnScreen(this.getLocationOnScreen());
                         glassPane.setVisible(true);
                         glassPane.setYLocation(y);
-                        System.out.println(editingAthlete.getAthlete().getFamilyName());
+//                        System.out.println(editingAthlete.getAthlete().getFamilyName());
                         break;
                     }
                 }

@@ -29,8 +29,11 @@
 
 package ru.concretesoft.concretesplitviewer;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.LinkedList;
+import java.util.List;
 import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
@@ -41,17 +44,20 @@ import javax.swing.event.ListDataListener;
  */
 public class GroupListModel implements ListModel{
 
-    Vector<ListDataListener> list = new Vector<ListDataListener>();
+    Collection<ListDataListener> list = new LinkedList<ListDataListener>();
 
-    Vector<Group> groups;
+    List<Group> groups;
     public int getSize() {
         if(groups==null) return 0;
         return groups.size();
     }
-    public Vector<Group> getGroups(){
-        return (Vector<Group>)groups;
+    public List<Group> getGroups(){
+        if(groups != null)
+            return new ArrayList<Group>(groups);
+        else
+            return null;
     }
-    public void setGroups(Vector<Group> gr){
+    public void setGroups(List<Group> gr){
         groups = gr;
         Iterator<ListDataListener> it = list.iterator();
         while(it.hasNext()){

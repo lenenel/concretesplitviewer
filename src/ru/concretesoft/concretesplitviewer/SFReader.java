@@ -34,8 +34,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 
 /**
  *
@@ -49,8 +50,8 @@ public class SFReader extends SplitReader{
     
     private String all;
     
-    private Vector<String> groupsNames;
-    private Vector<Group> allGroups;
+    private List<String> groupsNames;
+    private List<Group> allGroups;
     private String encoding = "CP1251";
     private String eventDescription = ""; // Event description if it presents in file
     
@@ -79,8 +80,8 @@ public class SFReader extends SplitReader{
             all = "";
         }
         
-        groupsNames = new Vector<String>();
-        allGroups = new Vector<Group>();
+        groupsNames = new ArrayList<String>();
+        allGroups = new ArrayList<Group>();
         String[] allLines = all.split("\n");
         Group g=null;
         String[] athleteAtr=null;
@@ -205,11 +206,11 @@ public class SFReader extends SplitReader{
         
     }
     
-    public Vector<String> getGroupsNames() {
+    public List<String> getGroupsNames() {
         return groupsNames;
     }
     
-    public Vector<Group> getAllGroups() {
+    public List<Group> getAllGroups() {
         return allGroups;
     }
     
@@ -222,7 +223,7 @@ public class SFReader extends SplitReader{
         return allGroups.get(index);
     }
     
-    public Vector<Group> getGroupsByDist(int index) {
+    public List<Group> getGroupsByDist(int index) {
         return null;
     }
     

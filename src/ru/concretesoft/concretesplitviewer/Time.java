@@ -134,7 +134,7 @@ public class Time implements Comparable{
      * time - время в формате ЧЧММСС, либо ММСС обрабатываются в зависимости от установленного количества полей
      */
     public void setTime(int time){
-        java.util.Vector<Integer> tmp = new java.util.Vector<Integer>();
+        java.util.List<Integer> tmp = new java.util.ArrayList<Integer>();
         int i=0;
         int timetmp=time;
         while(timetmp>0){

@@ -31,9 +31,11 @@ package ru.concretesoft.concretesplitviewer;
 
 import java.awt.Color;
 import java.awt.FontMetrics;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.LinkedList;
+import java.util.List;
 import javax.swing.JList;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
@@ -51,9 +53,9 @@ import javax.swing.event.ListSelectionListener;
  * Модель содержит объекты типа AthleteIcon.
  */
 public class AthleteListModel implements ListModel,ListSelectionModel,ListSelectionListener,AthleteListener{
-        private Vector<ListDataListener> listeners;
-        private Vector<AthleteIcon> athletes;
-        private Vector<ListSelectionListener> selectionListeners;
+        private Collection<ListDataListener> listeners;
+        private List<AthleteIcon> athletes;
+        private Collection<ListSelectionListener> selectionListeners;
         private Distance distance;
         private int[] viewLaps;
         private JList groupsList;
@@ -73,8 +75,8 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
         
         public AthleteListModel(FontMetrics fM){
             fontMetrics = fM;
-            listeners = new Vector<ListDataListener>();
-            selectionListeners = new Vector<ListSelectionListener>();
+            listeners = new LinkedList<ListDataListener>();
+            selectionListeners = new LinkedList<ListSelectionListener>();
             distance=null;
             selected = new boolean[0];
             
@@ -87,18 +89,19 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
          * Метод получает набор спортсменов, формирует данные для модели
          * добовляет эти данные в модель и оповещает всех слушателей изменений модели
          *
-         * @param  as  <code>Vector</code> of athletes, whose sould be in model
+         * @param  as  <code>Collection</code> of athletes, whose sould be in model
          */
-        public void setAthletes(Vector<Athlete> as){
-            
+        public void setAthletes(Collection<Athlete> as){
+            athletes = new ArrayList<AthleteIcon>();
+            distance = null;
             if((as!=null)&&(as.size()>0)){
-                athletes = new Vector<AthleteIcon>();
                 selected = new boolean[as.size()];
-                int i=0;
-                distance = as.get(0).getGroup().getDistance();
                 Iterator<Athlete> itA = as.iterator();
                 while(itA.hasNext()){
-                    AthleteIcon temp = new AthleteIcon(itA.next(),fontMetrics);
+                    Athlete tempAthlete = itA.next();
+                    if (distance == null)
+                        distance = tempAthlete.getGroup().getDistance();
+                    AthleteIcon temp = new AthleteIcon(tempAthlete, fontMetrics);
                     athletes.add(temp);
                     temp.getAthlete().addAthleteListener(this);
                 }
@@ -107,8 +110,6 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
                 
             }
             else{
-                athletes = new Vector<AthleteIcon>();
-                distance = null;
                 selected = null;
                 viewLaps=null;
             }
@@ -135,9 +136,9 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
          *
          * @return  all athletes from this models
          */
-        public Vector<Athlete> getAthletes(){
+        public List<Athlete> getAthletes(){
             if(athletes==null) return null;
-            Vector<Athlete> at = new Vector<Athlete>();
+            List<Athlete> at = new ArrayList<Athlete>();
             Iterator<AthleteIcon> it = athletes.iterator();
             while(it.hasNext()){
                 at.add(it.next().getAthlete());
@@ -256,7 +257,7 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
         private void recolculateList(){
             if(athletes != null){
                 
-                Vector<AthleteIcon> athletesNew = new Vector<AthleteIcon>();
+                List<AthleteIcon> athletesNew = new ArrayList<AthleteIcon>();
                 Iterator<AthleteIcon> it = athletes.iterator();
                 while(it.hasNext()){
                     if(athletesNew.size()==0)
@@ -273,7 +274,7 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
                             first = athletesNew.get(j);
                         }
                         
-                        athletesNew.insertElementAt(cur,j);
+                        athletesNew.add(j, cur);
                     }
                 }
                 athletes = athletesNew;
@@ -312,7 +313,7 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
          *
          * @return  all icons of athletes from this model
          */
-        public Vector<AthleteIcon> getValues(){
+        public List<AthleteIcon> getValues(){
             return athletes;
         }
         /**
@@ -321,7 +322,7 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
          * @return  all selected icons of athletes
          */
         public Object[] getSelectedValues(){
-             Vector<AthleteIcon> value = new Vector<AthleteIcon>();
+             List<AthleteIcon> value = new ArrayList<AthleteIcon>();
              if(athletes != null){
                  Iterator<AthleteIcon> it = athletes.iterator();
                  while(it.hasNext()){
@@ -448,7 +449,7 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
     private void valueChanged(){
         setAthletes(null);
         Object[] g1 =  groupsList.getSelectedValues();
-        Vector<Athlete> all = new Vector<Athlete>();
+        List<Athlete> all = new ArrayList<Athlete>();
         for(int i=0;i<g1.length;i++){
             Iterator<Athlete> it = ((Group)g1[i]).getAthletes().iterator();
             while(it.hasNext()){
@@ -466,7 +467,7 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
                         if(j==size) break;
                         first = all.get(j);
                     }
-                    all.insertElementAt(cur,j);
+                    all.add(j, cur);
                 }
             }
                 
@@ -489,7 +490,7 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
      *
      */
      public Collection<AthleteIcon> getOneLap(int number){
-         Vector<AthleteIcon> athletesByOneLap = new Vector<AthleteIcon>();
+         List<AthleteIcon> athletesByOneLap = new ArrayList<AthleteIcon>();
          Iterator<AthleteIcon> iter = this.athletes.iterator();
          while(iter.hasNext()){
             AthleteIcon aI = iter.next();
@@ -498,12 +499,12 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
                 athletesByOneLap.add(aI);
             } else {
                 int i = findNearEl(athletesByOneLap, aI.getAthlete(), number, 0, size-1);
-                athletesByOneLap.insertElementAt(aI, i);
+                athletesByOneLap.add(i, aI);
             }
          }
          return athletesByOneLap;
      }
-     private int findNearEl(Vector<AthleteIcon> as, Athlete a, int number, int min, int max){
+     private int findNearEl(List<AthleteIcon> as, Athlete a, int number, int min, int max){
          int size = max - min;
          int d = size/2;
          if(size==0){
@@ -545,7 +546,7 @@ public class AthleteListModel implements ListModel,ListSelectionModel,ListSelect
       * @param  athletes  athletes whose icons should get new color
       * 
       */
-     public static void setDifferntColorsForAthletes(Vector<AthleteIcon> athletes){
+     public static void setDifferntColorsForAthletes(Collection<AthleteIcon> athletes){
          int i=0;
          Iterator<AthleteIcon> iterator = athletes.iterator();
          while(iterator.hasNext()){

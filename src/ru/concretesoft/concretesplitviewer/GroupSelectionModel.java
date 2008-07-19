@@ -29,8 +29,11 @@
 
 package ru.concretesoft.concretesplitviewer;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.LinkedList;
+import java.util.List;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListSelectionEvent;
@@ -45,26 +48,26 @@ import javax.swing.event.ListSelectionListener;
  * Выбор осуществляется только в случае совпадения дистанций.
  */
 public class GroupSelectionModel implements ListSelectionModel, GroupModelListener{
-    Vector<Group> groups;
+    List<Group> groups;
     GroupListModel groupModel;
     boolean [] selected;
     Distance d;
     int anchor,lead;
-    Vector<ListSelectionListener> list;
+    Collection<ListSelectionListener> list;
     /** Creates a new instance of GroupSelectionModel
      * 
      * gr - Набор всех групп
      */
     public GroupSelectionModel(GroupListModel gLM) {
-        if(gLM==null) groups=new Vector<Group>();
-        else groups =gLM.getGroups();
+        if(gLM==null) groups=new ArrayList<Group>();
+        else groups = gLM.getGroups();
         groupModel = gLM;
         if(groups==null){
             selected = new boolean [0];
         }else{
             selected = new boolean [groups.size()];
         }
-        list = new Vector<ListSelectionListener>();
+        list = new LinkedList<ListSelectionListener>();
     }
     
     // Реализация всех необходимых методов

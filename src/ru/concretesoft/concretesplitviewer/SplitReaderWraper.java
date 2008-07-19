@@ -33,7 +33,8 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URLClassLoader;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -46,7 +47,7 @@ import java.util.logging.Logger;
 public class SplitReaderWraper {
     private File file;
     private SplitReader splitReader;
-    private Vector<Class> readers;
+    private List<Class> readers;
     private URLClassLoader classLoader;
     
     /** Creates a new instance of <code>SplitReaderWraper</code> for file <code>file</code>
@@ -54,7 +55,7 @@ public class SplitReaderWraper {
      * @param file file that sould be tryed to open
      */
     public SplitReaderWraper(File file, String[] readersNames, URLClassLoader classLoader){
-        readers = new Vector<Class>();
+        readers = new ArrayList<Class>();
         setFile(file);
         this.classLoader = classLoader;
         for(String reader: readersNames){

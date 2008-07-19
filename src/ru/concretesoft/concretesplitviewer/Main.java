@@ -15,8 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- * 
- */ 
+ *
+ */
 
 /*
  * Main.java
@@ -29,21 +29,17 @@ package ru.concretesoft.concretesplitviewer;
 import java.awt.Dimension;
 import java.awt.event.ItemEvent;
 import java.awt.event.MouseEvent;
-import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Enumeration;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Vector;
 import java.util.jar.Attributes;
-import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.logging.Level;
@@ -52,7 +48,6 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 
 /**
  *
@@ -74,19 +69,19 @@ public class Main extends javax.swing.JFrame {
     }; // массив возможных вариантов просмотра
     private File propertiesFile;
     private Properties properties;
-    
-    private Vector<String> namesOfReaders;
+
+    private Collection<String> namesOfReaders;
     private URLClassLoader classLoader;
-    
+
     private static final String PROPERTIES_FILE_NAME = "properies.xml";
     private static final String DIRECTORY_NAME = ".ConcreteSplitViewer";
-    
+
     /** Creates new form Main */
     public Main() {
-     
+
         loadProperties();
         initComponents();
-                
+
         namesOfReaders = getReaders();
 
         // Инициализация переменных объекта
@@ -106,11 +101,11 @@ public class Main extends javax.swing.JFrame {
             jComboBox1.addItem(viewers[i]);
             viewers[i].setModel(athletesModel);
         }
-        
-        
+
+
 //        jPanel1.add((javax.swing.JPanel)jComboBox1.getSelectedItem(),java.awt.BorderLayout.CENTER);
 //        jPanel1.add(lapsTopPanel,java.awt.BorderLayout.NORTH);
-        
+
         // Задание моделей для списков
         jList1.setModel(groupListModel);
         groupSelectionModel = new GroupSelectionModel(groupListModel);
@@ -119,7 +114,7 @@ public class Main extends javax.swing.JFrame {
         jList1.setSelectionModel(groupSelectionModel);
         jList2.setModel(athletesModel);
         jList2.setSelectionModel(athletesModel);
-        
+
         //load last file from previous session
         String typeOfLastFile = properties.getProperty("Type_of_last_file");
         File lastFile;
@@ -132,30 +127,30 @@ public class Main extends javax.swing.JFrame {
 
         if((lastFile!=null)&&(lastFile.exists())){
             try{
-                
+
                 SplitReader splitReader = null;
-                
+
                 SplitReaderWraper splitWraper = new SplitReaderWraper(lastFile, namesOfReaders.toArray(new String[0]), classLoader);
                 splitReader = splitWraper.createSplitReader();
-                
+
                 if(splitReader != null)
                     readSplits(splitReader);
                 else
                     JOptionPane.showMessageDialog(this, java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("File_Open_Error_Message"), lastFile.getName(), JOptionPane.ERROR_MESSAGE);
-                
+
             }catch(IOException e){
                 System.out.println(e.getMessage());
             }
         }else;
-        
+
     }
     private String getDefaultReadersDirectory(){
         return Main.class.getResource("/").getFile() + "readers";
     }
-    private Vector<String> getReaders() {
-        Vector<String> names = new Vector<String>();
+    private List<String> getReaders() {
+        List<String> names = new ArrayList<String>();
         try {
-            Vector<URL> urls = new Vector<URL>();
+            List<URL> urls = new ArrayList<URL>();
             // Directory for embedded readers
             urls.add(new URL("file:/"));
 
@@ -204,7 +199,7 @@ public class Main extends javax.swing.JFrame {
         }
         return names;
     }
-    
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -382,20 +377,20 @@ public class Main extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
+
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         AthleteIcon[] icons = (AthleteIcon[])athletesModel.getSelectedValues();
-        Vector<AthleteIcon> athletes = new Vector<AthleteIcon>();
+        Collection<AthleteIcon> athletes = new ArrayList<AthleteIcon>();
         for(int i = 0 ; i < icons.length ; i++){
             athletes.add(icons[i]);
         }
         AthleteListModel.setDifferntColorsForAthletes(athletes);
         repaint();
     }//GEN-LAST:event_jButton3ActionPerformed
-    
+
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
         JDialog aboutDialog = new AboutDialog(this);
-        
+
         aboutDialog.setLocationRelativeTo(jPanel1);
         aboutDialog.setVisible(true);
     }//GEN-LAST:event_jMenuItem4ActionPerformed
@@ -429,27 +424,27 @@ public class Main extends javax.swing.JFrame {
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         openFileWithDialog();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
-    
+
     // Обработчик щелчка мышки на панели просмотра сплитов
     private void jPanel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseClicked
         SplitViewer sV = (SplitViewer)jComboBox1.getSelectedItem();
-        
+
         if((evt.getButton()==MouseEvent.BUTTON2)||(MouseEvent.getMouseModifiersText(evt.getModifiers()).equals("Shift+Button1"))){
             athletesModel.restoreAllSplits();
         } else if(evt.getButton()==MouseEvent.BUTTON1){
-            
+
             sV.removeSplit(evt.getX());
         }
     }//GEN-LAST:event_jPanel1MouseClicked
-    
-    
+
+
     // Обработчик выбора режима просмотра
     private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
         jPanel1.removeAll();
 //        if(tipThread!=null)
 //            tipThread.finish();
 //        else;
-        
+
         if(evt.getStateChange()==ItemEvent.SELECTED){
             SplitViewer sV = (SplitViewer)evt.getItem();
             lapsTopPanel.setSplitViewer(sV);
@@ -462,27 +457,27 @@ public class Main extends javax.swing.JFrame {
             repaint();
         }else;
     }//GEN-LAST:event_jComboBox1ItemStateChanged
-    
+
     // Обработчик изменения выбора спортсменов
     private void jList2ValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList2ValueChanged
-        
-        
+
+
     }//GEN-LAST:event_jList2ValueChanged
-    
-    
+
+
     // Обработчик изменения выбора групп
     private void jList1ValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList1ValueChanged
-        
+
     }//GEN-LAST:event_jList1ValueChanged
-    
+
     private void jList2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList2MouseClicked
-        
+
     }//GEN-LAST:event_jList2MouseClicked
-    
+
     private void jList1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList1MouseClicked
-        
+
     }//GEN-LAST:event_jList1MouseClicked
-    
+
     /**
      * Метод, вызываемый по нажатию на кнопку, для открытия OSV сплитов
      *
@@ -491,15 +486,15 @@ public class Main extends javax.swing.JFrame {
      */
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         openFileWithDialog();
-        
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         print();
     }//GEN-LAST:event_jMenuItem2ActionPerformed
-    
+
     private void openFileWithDialog(){
-        Vector<String> extensions = new Vector<String>();
+        Collection<String> extensions = new ArrayList<String>();
         extensions.add("osv");
         extensions.add("txt");
         File file = showFileChooser(extensions);
@@ -508,7 +503,7 @@ public class Main extends javax.swing.JFrame {
                 SplitReaderWraper splitWraper = new SplitReaderWraper(file, namesOfReaders.toArray(new String[0]), classLoader);
                 SplitReader splitReader = splitWraper.createSplitReader();
                 if(splitReader!=null){
-                    
+
                     properties.setProperty("Directory", file.getParent());
                     properties.setProperty("The_Last_File", file.getPath());
                     try{
@@ -540,10 +535,10 @@ public class Main extends javax.swing.JFrame {
 //            System.out.println("Error printing: " + pe);
 //          }
     }
-    
-    
-    
-    
+
+
+
+
     /**
      * Чтение сплитов с помощью ридера
      *
@@ -552,20 +547,20 @@ public class Main extends javax.swing.JFrame {
         groupListModel.setGroups(sR.getAllGroups());
         setWindowTitle(sR);
     }
-    
-    private File showFileChooser(Vector<String> exts){
+
+    private File showFileChooser(Collection<String> exts){
         clear();
-        
+
         // Задание параметров фильтра файлов и вызов диалогового окна выбора файла
         MyFileFilter filter = new MyFileFilter(exts);
-        
+
         jFC.setFileFilter(filter);
         int val = jFC.showOpenDialog(this);
         File selectedFile = null;
         // Если нажата кнопка OK, то прочитать файл и заполнить список групп
         if(val == JFileChooser.APPROVE_OPTION){
             selectedFile = jFC.getSelectedFile();
-            
+
         }else;
         jFC.removeChoosableFileFilter(filter);
         return selectedFile;
@@ -605,23 +600,23 @@ public class Main extends javax.swing.JFrame {
      */
     private void fillDefaultProperties(File prop, String path, String separator) throws java.io.IOException{
         properties = new Properties();
-        
+
         properties.setProperty("Directory",path);
         properties.setProperty("ReadersDirectory", getDefaultReadersDirectory());
-        
+
         saveProperties(prop);
     }
     /**
      * Method save properties
      *
      *
-     * @throws java.io.IOException 
+     * @throws java.io.IOException
      */
     public void saveProperties(File prop) throws java.io.IOException{
-        
+
         java.io.FileOutputStream fOS = new java.io.FileOutputStream(prop);
         properties.storeToXML(fOS,"Properties");
-        
+
     }
     public void saveProperties() throws java.io.IOException{
         saveProperties(propertiesFile);
@@ -635,7 +630,7 @@ public class Main extends javax.swing.JFrame {
         jList1.clearSelection();
         jList1.ensureIndexIsVisible(0);
     }
-    
+
     private void setWindowTitle(SplitReader sR) {
         this.setTitle(java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("ConcreteSplitViewer")
         + " " + sR.getFileName()
@@ -652,9 +647,9 @@ public class Main extends javax.swing.JFrame {
             }
         });
     }
-    
-    
-    
+
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton3;
@@ -679,6 +674,6 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JToolBar jToolBar2;
     // End of variables declaration//GEN-END:variables
-    
-    
+
+
 }

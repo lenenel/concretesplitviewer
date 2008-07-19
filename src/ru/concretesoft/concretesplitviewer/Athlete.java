@@ -43,7 +43,7 @@ public class Athlete {
     private int yearOfBirth;
     private Group group;
     private boolean dSQ = false;
-    private java.util.Vector<AthleteListener> listeners;
+    private java.util.Collection<AthleteListener> listeners;
     /*
      * Finish time as it's in protocol (or in split-file), not calculated as sum of splits.
      * If there isn't finish time in protocol, then 0.
@@ -78,7 +78,7 @@ public class Athlete {
             // Simple check OK: finish time equals sum of splits
             group = g;
             group.addAthlete(this);
-            listeners = new java.util.Vector<AthleteListener>();
+            listeners = new java.util.LinkedList<AthleteListener>();
         }
     }
 

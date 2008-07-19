@@ -29,9 +29,10 @@
 
 package ru.concretesoft.concretesplitviewer;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 
 /**
  *
@@ -40,7 +41,7 @@ import java.util.Vector;
  * Класс, описывающий объект "группа". Этот объект содержит всех спортсменов из одной группы.
  */
 public class Group {
-    private Vector<Athlete> athletes = new Vector<Athlete>();
+    private List<Athlete> athletes = new ArrayList<Athlete>();
     private String name;
     private Distance dist;
     /** Creates a new instance of Group */
@@ -104,8 +105,8 @@ public class Group {
      /*
      * Метод возвращает всех спортсменов этой группы.
      */
-    public Vector<Athlete> getAthletes(){
-        return (Vector<Athlete>)athletes.clone();
+    public List<Athlete> getAthletes(){
+        return new ArrayList<Athlete>(athletes);
     }
      /*
      * Переопределение метода toString

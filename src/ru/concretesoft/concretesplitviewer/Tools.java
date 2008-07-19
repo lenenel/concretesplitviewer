@@ -32,8 +32,8 @@ package ru.concretesoft.concretesplitviewer;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.TreeSet;
-import java.util.Vector;
 
 /**
  *
@@ -273,10 +273,10 @@ public class Tools {
      * 
      * @return  array of length of each lap in meters or <code>null</code> if <code>grV</code> presents groups for different distances
      */
-    public static int[] calculatLengthsOfLaps(Vector<Group> grV){
+    public static int[] calculatLengthsOfLaps(List<Group> grV){
         Time[] secBest = getAnyBest(grV,2);
         if(secBest!=null){
-            Distance d = grV.firstElement().getDistance();
+            Distance d = grV.get(0).getDistance();
             int totTime=0;
             int[] val = new int[secBest.length];
             for(int i=0;i<secBest.length;i++){

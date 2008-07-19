@@ -30,13 +30,14 @@
 package ru.concretesoft.concretesplitviewer;
 
 
-import ru.concretesoft.concretesplitviewer.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -55,8 +56,8 @@ public class OSVReader extends SplitReader{
     
     private String all;
     private String nameOfComp;
-    private Vector<String> groupsNames;
-    private Vector<Group> allGroups;
+    private List<String> groupsNames;
+    private List<Group> allGroups;
     private String encoding = "CP1251";
     private int version = 0; // 0 - unknown version
     private String eventDescription = ""; // Event description if it presents in file
@@ -92,20 +93,20 @@ public class OSVReader extends SplitReader{
             // Already parsed by isVersionOne()
         } else {
             // Not 'Version 1'
-            groupsNames = new Vector<String>();
-            allGroups = new Vector<Group>();
+            groupsNames = new ArrayList<String>();
+            LinkedList<Group> allGroupsTemp = new LinkedList<Group>();
             try{
                 for(int i=1;i<groups.length;i++){
-                    allGroups.add(new Group());
+                    allGroupsTemp.add(new Group());
                     String[] tmp = groups[i].split(" ",2);
                     groupsNames.add(tmp[0]);
-                    allGroups.lastElement().setName(tmp[0]);
+                    allGroupsTemp.getLast().setName(tmp[0]);
                     tmp = groups[i].split("\n");
                     String[] tmp1 = tmp[0].split("\\s*,\\s*");
                     int l = (int)((new Double(tmp1[2].split("\\s+")[0])).doubleValue()*1000);
                     int nCP = (new Integer(tmp1[1].split("\\s+")[0])).intValue()+1;
                     Distance d = new Distance(tmp1[0],l,nCP);
-                    Iterator<Group> it = allGroups.iterator();
+                    Iterator<Group> it = allGroupsTemp.iterator();
                     while(it.hasNext()){
                         Distance dTmp = it.next().getDistance();
                         if(dTmp == null) break;
@@ -115,7 +116,7 @@ public class OSVReader extends SplitReader{
                             break;
                         }
                     }
-                    allGroups.lastElement().setDistance(d);
+                    allGroupsTemp.getLast().setDistance(d);
                     for(int j=1;j<tmp.length;j++){
                         String[] tmp2 = tmp[j].split("\\s+");
     //                Time totTime = new Time(tmp2[2],3);
@@ -129,20 +130,21 @@ public class OSVReader extends SplitReader{
                                 splits[k]=new Time(0,2);
                             }
                         }
-                        Athlete a = new Athlete(tmp2[0],tmp2[1],splits,allGroups.lastElement());
+                        Athlete a = new Athlete(tmp2[0],tmp2[1],splits,allGroupsTemp.getLast());
 
                     }
                 }
             }catch(ArrayIndexOutOfBoundsException e){
                 throw new NotRightFormatException(file, "OSV", " array index of bound.");
             }
-            Iterator<Group> it = allGroups.iterator();
+            Iterator<Group> it = allGroupsTemp.iterator();
             while(it.hasNext()){
                 Distance d = it.next().getDistance();
                 if(d.getLengthOfDist(1) < 0){
                     d.setLengthsOfDists(Tools.calculatLengthsOfLaps(d.getGroups()));
                 }
             }
+            allGroups = new ArrayList<Group>(allGroupsTemp);
         }
         
         if((groupsNames==null)||(groupsNames.size()==0)){
@@ -230,11 +232,11 @@ public class OSVReader extends SplitReader{
         
         // All interesting descriptors presented.
         // Parse.
-        groupsNames = new Vector<String>();
-        allGroups = new Vector<Group>();
+        groupsNames = new ArrayList<String>();
+        LinkedList<Group> allGroupsTemp = new LinkedList<Group>();
         try{
             for(int i=1; i < groups.length; i++){
-                allGroups.add(new Group());
+                allGroupsTemp.add(new Group());
                 // Split all group lines
                 String[] groupLines = groups[i].split("\\n");
                 // Parse first line in group: find name, number of points and distance
@@ -255,7 +257,7 @@ public class OSVReader extends SplitReader{
                 Distance d = new Distance(groupName, groupDistance, groupPoints + 1);
 
                 // Find equal distance in other groups and store this fact
-                Iterator<Group> it = allGroups.iterator();
+                Iterator<Group> it = allGroupsTemp.iterator();
                 while(it.hasNext()){
                     Distance dTmp = it.next().getDistance();
                     if(dTmp == null) break;
@@ -266,8 +268,8 @@ public class OSVReader extends SplitReader{
                     }
                 }
                 groupsNames.add(groupName);
-                allGroups.lastElement().setDistance(d);
-                allGroups.lastElement().setName(groupName);
+                allGroupsTemp.getLast().setDistance(d);
+                allGroupsTemp.getLast().setName(groupName);
 
                 if (DEBUG) System.out.println(groupName);
                 
@@ -312,7 +314,7 @@ public class OSVReader extends SplitReader{
                     String[] athleteNames = athleteName.split("[ \\t]+");
                     Athlete a = new Athlete((athleteNames.length>0?(athleteNames[0].trim()):""),
                             (athleteNames.length>1?(athleteNames[1].trim()):""),
-                            athleteSplits, allGroups.lastElement(),
+                            athleteSplits, allGroupsTemp.getLast(),
                             1900,
                             athleteResult);
                 }
@@ -322,22 +324,22 @@ public class OSVReader extends SplitReader{
         } catch(NumberFormatException nfe) {
             throw new NotRightFormatException(file, "OSV version 1", "bad number format: " + nfe.getMessage());
         }
-        Iterator<Group> it = allGroups.iterator();
+        Iterator<Group> it = allGroupsTemp.iterator();
         while(it.hasNext()){
             Distance d = it.next().getDistance();
             if(d.getLengthOfDist(1) < 0){
                 d.setLengthsOfDists(Tools.calculatLengthsOfLaps(d.getGroups()));
             }
         }
-        
+        allGroups = new ArrayList<Group>(allGroupsTemp);
         return true;
     }
     
-    public Vector<String> getGroupsNames() {
+    public List<String> getGroupsNames() {
         return groupsNames;
     }
     
-    public Vector<Group> getAllGroups() {
+    public List<Group> getAllGroups() {
         return allGroups;
     }
     
@@ -350,7 +352,7 @@ public class OSVReader extends SplitReader{
         return allGroups.get(number);
     }
     
-    public Vector<Group> getGroupsByDist(int number) {
+    public List<Group> getGroupsByDist(int number) {
         return null;
     }
     

@@ -29,7 +29,7 @@
 
 package ru.concretesoft.concretesplitviewer;
 
-import java.util.Vector;
+import java.util.List;
 
 /**
  *
@@ -42,15 +42,15 @@ public abstract  class SplitReader {
     /**
      * Метод для получения названий всех групп
      *
-     * @return <code>Vector</code> of groups names 
+     * @return <code>List</code> of groups names
      */
-    public abstract Vector<String> getGroupsNames();
+    public abstract List<String> getGroupsNames();
     /**
      * Метод для получения всех групп
      *
-     * @return <code>Vector</code> of all existings groups if reader
+     * @return <code>List</code> of all existings groups if reader
      */
-    public abstract Vector<Group> getAllGroups();
+    public abstract List<Group> getAllGroups();
     /**
      * Метод для получения группы по названию
      *
@@ -71,7 +71,7 @@ public abstract  class SplitReader {
      * @param index distance's index in reader
      * @return set of groups that run distance with index <code>index</code>
      */
-    public abstract Vector<Group> getGroupsByDist(int index);
+    public abstract List<Group> getGroupsByDist(int index);
     
     public abstract String getFileName();
     public abstract String getEventDescription();

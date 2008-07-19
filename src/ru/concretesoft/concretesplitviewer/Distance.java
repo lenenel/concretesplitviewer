@@ -29,7 +29,8 @@
 
 package ru.concretesoft.concretesplitviewer;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -43,7 +44,7 @@ public class Distance {
     private int numberOfCP;
 //    private int[] lengths;
     private Lap[] laps;
-    private Vector<Group> groups;
+    private List<Group> groups;
     /** Creates a new instance of Distance 
      *
      * @param  name  название дистанции (обычно название группы)
@@ -69,7 +70,7 @@ public class Distance {
         } else if(lengths!=null){
                 setLengthsOfDists(lengths);
         }
-        groups = new Vector<Group>();
+        groups = new ArrayList<Group>();
     }
     public Distance(String name, int length, int numberOfCP){
         this(name, length, numberOfCP, null, null);
@@ -152,16 +153,14 @@ public class Distance {
      /*
      * Метод устанавливает набор групп для этой дистанции
      */
-    @SuppressWarnings("unchecked")
-    public void setGroups(Vector<Group> grs){
-        groups = (Vector<Group>)grs.clone();
+    public void setGroups(List<Group> grs){
+        groups = new ArrayList<Group>(grs);
     }
      /*
      * Метод возвращает все группы принадлижащие этой дистанции.
      */
-    @SuppressWarnings("unchecked")
-    public Vector<Group> getGroups(){
-        return (Vector<Group>) groups.clone();
+    public List<Group> getGroups(){
+        return new ArrayList<Group>(groups);
     }
      /*
      * Метод сравнивает эту дистанцию с дистанцией d

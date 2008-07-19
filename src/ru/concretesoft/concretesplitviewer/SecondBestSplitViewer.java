@@ -36,8 +36,10 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.LinkedList;
+import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
@@ -62,7 +64,7 @@ public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitVi
     private int[] xCoord;
     
     private int otst;
-    private Vector<int[]> yCoord;
+    private List<int[]> yCoord;
     private int[] prom;
     private int yMax;
 
@@ -71,7 +73,7 @@ public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitVi
 
     private int yMin;
     
-    private Vector<XCoordinatesListener> listeners;
+    private List<XCoordinatesListener> listeners;
     
     private AthleteIcon editingAthlete;
     private int editingCPNumber;
@@ -88,7 +90,7 @@ public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitVi
         addMouseMotionListener(MouseMoveQueue.getInstance());
         addMouseMotionListener(this);
         addMouseListener(this);
-        listeners = new Vector<XCoordinatesListener>();
+        listeners = new LinkedList<XCoordinatesListener>();
         
         glassPane = new GlassSecondBestViewPanel();
 //        tipWindow = new TipWindow();
@@ -273,7 +275,7 @@ public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitVi
 
     /**
      * Method calculate all y coordinates of chart for all selected athletes
-     * and add they to <code>Vector yCoord</code>. Also finds maximum and 
+     * and add they to <code>ArrayList yCoord</code>. Also finds maximum and
      * minimum of all calculated y coordinates and store they to <code>yMax</code> 
      * and <code>yMin</code> fields.
      * 
@@ -283,7 +285,7 @@ public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitVi
         
         AthleteIcon[] athletes = (AthleteIcon[])(aModel.getSelectedValues());
         yMax = 0;
-        yCoord = new Vector<int[]>();
+        yCoord = new ArrayList<int[]>();
         
         yMin = 0;
 
@@ -297,7 +299,7 @@ public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitVi
     }
     /**
      * Method calculates all y coordinates of chart for one athlete 
-     * and add they to <code>Vector yCoord</code>
+     * and add they to <code>List yCoord</code>
      * 
      * @param  a  athlete whose chart would be showed
      */
@@ -305,21 +307,21 @@ public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitVi
         yMax--;
         yMin++;
         int[] splits = aModel.getViewingSplits();
-        if (yCoord==null) yCoord = new Vector<int[]>();
+        if (yCoord==null) yCoord = new ArrayList<int[]>();
         else;
         yCoord.add(new int[splits.length]);
-        yCoord.lastElement()[0] = a.getLap(splits[0]).getTimeInSeconds()-prom[0];
+        yCoord.get(yCoord.size() - 1)[0] = a.getLap(splits[0]).getTimeInSeconds()-prom[0];
 
-        if(yCoord.lastElement()[0]<yMin)yMin=yCoord.lastElement()[0];
-        else if(yCoord.lastElement()[0]>yMax)yMax=yCoord.lastElement()[0];
+        if(yCoord.get(yCoord.size() - 1)[0]<yMin)yMin=yCoord.get(yCoord.size() - 1)[0];
+        else if(yCoord.get(yCoord.size() - 1)[0]>yMax)yMax=yCoord.get(yCoord.size() - 1)[0];
         else;
 
         int tot = 0;
         for(int i = 0;i<splits.length;i++){
             tot += a.getLap(splits[i]).getTimeInSeconds();
-            yCoord.lastElement()[i] = tot - prom[i];
-            if(yCoord.lastElement()[i]<yMin)yMin=yCoord.lastElement()[i];
-            if(yCoord.lastElement()[i]>yMax)yMax=yCoord.lastElement()[i];
+            yCoord.get(yCoord.size() - 1)[i] = tot - prom[i];
+            if(yCoord.get(yCoord.size() - 1)[i]<yMin)yMin=yCoord.get(yCoord.size() - 1)[i];
+            if(yCoord.get(yCoord.size() - 1)[i]>yMax)yMax=yCoord.get(yCoord.size() - 1)[i];
         }
         yMax++;
         yMin--;
@@ -349,7 +351,7 @@ public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitVi
             secondBest = null;
         }else{
             Object[] allSelected = aModel.getGroupsList().getSelectedValues();
-            Vector<Group> groups = new Vector<Group>();
+            List<Group> groups = new ArrayList<Group>();
             for(Object g : allSelected)
                 groups.add((Group)g);
             
@@ -395,14 +397,14 @@ public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitVi
         int y = e.getY();
         
         for(int i = 0; i < xCoord.length; i++){
-            System.out.println(x+" "+xCoord[i]);
+//            System.out.println(x+" "+xCoord[i]);
             if(Math.abs(xCoord[i]-x) < 5){// 5 horizontal points on both sides
                 editingCPNumber = i;// index(only from viewing) of control point which would be edited
                 double scale = (yMax - yMin) / (double)getSize().height;
                 AthleteIcon[] selectedAthletes = (AthleteIcon[]) aModel.getSelectedValues();
                 for(int j = 0; j < yCoord.size(); j++){
                     int yA = (int) ((yCoord.get(j)[i] - yMin) / scale);
-                    System.out.println(y+" "+yA);
+//                    System.out.println(y+" "+yA);
                     if(Math.abs(y-yA)<2){// 2 vertical points on both sides
                         yLocationOfStartDrag = yA;// Store y coordinate(of node) of start dragging
                         editingAthlete = selectedAthletes[j];// set editing athlete
@@ -418,7 +420,7 @@ public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitVi
                         glassPane.setVisible(true);
                         glassPane.setLocationOnScreen(this.getLocationOnScreen());
                         glassPane.setYLocation(y);
-                        System.out.println(editingAthlete.getAthlete().getFamilyName());
+//                        System.out.println(editingAthlete.getAthlete().getFamilyName());
                         break;
                     }
                 }
