@@ -113,7 +113,7 @@ public class SecondBestSplitViewer extends javax.swing.JPanel implements SplitVi
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
     @Override
-    public void paint(Graphics g){
+    public void paintComponent(Graphics g){
         Graphics2D g2 = (Graphics2D)g;
         Dimension d = getSize();
         g2.setPaint(Color.WHITE);

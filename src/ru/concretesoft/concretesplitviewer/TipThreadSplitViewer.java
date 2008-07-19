@@ -49,6 +49,7 @@ public class TipThreadSplitViewer extends Thread {
         splitViewer = sV;
     }
     
+    @Override
     public void run() {
         while (!finish) {
             try {
