@@ -60,7 +60,7 @@ public class SplitReaderWraper {
         this.classLoader = classLoader;
         for(String reader: readersNames){
             try{
-                Class readerClass = classLoader.loadClass(reader);
+                Class readerClass = this.getClass().getClassLoader().loadClass(reader);
                 readers.add(readerClass);
             }catch(ClassNotFoundException ex){
                 Logger.getLogger(SplitReaderWraper.class.getName()).log(Level.SEVERE, null, ex);

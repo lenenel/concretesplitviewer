@@ -94,7 +94,7 @@ public class SFReader extends SplitReader{
         try{
             for(int i=0;i<allLines.length;i++){
                 //If line have the first not blank symbol "H"(М) or "D"(Ж) then parse one group
-                if(allLines[i].matches("\\s+["+java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("H")+java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("D")+"].*\r")){
+                if(allLines[i].matches("\\s+["+java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("H")+java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("D")+"].*\r*")){
                     if((athleteAtr!=null)&&(!dSQ)){
                         new Athlete(athleteAtr[3], athleteAtr[4], splits, g, 1900, athleteAtr[athleteAtr.length - 1]);
                         
@@ -121,7 +121,7 @@ public class SFReader extends SplitReader{
                     
                     
                     
-                    if(allLines[i].matches("\\s*\\d+.*\r")){
+                    if(allLines[i].matches("\\s*\\d+.*\r*")){
                         if((athleteAtr!=null)&&(!dSQ)){
                             new Athlete(athleteAtr[3], athleteAtr[4], splits, g, 1900, athleteAtr[athleteAtr.length - 1]);
 //                            if(allGroups.lastElement().getDistance().getLengthOfDist(1)<0){
@@ -133,14 +133,14 @@ public class SFReader extends SplitReader{
                         }
                         
                         athleteAtr = allLines[i].split("\\s+");
-                        if(allLines[i].matches(".*"+java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("DSQ")+".*\r")) {
+                        if(allLines[i].matches(".*"+java.util.ResourceBundle.getBundle("ru/concretesoft/concretesplitviewer/i18on").getString("DSQ")+".*\r*")) {
                             dSQ = true;
                         } else {
                             dSQ = false;
                             finishTime = new Time(athleteAtr[athleteAtr.length - 1]);
                         }
                         
-                    } else if(allLines[i].matches("\\s*split:.*\r")){
+                    } else if(allLines[i].matches("\\s*split:.*\r*")){
                         String times = allLines[i].split("split: ")[1];
                         splits = new Time[g.getDistance().getNumberOfCP()];
                         for(int j=0;j<splits.length;j++){
@@ -158,7 +158,7 @@ public class SFReader extends SplitReader{
                                 splits[j]=new Time(1,2);
                             }
                         }
-                    } else if(allLines[i].matches("\\s*speed:.*\r")){
+                    } else if(allLines[i].matches("\\s*speed:.*\r*")){
 //                        String times = allLines[i].split("speed: ")[1];
 //                        lengths = new int[g.getDistance().getNumberOfCP()];
 //                        int totLen=0;
@@ -189,6 +189,12 @@ public class SFReader extends SplitReader{
                     
                 }
             }
+            
+            // Add last athlete in last group
+            if((athleteAtr!=null)&&(!dSQ)){
+                new Athlete(athleteAtr[3], athleteAtr[4], splits, g, 1900, athleteAtr[athleteAtr.length - 1]);
+            }
+            
             //Set lengths of laps
             Iterator<Group> it = allGroups.iterator();
             while(it.hasNext()){
