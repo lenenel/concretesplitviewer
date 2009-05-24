@@ -194,6 +194,7 @@ public class Main extends javax.swing.JFrame {
             // Embedded readers
             names.add("ru.concretesoft.concretesplitviewer.OSVReader");
             names.add("ru.concretesoft.concretesplitviewer.SFReader");
+            names.add("ru.concretesoft.concretesplitviewer.OCT2007Reader");
         } catch (MalformedURLException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -226,7 +227,6 @@ public class Main extends javax.swing.JFrame {
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JSeparator();
-        jMenuItem2 = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JSeparator();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
@@ -341,14 +341,6 @@ public class Main extends javax.swing.JFrame {
         });
         jMenu1.add(jMenuItem1);
         jMenu1.add(jSeparator2);
-
-        jMenuItem2.setText("Print");
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
-            }
-        });
-        jMenu1.add(jMenuItem2);
         jMenu1.add(jSeparator1);
 
         jMenuItem3.setText(bundle.getString("Exit")); // NOI18N
@@ -488,10 +480,6 @@ public class Main extends javax.swing.JFrame {
         openFileWithDialog();
 
     }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        print();
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void openFileWithDialog(){
         Collection<String> extensions = new ArrayList<String>();
@@ -660,7 +648,6 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JPanel jPanel1;
