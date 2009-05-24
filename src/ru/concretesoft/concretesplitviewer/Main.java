@@ -192,9 +192,9 @@ public class Main extends javax.swing.JFrame {
             }
             classLoader = new URLClassLoader(urls.toArray(new URL[0]));
             // Embedded readers
+            names.add("ru.concretesoft.concretesplitviewer.OCT2007Reader");
             names.add("ru.concretesoft.concretesplitviewer.OSVReader");
             names.add("ru.concretesoft.concretesplitviewer.SFReader");
-            names.add("ru.concretesoft.concretesplitviewer.OCT2007Reader");
         } catch (MalformedURLException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
